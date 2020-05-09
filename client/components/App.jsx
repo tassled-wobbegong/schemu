@@ -78,9 +78,9 @@ export default class App extends Container {
     });
   }
   removeTable = (index) => {
-    let tables = [ ...this.state.tables ];
-    delete tables[index];
-    this.setState({ tables });
+    let newtables = [ ...this.state.tables ];
+    delete newtables[index];
+    this.setState({ tables: newtables });
   };
   getTables = (transform) => {
     const tables = [];
@@ -108,7 +108,7 @@ export default class App extends Container {
         };
         lastEv = ev;
         
-        this.setState(newPos, 'positions', index);
+        this.setState('positions', index, newPos);
       };
 
       window.addEventListener('mousemove', moveTable);
