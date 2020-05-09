@@ -1,6 +1,8 @@
 import React from 'react';
 import Container from './Container.jsx';
 
+import FieldContainer from './FieldContainer.jsx';
+
 import './App.scss';
 
 const EXAMPLE = {
