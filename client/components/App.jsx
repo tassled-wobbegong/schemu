@@ -108,30 +108,30 @@ export default class App extends Container {
       .catch(err => console.log(err));
   };
 
-  render() {
-    const startMove = (index) => {
-      let lastEv;
-      const  moveTable = (ev) => {
-        if (!lastEv) {
-          lastEv = ev;
-        }
-
-        const curPos = this.state.positions[index];        
-        const newPos = {
-          x: curPos.x + (ev.clientX - lastEv.clientX),
-          y: curPos.y + (ev.clientY - lastEv.clientY)
-        };
+  moveManager = (index) => {
+    let lastEv;
+    const  moveTable = (ev) => {
+      if (!lastEv) {
         lastEv = ev;
-        
-        this.setState('positions', index, newPos);
-      };
+      }
 
-      window.addEventListener('mousemove', moveTable);
-      window.addEventListener('mouseup', (ev) => {
-        window.removeEventListener('mousemove', moveTable);
-      });
+      const curPos = this.state.positions[index];        
+      const newPos = {
+        x: curPos.x + (ev.clientX - lastEv.clientX),
+        y: curPos.y + (ev.clientY - lastEv.clientY)
+      };
+      lastEv = ev;
+      
+      this.setState('positions', index, newPos);
     };
 
+    window.addEventListener('mousemove', moveTable);
+    window.addEventListener('mouseup', (ev) => {
+      window.removeEventListener('mousemove', moveTable);
+    });
+  };
+
+  render() {
     return (
       <div className='App'>
         <div className="toolbar">
@@ -143,11 +143,10 @@ export default class App extends Container {
             <div style={{position: "absolute", left: this.state.positions[index].x, top: this.state.positions[index].y}}>
               <Table
                 key={index}
-                move={() => startMove(index)}
+                move={() => this.moveManager(index)}
                 remove={() => this.removeTable(index)}
                 update={this.setState('tables', index, this.validateTable)}
-                {...table}
-                />
+                {...table} />
             </div>    
           )}
         </div>
