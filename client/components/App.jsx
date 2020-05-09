@@ -94,8 +94,6 @@ export default class App extends Container {
   };
 
   render() {
-    console.log(this.state);
-
     const startMove = (index) => {
       let lastEv;
       const  moveTable = (ev) => {
@@ -127,13 +125,15 @@ export default class App extends Container {
         </div>
         <div className='tables'>
           {this.getTables((table, index) => 
-            <Table
-              style={{left: this.state.positions[index].x, top: this.state.positions[index].y}}
-              move={() => startMove(index)}
-              remove={() => this.removeTable(index)}
-              update={this.setState('tables', index, this.validateTable)}
-              {...table}
-               />)}
+            <div style={{position: "absolute", left: this.state.positions[index].x, top: this.state.positions[index].y}}>
+              <Table
+                move={() => startMove(index)}
+                remove={() => this.removeTable(index)}
+                update={this.setState('tables', index, this.validateTable)}
+                {...table}
+                />
+            </div>    
+          )}
         </div>
       </div>
     );
