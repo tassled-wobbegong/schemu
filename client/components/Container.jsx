@@ -40,7 +40,7 @@ export default class Container extends React.Component {
         if (_args.length && typeof _args[0] === 'object') {
           let delta = _args.shift();
           if (!validate || validate(delta, _args) === true) {
-            return this.update(delta, ...path, ..._args);
+            return this.setState(delta, ...path, ..._args);
           } 
         } else {
           return updater(...path, ..._args);
