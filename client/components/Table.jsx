@@ -5,10 +5,7 @@ export default function Table(props) {
   const fields = props.fields.map((el, i) => {
     return (
       <div>
-        <Field key={i} {...el} update={props.update(fields, i)} />
-        <button className="RemoveField" onClick={() => removeField(i)}>
-          Remove Field
-        </button>
+        <Field key={i} {...el} update={props.update(fields, i)} removeField={() => removeField(i)} />
       </div>
     );
   });
@@ -54,7 +51,22 @@ export default function Table(props) {
       <button className="fieldButtons" onClick={addField}>
         Add Field
       </button>
-      <div className="fieldButtons">{fields}</div>
+      
+      <div className="fieldsList">
+      <div class="row">
+        <div class="column-header">Name</div>
+        <div class="column-header">Type</div>
+        <div class="column-header">Length</div>
+        <div class="column-header">Default</div>
+        <div class="column-header">Condition</div>
+        <div class="column-header">P</div>
+        <div class="column-header">U</div>
+        <div class="column-header">R</div>
+        <div class="column-header">Foreign Key</div>
+        <div class="column-header">Update</div>
+      </div>
+      {fields}
+      </div>
     </div>
   );
 }
