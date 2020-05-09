@@ -48,7 +48,7 @@ export default function Table(props) {
       <div id="TableName">{props.name}</div>
       <input type="text" id="Rename" onChange={handleChange}></input>
 
-      <button className="fieldButtons" onClick={props.move}>
+      <button className="fieldButtons" onMouseDown={props.move}>
         Move
       </button>
       <button className="fieldButtons" onClick={addField}>
