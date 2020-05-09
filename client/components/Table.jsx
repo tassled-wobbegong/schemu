@@ -1,8 +1,9 @@
-import Field from "/Field.jsx";
+import Field from "./Field.jsx";
+import React from 'react';
 
-export default function FieldContainer() {
-  const fields = this.props.fields.map((el, i) => {
-    return <Field key={i} info={el} props={this.props} />;
+export default function Table(props) {
+  const fields = props.fields.map((el, i) => {
+    return <Field key={i} info={el} props={props} />;
   });
 
   return (
