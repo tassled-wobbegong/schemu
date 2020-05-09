@@ -94,6 +94,20 @@ export default class App extends Container {
     return tables;
   };
 
+  toSql = () => {
+    const options = {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "text/plain"
+      },
+      body: JSON.stringify({ tables: this.getTables() })
+    };
+
+    fetch('/api/sql', options)
+      .catch(err => console.log(err));
+  };
+
   render() {
     const startMove = (index) => {
       let lastEv;
@@ -121,13 +135,14 @@ export default class App extends Container {
     return (
       <div className='App'>
         <div className="toolbar">
-          <a href="#" onClick={() => this.addTable()}>new table</a>
-          <a href="#">export SQL</a>
+          <button onClick={() => this.addTable()}>new table</button>
+          <button onClick={() => this.toSql()}>export SQL</button>
         </div>
         <div className='tables'>
           {this.getTables((table, index) => 
             <div style={{position: "absolute", left: this.state.positions[index].x, top: this.state.positions[index].y}}>
               <Table
+                key={index}
                 move={() => startMove(index)}
                 remove={() => this.removeTable(index)}
                 update={this.setState('tables', index, this.validateTable)}
