@@ -1,0 +1,35 @@
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
+  let socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
+
+  function log(data) {
+    res.value = data;
+  }
+
+  socket.onopen = function(e) {
+    log("Connection established...");
+  };
+
+  socket.onmessage = function(event) {
+    log(event.data);
+  };
+
+  socket.onclose = function(event) {
+    if (event.wasClean) {
+      log(`Goodbye!`);
+    } else {
+      log('Connection died.');
+    }
+  };
+
+  socket.onerror = function(error) {
+    log(`Error: ${error.message}.`);
+  };
+</script>
+
+<body style="display:flex; flex-direction: column;">
+  <textarea id="res" disabled></textarea>
+  <textarea id='cmd'></textarea>
+  <button onclick="socket.send(cmd.value)">submit</button>
+</body>
