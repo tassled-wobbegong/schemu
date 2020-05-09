@@ -2,6 +2,7 @@ import React from 'react';
 import Container from './Container.jsx';
 
 import Table from './Table.jsx';
+import Connector from './Connector.jsx';
 
 import './App.scss';
 
