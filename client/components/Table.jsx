@@ -5,7 +5,7 @@ export default function Table(props) {
   const fields = props.fields.map((el, i) => {
     return (
       <div>
-        <Field key={i} {...el} />
+        <Field key={i} {...el} update={props.update(fields, i)}/>
         <button className="RemoveField" onClick={props.remove}>
           Remove Field
         </button>

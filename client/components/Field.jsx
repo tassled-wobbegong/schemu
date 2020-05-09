@@ -46,12 +46,11 @@ export default class Field extends Component {
   }
 
   render() {
-    console.log(this.state)
     return (
       <div className='field-container'>
       <form onSubmit={(event) => {
           event.preventDefault();
-          this.props.update(this.state); // CONSOLE LOGS AS _this2.props ?!?!?!?!
+          this.props.update(this.state); 
         }}>
         
         <label htmlFor="name">Name</label>
