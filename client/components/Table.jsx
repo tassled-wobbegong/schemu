@@ -5,8 +5,8 @@ export default function Table(props) {
   const fields = props.fields.map((el, i) => {
     return (
       <div>
-        <Field key={i} {...el} update={props.update(fields, i)}/>
-        <button className="RemoveField" onClick={props.remove}>
+        <Field key={i} {...el} update={props.update(fields, i)} />
+        <button className="RemoveField" onClick={() => removeField(i)}>
           Remove Field
         </button>
       </div>
@@ -36,19 +36,25 @@ export default function Table(props) {
       ],
     });
   }
+  function removeField(i) {
+    const field2 = props.fields.filter((el, ind) => ind !== i);
+    props.update({
+      fields: field2,
+    });
+  }
 
   return (
-    <div>
+    <div id="tables">
       <div id="TableName">{props.name}</div>
       <input type="text" id="Rename" onChange={handleChange}></input>
 
-      <button className="moveBox" onMouseDown={props.move}>
+      <button className="fieldButtons" onMouseDown={props.move}>
         Move
       </button>
-      <button className="addField" onClick={addField}>
+      <button className="fieldButtons" onClick={addField}>
         Add Field
       </button>
-      <div className="fieldsList">{fields}</div>
+      <div className="fieldButtons">{fields}</div>
     </div>
   );
 }
