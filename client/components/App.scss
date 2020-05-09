@@ -13,3 +13,16 @@ html, body, #root {
 .tables {
   flex-grow: 1;
 }
+
+// TABLE AND FIELD ROWS:
+.row {
+  width:25vw;
+  display: grid;
+  grid-template-columns: 12.8% 12.8% 12.8% 12.8% 12.8% 3.3% 3.3% 3.3% 12.8% 12.8%;
+  gap: 2px;
+}
+
+.column-header {
+  font-size: 0.7rem;;
+  overflow-wrap: break-word;
+}
