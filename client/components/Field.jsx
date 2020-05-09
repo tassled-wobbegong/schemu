@@ -47,16 +47,11 @@ export default class Field extends Component {
 
   render() {
     return (
-      <div className='field-container'>
-      <form onSubmit={(event) => {
+      <form className="row" onSubmit={(event) => {
           event.preventDefault();
           this.props.update(this.state); 
         }}>
-        
-        <label htmlFor="name">Name</label>
         <input type="text" name="name" id="name" value={this.state.name} onChange={this.handleChange} />
-
-        <label htmlFor="type">Type</label>
         <select value={this.state.type} name="type" id="type" onChange={this.handleChange} >
           <option value="boolean">Boolean</option>
           <option value="date">Date</option>
@@ -68,31 +63,16 @@ export default class Field extends Component {
           <option value="timestamp">Timestamp</option>
           <option value="uuid">UUID</option>
         </select>
-
-        <label htmlFor="length">Length</label>
         <input type="text" name="length" id="length" value={this.state.length} onChange={this.handleChange}/>
-        
-        <label htmlFor="defaultValue">Default Value</label>
         <input type="text" name="defaultValue" id="defaultValue"value={this.state.defaultValue} onChange={this.handleChange}/>
-        
-        <label htmlFor="checkCondition">checkCondition</label>
         <input type="text" name="checkCondition" id="checkCondition" value={this.state.checkCondition} onChange={this.handleChange}/>
-        
-        <label htmlFor="primaryKey">Primary Key</label><br></br>
         <input type="checkbox" id="primaryKey" name="primaryKey" checked={this.state.primaryKey} onChange={this.handleChange}/>
-        
-        <label htmlFor="unique">Unique</label><br></br>
         <input type="checkbox" id="unique" name="unique" checked={this.state.unique} onChange={this.handleChange}/>
-
-        <label htmlFor="notNull">Required</label><br></br>
         <input type="checkbox" id="notNull" name="notNull" checked={this.state.notNull} onChange={this.handleChange}/>
-
-        <label htmlFor="foreignKey">Foreign Key</label>
-        <input type="text" name="foreignKey" id="foreignKey" value={this.state.foreignKey} onChange={this.handleChange}/>
-
-        <button type='submit'>Submit</button>
+        <input class="text-box" type="text" name="foreignKey" id="foreignKey" value={this.state.foreignKey} onChange={this.handleChange}/>
+        <button class="submit" type='submit'>Submit</button>
+        <button className="RemoveField" onClick={this.props.removeField}>X</button>
       </form>
-    </div>
     )
   }
 }
