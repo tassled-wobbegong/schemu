@@ -30,8 +30,6 @@ export default class Field extends Component {
   constructor(props){
     super(props);
 
-    const { update, ...receivedState} = props;
-    this.state = receivedState;
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -49,10 +47,7 @@ export default class Field extends Component {
 
   render() {
     return (
-      <form className="row" onSubmit={(event) => {
-          // event.preventDefault();
-          // this.props.update(this.state); 
-        }}>
+      <form className="row">
         <input type="text" name="name" id="name" value={this.props.name} onChange={this.handleChange} />
         <select value={this.props.type} name="type" id="type" onChange={this.handleChange} >
           <option value="boolean">Boolean</option>
