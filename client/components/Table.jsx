@@ -8,7 +8,7 @@ export default function Table(props) {
         <Field
           key={i}
           {...el}
-          update={props.update(fields, i)}
+          update={props.update("fields", i)}
           removeField={() => removeField(i)}
         />
       </div>
@@ -23,7 +23,7 @@ export default function Table(props) {
   function addField() {
     props.update({
       fields: [
-        ...fields,
+        ...props.fields,
         {
           name: "id",
           type: "uuid",
@@ -68,7 +68,6 @@ export default function Table(props) {
           <div class="column-header">U</div>
           <div class="column-header">R</div>
           <div class="column-header">Foreign Key</div>
-          <div class="column-header">Update</div>
         </div>
         {fields}
       </div>
