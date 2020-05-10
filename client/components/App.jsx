@@ -11,8 +11,8 @@ const EXAMPLE = {
     0: {
       name: 'users',
       constraints: [],
-      fields: [
-        {
+      fields: {
+        3: {
           name: 'id',
           type: 'uuid',
           length: undefined,
@@ -23,7 +23,7 @@ const EXAMPLE = {
           checkCondition: null,
           foreignKey: null
         },
-        {
+        5: {
           name: 'username',
           type: 'varchar',
           length: 64,
@@ -34,35 +34,105 @@ const EXAMPLE = {
           checkCondition: null,
           foreignKey: null
         }
-      ],
+      },
       position: { x: 200, y: 200 }
     }
   }
 };
 
 export default class App extends Container {
+  static Session(app) {
+    const id = (new URLSearchParams(window.location.search)).get('id');
+    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
+  
+    socket.onopen = function(event) {
+      console.log("Connection established...");
+    };
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      if (typeof data === 'object') {
+        if (!data.tables) {
+          data.tables = [];
+        }
+        app.setState(data, true);
+      }
+      console.log("Message received: ", data);
+    };
+    socket.onclose = function(event) {
+      if (event.wasClean) {
+        console.log(`Goodbye!`);
+      } else {
+        console.log('Connection died.');
+      }
+    };
+    socket.onerror = function(error) {
+      console.log(`Error: ${error.message}.`);
+    };
+
+    socket.sync = (state) => socket.send(JSON.stringify(state)); 
+
+    return socket;
+  }
   constructor() {
     super();
+
+    this.session = null;
 
     this.past = [];
     this.future = [];
 
     this.state = {
-      tables: []
+      tables: {}
     };
   }
 
   setState(...args) {
-    if (typeof args[args.length - 1] === 'object') {
-      this.past.push(this.cloneState());
-      this.future = [];
-    }
+    let state, callback;
+    let historic = false;
+    let external = false;
     
-    return super.setState(...args);
+    if (args.length === 1 && typeof args[0] === 'number') {
+      historic = true;
+      console.log(this.past);
+      let dir = args.pop();
+      if (dir < 0) {
+        state = this.past.pop();
+        if (state) {
+          this.future.push(this.snapshot());
+        }
+      } else if (dir > 0) {
+        state = this.future.pop();
+        if (state) {
+          this.past.push(this.snapshot());
+        }
+      }
+    } else if (typeof args[0] === 'object' && args[1] === true) {
+      external = true;
+      state = args[0];
+    } else if (typeof args[0] === 'object') {
+      state = args.pop();
+      callback = args.pop();
+    }
+
+    if (!historic) {
+      this.future = [];
+      this.past.push(this.snapshot());
+    }
+
+    if (state) {
+      return super.setState(state, (...args) => {
+        if (!external) {
+          this.session.sync(this.state);
+        }
+        if (callback) {
+          callback(...args);
+        }
+      });
+    }
   }
 
   componentDidMount() {
-    this.setState(EXAMPLE);
+    this.session = App.Session(this);
   }
 
   addTable = () => {
@@ -126,8 +196,7 @@ export default class App extends Container {
       el.style.top = curPos.y+"px";
     };
     const endMove = () => {
-      console.log( curPos);
-      this.setState('tables', id, { position: curPos });
+      this.delegate('tables', id)({ position: curPos });
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
     };
@@ -137,21 +206,6 @@ export default class App extends Container {
   };
   linkManager = () => { 
 
-  };
-
-  undo = () => {
-    const state = this.past.pop();
-    if (state) {
-      this.future.push(this.cloneState());
-      super.setState(state);
-    }
-  };
-  redo = () => {
-    const state = this.future.pop();
-    if (state) {
-      this.past.push(this.cloneState());
-      super.setState(state);
-    }
   };
 
   toSql = () => {
@@ -174,8 +228,8 @@ export default class App extends Container {
         <div className="toolbar">
           <button onClick={() => this.addTable()}>new table</button>
           <button onClick={() => this.toSql()}>export SQL</button>
-          <button onClick={() => this.undo()}>undo</button>
-          <button onClick={() => this.redo()}>redo</button>
+          <button onClick={() => this.setState(-1)}>undo</button>
+          <button onClick={() => this.setState(1)}>redo</button>
         </div>
         <div className='tables'>
           {this.mapTables((table, id) =>
@@ -184,7 +238,7 @@ export default class App extends Container {
                   key={"table"+id}
                   move={() => this.moveManager(id)}
                   remove={() => this.removeTable(id)}
-                  update={this.setState('tables', id, this.validateTable)}
+                  update={this.delegate('tables', id, this.validateTable)}
                   {...table} />
               </div>
           )}

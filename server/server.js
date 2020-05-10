@@ -7,12 +7,12 @@ const sessions = {};
 const clients = {};
 
 app.use('/session', (req, res, next) => {
-  if (!sessions[req.query.id]) {
-    const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
-    sessions[id] = {};
-    clients[id] = [];
-    return res.redirect(`/session?id=${id}`);
-  }
+  // if (!sessions[req.query.id]) {
+  //   const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
+  //   sessions[id] = {};
+  //   clients[id] = [];
+  //   return res.redirect(`/session?id=${id}`);
+  // }
   next();
 });
 
@@ -21,16 +21,24 @@ app.use('/', express.static(path.resolve(__dirname, '../dist')));
 app.ws('/api/session/:id', function(ws, req) {
   const id = req.params.id;
   if (!sessions[id]) {
-    return ws.close();
+    sessions[id] = {};
+    clients[id] = [];
+    //return ws.close();
   }
   clients[id].push(ws);
+
+  ws.send(JSON.stringify(sessions[id]));
 
   ws.on('message', function(msg) {
     const data = JSON.parse(msg);
     if (typeof data === 'object') {
       sessions[id] = { ...sessions[id], ...data };
       for (let client of clients[id]) {
-        client.send(JSON.stringify(sessions[id]));
+        if (client !== ws) {
+          client.send(JSON.stringify(sessions[id]));
+        } else {
+          //client.send("Received");
+        }
       }
     }
   });

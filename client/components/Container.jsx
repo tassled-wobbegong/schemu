@@ -50,13 +50,13 @@ const clone = (target) => {
 
 export default class Container extends React.Component {
   /* 
-  stateDelegate([string] ...path, ([function] validator));
+  delegate([string] ...path, ([function] validator));
     Given a series of accessors 'path' and an optional validator callback,
     finds the corresponding object in Container.state and returns a function
     which when invoked, behaves just like Container.prototype.setState, but relative
     to the object denoted by 'path';
   */
-  stateDelegate = (...path) => {
+  delegate = (...path) => {
     let validate;
     if (typeof path[path.length - 1] === 'function') {
       validate = path.pop();
@@ -66,59 +66,15 @@ export default class Container extends React.Component {
       if (args.length && typeof args[args.length - 1] === 'object') {
         const delta = args.pop();
         if (!validate || validate(delta, args) === true) {
-          return this.setState(...path, ...args, delta);
+          return this.setState(merge(this.state, [...path, ...args], delta));
         } 
       } else {
-        return this.stateDelegate(...path, ...args);
+        return this.delegate(...path, ...args);
       }
     };
   };
 
-  /*
-    Overrides native react setState method.
-
-    Use:
-      setState([string] ...path, [object] delta);
-        Given a series of accessors 'path', finds the corresponding object
-        in Container.prototype.state and applies the changes specified in 'delta'
-
-      setState([string] ...path, ([function] validator));
-        Given a series of accessors 'path' and an optional validator callback,
-        finds the corresponding object in Container.prototype.state and returns a function
-        which when invoked, behaves just like Container.setState, but relative
-        to the object denoted by 'path';
-
-    Example:
-      //Change this.state.name.
-      this.setState({ name: 'newMame' }); 
-
-      //Change this.state.fields[0]
-      this.setState('fields', 0, { type: 'varchar' });
-
-      //Create a function that changes the object stored at this.state.fields[0]
-      const delegate = this.setState('fields', 0); 
-
-      //Change this.state.fields[0]
-      delegate({ type: 'varchar' });
-
-      //Create a function that changes the object stored at this.state.fields[0]
-      //only if the new state passes the test defined by the last argument.
-      const validatingDelegate = this.setState('fields', 0, (newState, path) => !newState.name);
-  */
-  setState(...args){
-    if (args.length) {
-      if (typeof args[args.length - 1] === 'object') { 
-        //if the last argument is an object, change this.state
-        super.setState(merge(this.state, args, args.pop()));
-      } else {
-        //otherwise return a callback which will allow state to be changed
-        //later, within the scope denoted by the accessors (all previous arguments)
-        return this.stateDelegate(...args);
-      }
-    }
-  }
-
-  cloneState() {
+  snapshot() {
     return clone(this.state);
   }
 }
