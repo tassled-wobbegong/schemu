@@ -1,0 +1,1 @@
+{"tables":[{"name":"users","constraints":[],"fields":[{"name":"id","type":"uuid","primaryKey":true,"unique":false,"notNull":false,"defaultValue":"uuid_generate_v4()","checkCondition":null,"foreignKey":null},{"name":"username","type":"varchar","length":64,"primaryKey":false,"unique":true,"notNull":true,"defaultValue":null,"checkCondition":null,"foreignKey":null}]}]}
