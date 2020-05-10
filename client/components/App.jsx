@@ -11,8 +11,8 @@ const EXAMPLE = {
     0: {
       name: 'users',
       constraints: [],
-      fields: [
-        {
+      fields: {
+        3: {
           name: 'id',
           type: 'uuid',
           length: undefined,
@@ -23,7 +23,7 @@ const EXAMPLE = {
           checkCondition: null,
           foreignKey: null
         },
-        {
+        5: {
           name: 'username',
           type: 'varchar',
           length: 64,
@@ -34,7 +34,7 @@ const EXAMPLE = {
           checkCondition: null,
           foreignKey: null
         }
-      ],
+      },
       position: { x: 200, y: 200 }
     }
   }
