@@ -23,7 +23,8 @@
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "url-loader": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
