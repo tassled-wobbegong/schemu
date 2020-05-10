@@ -219,6 +219,17 @@ export default class App extends Container {
     };
 
     fetch('/api/sql', options)
+      .then(res => {
+        return res.blob();
+      })
+      .then(blob => {
+        const href = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = href;
+        a.download = 'query.txt';
+        a.click();
+        a.href = '';
+      })
       .catch(err => console.log(err));
   };
 
