@@ -24,6 +24,20 @@ body,
 .tables {
   flex-grow: 1;
 }
+#tables {
+  background-color: rgb(61, 82, 102);
+  opacity: 0.9;
+  padding: 10px 50px 10px 10px;
+  border-radius: 5px;
+  box-shadow: 8px 8px 8px black;
+  font-size: x-large;
+  color: whitesmoke;
+}
+
+#tables > button {
+  font-size: 1.1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
 
 // TABLE AND FIELD ROWS:
 .row {
