@@ -1,5 +1,4 @@
 import React from "react";
-import Connector from './Connector.jsx';
 
 export default class Handle extends React.Component {
   constructor() {

@@ -2,31 +2,22 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const expressWs = require("express-ws")(app);
-const bodyParser = require('body-parser');
-const sqlController = require('./sqlController');
 
 const sessions = {};
 const clients = {};
 
+app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
-// Body Parser middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.get('/', (req, res, next) => {
+  if (!req.query.id || !sessions[req.query.id]) {
+    const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
+    sessions[id] = {};
+    clients[id] = [];
+    return res.redirect(`/?id=${id}`);
+  }
 
-app.use('/session', (req, res, next) => {
-  // if (!sessions[req.query.id]) {
-  //   const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
-  //   sessions[id] = {};
-  //   clients[id] = [];
-  //   return res.redirect(`/session?id=${id}`);
-  // }
-  next();
+  res.sendFile(path.resolve(__dirname, '../index.html'));
 });
-
-
-app.use("/", express.static(path.resolve(__dirname, "../dist")));
-
-app.post('/api/sql', sqlController);
 
 app.ws("/api/session/:id", function (ws, req) {
   const id = req.params.id;
