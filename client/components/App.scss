@@ -139,7 +139,7 @@ transition: outline 0.3s linear;
 .row {
   width: 38vw;
   display: grid;
-  grid-template-columns: 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 12.8% 2.5%;
+  grid-template-columns: 2.5% 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 4% 2.5% 2.5%;
   gap: 2px;
   margin: 2px 2px 2px;
 }
@@ -153,4 +153,21 @@ transition: outline 0.3s linear;
 .inputs{ 
   border-radius: 5px;
   background-color: whitesmoke;
+}
+
+.handle {
+  background-color: blue;
+}
+
+.row-container {
+  display: flex;
+}
+
+.removeTable{
+  background-color: rgb(131, 81, 81);
+  outline-color: rgb(131, 81, 81);
+}
+.removetable:hover{
+outline: 3px solid rgb(150,162,172);
+  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
 }

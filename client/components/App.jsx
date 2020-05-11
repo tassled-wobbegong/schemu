@@ -162,7 +162,9 @@ export default class App extends Container {
       el.style.top = curPos.y+"px";
     };
     const endMove = () => {
-      this.delegate('tables', id)({ position: curPos });
+      if (curPos) {
+        this.delegate('tables', id)({ position: curPos });
+      }
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
     };
@@ -190,6 +192,7 @@ export default class App extends Container {
   };
 
   render() {
+    console.log(this.state)
     return (
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
@@ -201,7 +204,7 @@ export default class App extends Container {
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
-              <div ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
+              <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
                 <Table
                   key={"table"+id}
                   move={() => this.moveManager(id)}
