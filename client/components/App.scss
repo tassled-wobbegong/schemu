@@ -42,9 +42,13 @@ width: 120px;
 height: 50px;
 margin: 8px 5px 10px 8px;
 border-radius: 8px;
+box-shadow: 2px 3px 10px black;
 text-shadow:2px 2px 4px black;
 cursor: pointer;
 border: 3px outset slategray;
+}
+.toolbar>button:hover{
+  border-width: 7px;
 }
 
 .tables {
@@ -68,10 +72,15 @@ border: 3px outset slategray;
   color: whitesmoke;
   background-color: rgb(79, 90, 100);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  text-shadow: 2px 1px 4px black;
+  text-shadow: 2px 1px 3px black;
 border-radius: 5px;
+margin-left: 10px;
+box-shadow: 2px 2px 5px black;
+border-color: slategray;
 }
-
+#tables > button:hover{
+  border-width: 4px;
+}
 // TABLE AND FIELD ROWS:
 .row {
   width: 38vw;
@@ -84,7 +93,13 @@ border-radius: 5px;
   background-color: rgb(79, 90, 100);
   border-radius: 5px;
   color: whitesmoke;
+  border-color: slategray;
   text-shadow: 2px 1px 4px black;
+  box-shadow: 2px 2px 4px black;
+}
+
+.RemoveField:hover{
+  border-width: 4px;
 }
 
 .column-header {
