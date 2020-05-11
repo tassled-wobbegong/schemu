@@ -67,7 +67,7 @@ export default function Table(props) {
           <div class="column-header">P</div>
           <div class="column-header">U</div>
           <div class="column-header">R</div>
-          <div class="column-header">Foreign Key</div>
+          <div class="column-header">F-Key</div>
         </div>
         {fields}
       </div>
