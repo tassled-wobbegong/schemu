@@ -9,17 +9,17 @@ export default class Handle extends React.Component {
   }
 
   linkManager = (from) => {
-    this.setState( { source: { x:parseInt(from.target.style.left), y:parseInt(from.target.style.top) } });
+    this.setState( { source: { x: from.target.offsetLeft, y: from.target.offsetTop } });
 
     const update = (ev) => {
-      this.setState({ target: { x:parseInt(ev.clientX), y:parseInt(ev.clientY) } });
+      this.setState({ target: { x: ev.clientX, y: ev.clientY } });
     };
     window.addEventListener('mousemove', update);
 
     const finalize = (to) => {
       const payload = to.target.dataset.payload;
       if (payload && this.props.callback(payload)) {
-        this.setState({ target: { x:parseInt(to.target.style.left), y:parseInt(to.target.style.top) } });
+        this.setState({ target: { x: to.target.offsetLeft, y: to.target.offsetTop } });
       } else {
         this.setState({ source: null, target: null });
       }
@@ -30,13 +30,13 @@ export default class Handle extends React.Component {
   };
   
   render() {
-    const style = {
-      position: 'absolute',
-      width: '25px',
-      height: '25px',
-      backgroundColor: 'blue',
-      top: this.props.pos.y,
-      left: this.props.pos.x
+    const boxSize = 10;
+    const strokeWidth = 2;
+    const boxStyle = {
+      position: 'relative',
+      width: boxSize + 'px',
+      height: boxSize + 'px',
+      backgroundColor: 'blue'
     };
 
     let connector;
@@ -50,15 +50,22 @@ export default class Handle extends React.Component {
         x: d.x < 0 ? d.x : 0,
         y: d.y < 0 ? d.y : 0
       };
+
+      const strokeStyle = {
+        position: 'absolute', 
+        top: o.y + boxSize / 2, 
+        left: o.x + boxSize / 2
+      };
+
       connector = (
-        <svg width={Math.abs(d.x)} height={Math.abs(d.y)} style={{position: 'absolute', top: o.y, left: o.x}}>
-          <line x1={-o.x} y1={-o.y} x2={d.x - o.x} y2={d.y - o.y} stroke="red" stroke-width="2px" fill="transparent"/>
+        <svg width={Math.abs(d.x) + strokeWidth} height={Math.abs(d.y) + strokeWidth} style={strokeStyle}>
+          <line x1={-o.x} y1={-o.y} x2={d.x - o.x} y2={d.y - o.y} stroke="red" strokeWidth={strokeWidth+"px"} fill="transparent"/>
         </svg>
       ); 
     }
 
     return (
-      <div style={style} onMouseDown={this.linkManager} data-payload={this.props.payload}>
+      <div style={boxStyle} onMouseDown={this.linkManager} data-payload={this.props.payload}>
         {connector}
       </div>
     );
