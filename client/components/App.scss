@@ -14,6 +14,7 @@ body,
   margin: 0px;
 }
 .title{
+  font-family: Georgia, 'Times New Roman', Times, serif;
   display: flex;
   justify-content: center;
   color: whitesmoke;
@@ -46,10 +47,11 @@ box-shadow: 2px 3px 10px black;
 text-shadow:2px 2px 4px black;
 cursor: pointer;
 border: 3px outset slategray;
-transition: border-width 0.2s linear;
+transition: border-width 0.25s ease;
 }
 .toolbar>button:hover{
   border-width: 7px;
+  background-color: lighten($color: rgb(61, 82, 102) , $amount: 7);
 }
 
 .tables {
@@ -60,8 +62,8 @@ transition: border-width 0.2s linear;
   opacity: 0.9;
   padding: 3px 0px 8px 10px;
   border-radius: 5px;
-  box-shadow: 1px 1px 10px 8px black;
-  font-size: large;
+  box-shadow: 1px 1px 5px 4px rgb(39, 39, 39);
+  font-size: 2em;
   color: whitesmoke;
   text-shadow: 3px 3px 8px black;
   border: 6px outset;
@@ -77,17 +79,21 @@ transition: border-width 0.2s linear;
   text-shadow: 2px 1px 3px black;
 border-radius: 5px;
 margin-left: 30px;
-box-shadow: 2px 2px 5px black;
+box-shadow: 2px 3px 8px black;
 border-color: slategray;
-transition: outline 0.3s linear;
+transition: all 0.2s linear;
 }
 #removetable:hover{
-outline: 3px solid rgb(131, 81, 81);
-  box-shadow: 0px 0px 0px 2px rgbrgb(131, 81, 81);
+  border-color: rgb(131, 81, 81);
+  box-shadow: 0px 0px 2px 2px rgb(131, 81, 81);
 }
 
 #addtable{
   background-color: rgb(103, 168, 114);
+  transition: .2s ease;
+}
+#addtable:hover{
+  border-color:rgb(103, 168, 114);
 }
 
 .RemoveField{
@@ -99,12 +105,14 @@ outline: 3px solid rgb(131, 81, 81);
   text-shadow: 2px 1px 4px black;
   box-shadow: 2px 2px 4px black;
   outline:0px solid rgb(150, 162, 172);
-  transition: outline 0.3s linear;
+  transition: all 0.22s ease;
+  
 }
 
-.RemoveField:hover{
-  outline: 3px solid rgb(150,162,172);
-  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
+.RemoveField:hover{ 
+  
+  box-shadow: 0px 0px 2px 2px rgb(150, 162, 172);
+  background-color: rgb(131, 81, 81);
 }
 
 
@@ -118,18 +126,20 @@ border-radius: 5px;
 margin-left: 20px;
 box-shadow: 2px 2px 5px black;
 border-color: slategray;
-transition: outline 0.3s linear;
+transition: all 0.25s linear;
+border: 3px rgb(79, 90, 100) outset;
 }
 #tables > button:hover{
-  outline: 3px solid rgb(150,162,172);
-  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
+  opacity: 1;
+  box-shadow: 0px 0px 3px 3px rgb(120, 129, 136);
+  border-width: 5px;
 }
 
 #tables>input{
   border-color: rgba(61, 82, 102, 0);
   color: whitesmoke;
   font-family: 'Times New Roman', Times, serif;
-  font-size: large;
+  font-size: .65em;
   background-color: rgba(61, 82, 102, 0);
   outline: 3px solid rgb(150,162,172);
   text-shadow: 2px 1px 3px black;
@@ -141,7 +151,7 @@ transition: outline 0.3s linear;
   display: grid;
   grid-template-columns: 2.5% 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 4% 2.5% 2.5%;
   gap: 2px;
-  margin: 2px 2px 2px;
+  margin: 4px 4px 4px;
 }
 
 .column-header {
@@ -169,5 +179,16 @@ transition: outline 0.3s linear;
 }
 .removetable:hover{
 outline: 3px solid rgb(150,162,172);
-  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
+  box-shadow: 0px 0px 2px 2px rgb(150, 162, 172);
+}
+
+.handle{
+  border-radius: 6px;
+  margin: 5px 8px 5px 5px;
+  background-color:  slategray;
+  transition: all .2s ease;
+}
+.handle:hover{
+background-color: springgreen;
+box-shadow:0px 0px 0px 3px springgreen;
 }
