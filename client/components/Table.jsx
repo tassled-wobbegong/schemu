@@ -55,9 +55,6 @@ export default function Table(props) {
     <div id="tables" onMouseDown={props.move}>
       <input type="text" id="Rename" value={props.name} onChange={handleChange}></input>
 
-      <button className="fieldButtons" onMouseDown={props.move}>
-        Move
-      </button>
       <button className="fieldButtons" id="addtable" onClick={addField}>
         Add Field
       </button>
@@ -65,7 +62,7 @@ export default function Table(props) {
         Remove Table
       </button>
 
-      <div className="fieldsList">
+      <div className="fieldsList" onMouseDown={(ev) => ev.stopPropagation()}>
         <div className="row">
           <div></div>
           <div className="column-header">Name</div>

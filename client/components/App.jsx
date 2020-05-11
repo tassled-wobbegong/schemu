@@ -204,14 +204,14 @@ export default class App extends Container {
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
-              <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
-                <Table
-                  key={"table"+id}
-                  move={() => this.moveManager(id)}
-                  remove={() => this.removeTable(id)}
-                  update={this.delegate('tables', id, this.validateTable)}
-                  {...table} />
-              </div>
+            <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
+              <Table
+                key={"table"+id}
+                move={() => this.moveManager(id)}
+                remove={() => this.removeTable(id)}
+                update={this.delegate('tables', id, this.validateTable)}
+                {...table} />
+            </div>
           )}
         </div>
       </div>
