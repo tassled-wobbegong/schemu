@@ -6,15 +6,13 @@ export default function Table(props) {
   for (let id in props.fields) {
     const el = props.fields[id];
     fields.push(
-      <div>
-        <Field
-          key={"field"+id}
-          {...el}
-          update={props.update("fields", id)}
-          removeField={() => removeField(id)}
-          tableName={props.name}
-        />
-      </div>
+      <Field
+        key={"field"+id}
+        {...el}
+        update={props.update("fields", id)}
+        removeField={() => removeField(id)}
+        tableName={props.name}
+      />
     );
   }
 
@@ -47,7 +45,6 @@ export default function Table(props) {
   }
   function removeField(id) {
     const newFields = { ...props.fields };
-    console.log(id);
     delete newFields[id];
     props.update({
       fields: newFields
@@ -56,8 +53,7 @@ export default function Table(props) {
 
   return (
     <div id="tables">
-      <div id="TableName">{props.name}</div>
-      <input type="text" id="Rename" onChange={handleChange}></input>
+      <input type="text" id="Rename" value={props.name} onChange={handleChange}></input>
 
       <button className="fieldButtons" onMouseDown={props.move}>
         Move
@@ -65,21 +61,24 @@ export default function Table(props) {
       <button className="fieldButtons" onClick={addField}>
         Add Field
       </button>
+      <button className="removeTable" onClick={props.remove}>
+        Remove Table
+      </button>
 
       <div className="fieldsList">
-        <div class="row">
+        <div className="row">
           <div></div>
-          <div class="column-header">Name</div>
-          <div class="column-header">Type</div>
-          <div class="column-header">Length</div>
-          <div class="column-header">Default</div>
-          <div class="column-header">Condition</div>
-          <div class="column-header">P</div>
-          <div class="column-header">U</div>
-          <div class="column-header">R</div>
-          <div class="column-header">F-Key</div>
+          <div className="column-header">Name</div>
+          <div className="column-header">Type</div>
+          <div className="column-header">Length</div>
+          <div className="column-header">Default</div>
+          <div className="column-header">Condition</div>
+          <div className="column-header">P</div>
+          <div className="column-header">U</div>
+          <div className="column-header">R</div>
+          <div className="column-header">F-Key</div>
           <div></div>
-        </div>
+        </div>  
         {fields}
       </div>
     </div>
