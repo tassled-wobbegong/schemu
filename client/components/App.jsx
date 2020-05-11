@@ -119,7 +119,7 @@ export default class App extends Container {
     });
   }
   removeTable = (id) => {
-    let newtables = [ ...this.state.tables ];
+    let newtables = { ...this.state.tables };
     delete newtables[id];
     this.setState({ tables: newtables });
   };
