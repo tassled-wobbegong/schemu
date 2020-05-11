@@ -1,17 +1,11 @@
 import React from 'react';
 import Container from './Container.jsx';
 
+import { downloadAsFile } from './util.js';
 import Table from './Table.jsx';
-import Connector from './Connector.jsx';
+import Handle from './Handle.jsx';
 
 import './App.scss';
-
-const downloadAsFile = (blob) => {
-  let anchor = document.createElement('a');
-  anchor.href = window.URL.createObjectURL(blob);
-  anchor.download = 'query.txt';
-  anchor.click();
-}
 
 export default class App extends Container {
   static Session(app) {
@@ -191,7 +185,7 @@ export default class App extends Container {
 
     fetch('/api/sql', options)
       .then(res => res.blob())
-      .then(blob => downloadAsFile(blob))
+      .then(blob => downloadAsFile(blob, 'query.txt'))
       .catch(err => console.log(err));
   };
 
@@ -206,6 +200,8 @@ export default class App extends Container {
           <button onClick={() => this.setState(1)}>redo</button>
         </div>
         <div className='tables'>
+          <Handle pos={{x:100, y:100}} payload="one" callback={(payload)=>true}/>
+          <Handle pos={{x:200, y:200}} payload="two" callback={(payload)=>false}/>
           {this.mapTables((table, id) =>
               <div ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
                 <Table
