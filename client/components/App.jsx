@@ -7,6 +7,18 @@ import Handle from './Handle.jsx';
 
 import './App.scss';
 
+const onPause = (wait, callback) => {
+  let calls = 0;
+  return () => {
+    const _calls = ++calls;
+    setTimeout(() => {
+      if (calls === _calls) {
+        callback();
+      }
+    }, wait);
+  };
+};
+
 export default class App extends Container {
   static Session(app) {
     const id = (new URLSearchParams(window.location.search)).get('id');
@@ -48,6 +60,7 @@ export default class App extends Container {
 
     this.past = [];
     this.future = [];
+    this.updating = false;
 
     this.state = {
       tables: {}
@@ -82,8 +95,17 @@ export default class App extends Container {
     }
 
     if (!historic) {
-      this.future = [];
-      this.past.push(this.snapshot());
+      if (!this.updating) {
+        const snapshot = this.snapshot();
+        this.updating = onPause(500, () => {
+          this.future = [];
+          this.past.push(snapshot);
+          console.log(this.past);
+          this.updating = null;
+        });
+      } else {
+        this.updating();
+      }
     }
 
     if (state) {
@@ -157,23 +179,21 @@ export default class App extends Container {
       };
       lastEv = ev;
 
-      const el = this.refs[`wrapper${id}`];
-      el.style.left = curPos.x+"px";
-      el.style.top = curPos.y+"px";
+      this.delegate('tables', id)({ position: curPos });
+      // const el = this.refs[`wrapper${id}`];
+      // el.style.left = curPos.x+"px";
+      // el.style.top = curPos.y+"px";
     };
     const endMove = () => {
-      if (curPos) {
-        this.delegate('tables', id)({ position: curPos });
-      }
+      // if (curPos) {
+      //   this.delegate('tables', id)({ position: curPos });
+      // }
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
     };
 
     window.addEventListener('mousemove', startMove);
     window.addEventListener('mouseup', endMove);
-  };
-  linkManager = () => { 
-
   };
 
   toSql = () => {
@@ -192,7 +212,6 @@ export default class App extends Container {
   };
 
   render() {
-    console.log(this.state)
     return (
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
