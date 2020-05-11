@@ -236,6 +236,7 @@ export default class App extends Container {
   render() {
     return (
       <div className='App'>
+        <div className="title">NoMoreQuery.io</div>
         <div className="toolbar">
           <button onClick={() => this.addTable()}>new table</button>
           <button onClick={() => this.toSql()}>export SQL</button>

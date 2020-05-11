@@ -48,7 +48,7 @@ export default class Field extends Component {
   render() {
     return (
       <form className="row">
-        <input type="text" name="name" id="name" value={this.props.name} onChange={this.handleChange} />
+        <input type="text" className="inputs" name="name" id="name" value={this.props.name} onChange={this.handleChange} />
         <select value={this.props.type} name="type" id="type" onChange={this.handleChange} >
           <option value="boolean">Boolean</option>
           <option value="date">Date</option>
@@ -60,13 +60,13 @@ export default class Field extends Component {
           <option value="timestamp">Timestamp</option>
           <option value="uuid">UUID</option>
         </select>
-        <input type="text" name="length" id="length" value={this.props.length} onChange={this.handleChange}/>
-        <input type="text" name="defaultValue" id="defaultValue"value={this.props.defaultValue} onChange={this.handleChange}/>
-        <input type="text" name="checkCondition" id="checkCondition" value={this.props.checkCondition} onChange={this.handleChange}/>
+        <input type="text" className="inputs" name="length" id="length" value={this.props.length} onChange={this.handleChange}/>
+        <input type="text" className="inputs" name="defaultValue" id="defaultValue"value={this.props.defaultValue} onChange={this.handleChange}/>
+        <input type="text" className="inputs" name="checkCondition" id="checkCondition" value={this.props.checkCondition} onChange={this.handleChange}/>
         <input type="checkbox" id="primaryKey" name="primaryKey" checked={this.props.primaryKey} onChange={this.handleChange}/>
         <input type="checkbox" id="unique" name="unique" checked={this.props.unique} onChange={this.handleChange}/>
         <input type="checkbox" id="notNull" name="notNull" checked={this.props.notNull} onChange={this.handleChange}/>
-        <input class="text-box" type="text" name="foreignKey" id="foreignKey" value={this.props.foreignKey} onChange={this.handleChange}/>
+        <input class="text-box" className="inputs" type="text" name="foreignKey" id="foreignKey" value={this.props.foreignKey} onChange={this.handleChange}/>
         {/* <button class="submit" type='submit'>Submit</button> */}
         <button className="RemoveField" onClick={this.props.removeField}>X</button>
       </form>
