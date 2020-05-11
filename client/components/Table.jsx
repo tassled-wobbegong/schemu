@@ -12,6 +12,7 @@ export default function Table(props) {
           {...el}
           update={props.update("fields", id)}
           removeField={() => removeField(id)}
+          tableName={props.name}
         />
       </div>
     );
@@ -36,7 +37,10 @@ export default function Table(props) {
           notNull: false,
           defaultValue: "uuid_generate_v4()",
           checkCondition: null,
-          foreignKey: null,
+          foreignKey: {
+            tableName: null,
+            fieldName: null,
+          },
         },
       }
     });
@@ -64,6 +68,7 @@ export default function Table(props) {
 
       <div className="fieldsList">
         <div class="row">
+          <div></div>
           <div class="column-header">Name</div>
           <div class="column-header">Type</div>
           <div class="column-header">Length</div>
@@ -73,6 +78,7 @@ export default function Table(props) {
           <div class="column-header">U</div>
           <div class="column-header">R</div>
           <div class="column-header">F-Key</div>
+          <div></div>
         </div>
         {fields}
       </div>

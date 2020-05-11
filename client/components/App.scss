@@ -92,7 +92,7 @@ transition: outline 0.3s linear;
 .row {
   width: 38vw;
   display: grid;
-  grid-template-columns: 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 12.8% 2.5%;
+  grid-template-columns: 2.5% 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 4% 2.5% 2.5%;
   gap: 2px;
 }
 .RemoveField{
@@ -121,4 +121,12 @@ transition: outline 0.3s linear;
 .inputs{ 
   border-radius: 5px;
   background-color: whitesmoke;
+}
+
+.handle {
+  background-color: blue;
+}
+
+.row-container {
+  display: flex;
 }
