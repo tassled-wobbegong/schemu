@@ -199,9 +199,7 @@ export default class App extends Container {
           <button onClick={() => this.setState(-1)}>undo</button>
           <button onClick={() => this.setState(1)}>redo</button>
         </div>
-        <div className='tables'>
-          <Handle pos={{x:100, y:100}} payload="one" callback={(payload)=>true}/>
-          <Handle pos={{x:200, y:200}} payload="two" callback={(payload)=>false}/>
+        <div className='tables'>          
           {this.mapTables((table, id) =>
               <div ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
                 <Table
