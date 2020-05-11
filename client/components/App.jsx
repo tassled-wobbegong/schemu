@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from './Container.jsx';
 
-import { downloadAsFile, onPause } from './util.js';
+import { downloadAsFile, onPause, createSQL } from './util.js';
 import Table from './Table.jsx';
 import Handle from './Handle.jsx';
 
@@ -178,18 +178,9 @@ export default class App extends Container {
   };
 
   toSql = () => {
-    const options = {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ tables: this.state.tables })
-    };
-
-    fetch('/api/sql', options)
-      .then(res => res.blob())
-      .then(blob => downloadAsFile(blob, 'query.txt'))
-      .catch(err => console.log(err));
+    downloadAsFile(new Blob(
+      [ createSQL({ tables: this.state.tables }) ], 
+      { type: 'text/plain' }), 'query.txt');
   };
 
   render() {

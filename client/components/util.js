@@ -74,3 +74,52 @@ export const onPause = (wait, callback) => {
     }, wait);
   };
 };
+
+
+export const createSQL = (res) => {
+
+  //Needs to be heavily expanded to not allow illegal queries!!!
+
+  const tables = res['tables'];
+  let primary = '';
+  let foreignTable = '';
+  let foreignField = '';
+  let unique = [];
+  let output = ''
+  for (const t in tables) {
+      let table = t.toString();
+      output += 'CREATE TABLE '
+      output += tables[table]['name'] + '(\n'
+      for (const f in tables[table]['fields']) {
+          let field = f.toString();
+          output += tables[table]['fields'][field]['name'] + ' ';
+          output += tables[table]['fields'][field]['type'];
+          if(tables[table]['fields'][field]['primaryKey']) primary = tables[table]['fields'][field]['name'];
+          if(tables[table]['fields'][field]['unique']) unique.push(tables[table]['fields'][field]['name']);
+          if(tables[table]['fields'][field]['notNUll']) output += ' NOT NULL';
+          if(tables[table]['fields'][field]['defaultValue']) {
+              output += ' DEFAULT ' + tables[table]['fields'][field]['defaultValue'];
+          }
+          output += ',\n';
+          if(tables[table]['fields'][field]['checkCondition']) output += 'CHECK (' + tables[table]['fields'][field]['name'] + tables[table]['fields'][field]['checkCondition'] +'),\n';
+          if(tables[table]['fields'][field]['foreignKey']) {
+            foreignField = tables[table]['fields'][field]['foreignKey']['fieldName'];
+            foreignTable = tables[table]['fields'][field]['foreignKey']['tableName'];
+          }
+      }
+      if(primary) output += 'PRIMARY KEY (' + primary + '),\n';
+      primary = '';
+      if(foreignTable) output += 'FOREIGN KEY (' + foreignField + ') REFERENCES ' + foreignTable + '(' + foreignField + '),\n';
+      if(unique.length) {
+              output += 'UNIQUE (';
+              unique.forEach(x => output += x + ', ');
+              output = output.slice(0, -2)
+              output += '),\n'
+      }
+      output = output.slice(0, -2);
+      output +='\n);\n'
+      foreignTable = '';
+      foreignField = '';
+  }
+  return output;
+}
