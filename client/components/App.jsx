@@ -6,39 +6,12 @@ import Connector from './Connector.jsx';
 
 import './App.scss';
 
-const EXAMPLE = {
-  tables: {
-    0: {
-      name: 'users',
-      constraints: [],
-      fields: {
-        3: {
-          name: 'id',
-          type: 'uuid',
-          length: undefined,
-          primaryKey: true,
-          unique: false,
-          notNull: false,
-          defaultValue: 'uuid_generate_v4()',
-          checkCondition: null,
-          foreignKey: null
-        },
-        5: {
-          name: 'username',
-          type: 'varchar',
-          length: 64,
-          primaryKey: false,
-          unique: true,
-          notNull: true,
-          defaultValue: null,
-          checkCondition: null,
-          foreignKey: null
-        }
-      },
-      position: { x: 200, y: 200 }
-    }
-  }
-};
+const downloadAsFile = (blob) => {
+  let anchor = document.createElement('a');
+  anchor.href = window.URL.createObjectURL(blob);
+  anchor.download = 'query.txt';
+  anchor.click();
+}
 
 export default class App extends Container {
   static Session(app) {
@@ -73,6 +46,7 @@ export default class App extends Container {
 
     return socket;
   }
+  
   constructor() {
     super();
 
@@ -93,7 +67,6 @@ export default class App extends Container {
     
     if (args.length === 1 && typeof args[0] === 'number') {
       historic = true;
-      console.log(this.past);
       let dir = args.pop();
       if (dir < 0) {
         state = this.past.pop();
@@ -130,7 +103,6 @@ export default class App extends Container {
       });
     }
   }
-
   componentDidMount() {
     this.session = App.Session(this);
   }
@@ -141,7 +113,7 @@ export default class App extends Container {
     const newTable = { 
       name: "table"+id,
       constraints: [], 
-      fields: [], 
+      fields: {}, 
       position: { 
         x: id * 25 % window.innerWidth, 
         y: id * 25 % window.innerHeight 
@@ -212,31 +184,20 @@ export default class App extends Container {
     const options = {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "text/plain"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ tables: this.state.tables })
     };
 
     fetch('/api/sql', options)
-      .then(res => {
-        return res.blob();
-      })
-      .then(blob => {
-        const href = window.URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.href = href;
-        a.download = 'query.txt';
-        a.click();
-        a.href = '';
-      })
+      .then(res => res.blob())
+      .then(blob => downloadAsFile(blob))
       .catch(err => console.log(err));
   };
 
   render() {
     return (
       <div className='App'>
-        <div className="title">NoMoreQuery.io</div>
         <div className="toolbar">
           <button onClick={() => this.addTable()}>new table</button>
           <button onClick={() => this.toSql()}>export SQL</button>
