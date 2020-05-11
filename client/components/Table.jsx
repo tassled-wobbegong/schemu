@@ -52,16 +52,16 @@ export default function Table(props) {
   }
 
   return (
-    <div id="tables">
+    <div id="tables" onMouseDown={props.move}>
       <input type="text" id="Rename" value={props.name} onChange={handleChange}></input>
 
       <button className="fieldButtons" onMouseDown={props.move}>
         Move
       </button>
-      <button className="fieldButtons" onClick={addField}>
+      <button className="fieldButtons" id="addtable" onClick={addField}>
         Add Field
       </button>
-      <button className="removeTable" onClick={props.remove}>
+      <button className="removeTable" id="removetable" onClick={props.remove}>
         Remove Table
       </button>
 
