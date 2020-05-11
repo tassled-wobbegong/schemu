@@ -36,7 +36,6 @@ export default class Handle extends React.Component {
       position: 'relative',
       width: boxSize + 'px',
       height: boxSize + 'px',
-      backgroundColor: 'blue'
     };
 
     let connector;
@@ -65,7 +64,7 @@ export default class Handle extends React.Component {
     }
 
     return (
-      <div style={boxStyle} onMouseDown={this.linkManager} data-payload={this.props.payload}>
+      <div className='handle' style={boxStyle} onMouseDown={this.linkManager} data-payload={this.props.payload}>
         {connector}
       </div>
     );

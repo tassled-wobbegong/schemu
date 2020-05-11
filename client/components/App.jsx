@@ -192,6 +192,7 @@ export default class App extends Container {
   };
 
   render() {
+    console.log(this.state)
     return (
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
