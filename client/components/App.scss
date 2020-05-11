@@ -75,7 +75,7 @@ transition: border-width 0.2s linear;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   text-shadow: 2px 1px 3px black;
 border-radius: 5px;
-margin-left: 10px;
+margin-left: 20px;
 box-shadow: 2px 2px 5px black;
 border-color: slategray;
 transition: outline 0.3s linear;
@@ -86,7 +86,14 @@ transition: outline 0.3s linear;
 }
 
 #tables>input{
-  border-radius: 5px;
+  border-color: rgba(61, 82, 102, 0);
+  color: whitesmoke;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: large;
+  background-color: rgba(61, 82, 102, 0);
+  outline: 3px solid rgb(150,162,172);
+  text-shadow: 2px 1px 3px black;
+  margin: 3px 3px 6px 3px;
 }
 // TABLE AND FIELD ROWS:
 .row {
@@ -94,6 +101,7 @@ transition: outline 0.3s linear;
   display: grid;
   grid-template-columns: 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 12.8% 2.5%;
   gap: 2px;
+  margin: 2px 2px 2px;
 }
 .RemoveField{
   width: 25px;
@@ -121,4 +129,13 @@ transition: outline 0.3s linear;
 .inputs{ 
   border-radius: 5px;
   background-color: whitesmoke;
+}
+
+.removeTable{
+  background-color: rgb(131, 81, 81);
+  outline-color: rgb(131, 81, 81);
+}
+.removetable:hover{
+outline: 3px solid rgb(150,162,172);
+  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
 }
