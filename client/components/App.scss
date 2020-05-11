@@ -61,7 +61,7 @@ transition: border-width 0.25s ease;
 #tables {
   background-color: rgb(61, 82, 102);
   opacity: 0.9;
-  padding: 3px 0px 8px 10px;
+  padding: 2px 0px 8px 4px;
   border-radius: 5px;
   box-shadow: 1px 1px 5px 4px rgb(39, 39, 39);
   font-size: 2em;
@@ -148,7 +148,7 @@ border: 3px rgb(79, 90, 100) outset;
 }
 // TABLE AND FIELD ROWS:
 .row {
-  width: 38vw;
+  width: 500px;
   display: grid;
   grid-template-columns: 2.5% 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 4% 2.5% 2.5%;
   gap: 2px;
