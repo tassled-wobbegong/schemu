@@ -1,1 +1,1 @@
-{"tables":[]}
+{"tables":{"1":{"name":"table1","constraints":[],"fields":{"1":{"name":"","type":"","length":"","primaryKey":false,"unique":false,"notNull":false,"defaultValue":"","checkCondition":"","foreignKey":{"tableName":"table2","fieldName":""}}},"position":{"x":727,"y":200}},"2":{"name":"table2","constraints":[],"fields":{"1":{"name":"","type":"","length":"","primaryKey":false,"unique":false,"notNull":false,"defaultValue":"","checkCondition":"","foreignKey":{"tableName":"","fieldName":""}}},"position":{"x":78,"y":456}}}}

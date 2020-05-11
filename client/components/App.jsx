@@ -1,23 +1,11 @@
 import React from 'react';
 import Container from './Container.jsx';
 
-import { downloadAsFile } from './util.js';
+import { downloadAsFile, onPause } from './util.js';
 import Table from './Table.jsx';
 import Handle from './Handle.jsx';
 
 import './App.scss';
-
-const onPause = (wait, callback) => {
-  let calls = 0;
-  return () => {
-    const _calls = ++calls;
-    setTimeout(() => {
-      if (calls === _calls) {
-        callback();
-      }
-    }, wait);
-  };
-};
 
 export default class App extends Container {
   static Session(app) {
@@ -100,7 +88,6 @@ export default class App extends Container {
         this.updating = onPause(500, () => {
           this.future = [];
           this.past.push(snapshot);
-          console.log(this.past);
           this.updating = null;
         });
       } else {
@@ -180,14 +167,8 @@ export default class App extends Container {
       lastEv = ev;
 
       this.delegate('tables', id)({ position: curPos });
-      // const el = this.refs[`wrapper${id}`];
-      // el.style.left = curPos.x+"px";
-      // el.style.top = curPos.y+"px";
     };
     const endMove = () => {
-      // if (curPos) {
-      //   this.delegate('tables', id)({ position: curPos });
-      // }
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
     };

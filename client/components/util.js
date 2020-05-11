@@ -57,3 +57,20 @@ export const clone = (target) => {
     return target;
   }
 };
+
+/* 
+  onPause([int] wait, [function] callback)
+  Returns a function which, whenever invoked, delays the invocation of 'callback' 
+  until 'wait' milliseconds have elapsed with out interruption.
+*/
+export const onPause = (wait, callback) => {
+  let calls = 0;
+  return () => {
+    const _calls = ++calls;
+    setTimeout(() => {
+      if (calls === _calls) {
+        callback();
+      }
+    }, wait);
+  };
+};
