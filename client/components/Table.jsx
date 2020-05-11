@@ -9,7 +9,7 @@ export default function Table(props) {
       <Field
         key={"field"+id}
         {...el}
-        update={props.update("fields", id)}
+        update={props.update("fields", id, validateField)}
         removeField={() => removeField(id)}
         tableName={props.name}
       />
@@ -27,17 +27,17 @@ export default function Table(props) {
       fields: {
         ...props.fields,
         [id]: {
-          name: "id",
-          type: "uuid",
-          length: undefined,
-          primaryKey: true,
+          name: "",
+          type: "",
+          length: "",
+          primaryKey: false,
           unique: false,
           notNull: false,
-          defaultValue: "uuid_generate_v4()",
-          checkCondition: null,
+          defaultValue: "",
+          checkCondition: "",
           foreignKey: {
-            tableName: null,
-            fieldName: null,
+            tableName: "",
+            fieldName: "",
           },
         },
       }
@@ -50,7 +50,19 @@ export default function Table(props) {
       fields: newFields
     });
   }
- 
+
+  function validateField (delta, path) {
+    if (delta.name) {
+      for (const id in props.fields) {
+        const field = props.fields[id];
+        if (field.name === delta.name) {
+          throw new Error(`Cannot rename table '${field.name}' to '${delta.name}' because the name is already in use.`)
+        }
+      }
+    }
+    return true;
+  }
+
   //style={{ position: 'absolute', top: props.position.y, left: props.position.x }}
   return (
     <div id="tables" onMouseDown={props.move}>
