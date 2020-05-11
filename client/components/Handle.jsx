@@ -6,7 +6,6 @@ export default class Handle extends React.Component {
     super();
     
     this.state = { 
-      source: null, 
       target: null 
     };
   }
@@ -14,8 +13,14 @@ export default class Handle extends React.Component {
   componentDidUpdate() {
     this.refs.container.querySelectorAll('*').forEach(n => n.remove());
 
-    let { source, target } = this.state;
+    if (!this.props.identity) {
+      return;
+    }
 
+    let source = this.refs.container.getBoundingClientRect();
+    source = { x: source.left, y: source.top };
+
+    let target = this.state.target;
     if (typeof target === "string" && (target = document.getElementById(target))) {
       target = target.getBoundingClientRect();
       target = { x: target.left, y: target.top };
@@ -53,8 +58,9 @@ export default class Handle extends React.Component {
   }
 
   linkManager = (from) => {
-    let source = from.target.getBoundingClientRect();
-    this.setState( { source: { x: source.left, y: source.top } });
+    if (!this.props.identity) {
+      return;
+    }
 
     const update = (ev) => {
       this.setState({ target: { x: ev.clientX, y: ev.clientY } });
@@ -66,7 +72,7 @@ export default class Handle extends React.Component {
       if (id && this.props.callback(id)) {
         this.setState({ target: id });
       } else {
-        this.setState({ source: null, target: null });
+        this.setState({ target: null });
       }
       window.removeEventListener('mouseup', finalize);
       window.removeEventListener('mousemove', update);

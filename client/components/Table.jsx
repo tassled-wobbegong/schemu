@@ -50,7 +50,8 @@ export default function Table(props) {
       fields: newFields
     });
   }
-
+ 
+  //style={{ position: 'absolute', top: props.position.y, left: props.position.x }}
   return (
     <div id="tables" onMouseDown={props.move}>
       <input type="text" id="Rename" value={props.name} onChange={handleChange}></input>
