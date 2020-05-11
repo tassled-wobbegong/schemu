@@ -1,32 +1,6 @@
 import React, { Component } from 'react';
 import Handle from './Handle.jsx';
 
-// A field, recieves an Object with the following format:
-// {
-//   name: 'id',
-//   type: 'uuid',
-//   length: undefined,
-//   primaryKey: true,
-//   unique: false,
-//   notNull: false,
-//   defaultValue: 'uuid_generate_v4()',
-//   checkCondition: null,
-//   foreignKey: null
-// }
-
-// // Basic styling
-// .field-container {
-//   width: 100%;
-//   display: flex;
-//   height: 50px; //?
-// }
-
-// .field-prop {
-//   text-align: center;
-//   verticle-align: middle;
-// }
-
-
 export default class Field extends Component {
   constructor(props){
     super(props);
@@ -45,16 +19,21 @@ export default class Field extends Component {
   }
 
   render() {
+    let foreignKeyValue = this.props.foreignKey.tableName ? `${this.props.foreignKey.tableName}_${this.props.foreignKey.fieldName}` : ""
+
+
     return (
       
       <form className="row">
-        <Handle identity={`${this.props.tableName}_${this.props.name}`} callback={(indentity) => {
-          const indentityArr = indentity.split("_")
-          console.log(indentityArr)
+        <Handle identity={`l_${this.props.tableName}_${this.props.name}`} callback={(identity) => {
+          let handlesIdentity = `${this.props.tableName}_${this.props.name}`
+          if (identity.slice(2) === handlesIdentity) return false;
+          const identityArr = identity.split("_")
           this.props.update({foreignKey: {
-            tableName: indentityArr[0],
-            fieldName: indentityArr[1],
+            tableName: identityArr[1],
+            fieldName: identityArr[2],
           }})
+          return true;
         }}/>
         <input type="text" className="inputs" name="name" value={this.props.name} onChange={this.handleChange} />
         <select value={this.props.type} name="type" onChange={this.handleChange} >
@@ -88,14 +67,16 @@ export default class Field extends Component {
         <input type="checkbox" name="primaryKey" checked={this.props.primaryKey} onChange={this.handleChange}/>
         <input type="checkbox" name="unique" checked={this.props.unique} onChange={this.handleChange}/>
         <input type="checkbox" name="notNull" checked={this.props.notNull} onChange={this.handleChange}/>
-        <input className="text-box" className="inputs" type="text" name="foreignKey" value={`${this.props.foreignKey.tableName}_${this.props.foreignKey.fieldName}`} onChange={this.handleChange}/>
+        <input className="text-box" className="inputs" type="text" name="foreignKey" value={foreignKeyValue} onChange={this.handleChange}/>
         {/* <button class="submit" type='submit'>Submit</button> */}
         <button className="RemoveField" onClick={this.props.removeField}>X</button>
-        <Handle identity={`${this.props.tableName}_${this.props.name}`} callback={(indentity) => {
-          const indentityArr = indentity.split("_")
+        <Handle identity={`r_${this.props.tableName}_${this.props.name}`} callback={(identity) => {
+          let handlesIdentity = `${this.props.tableName}_${this.props.name}`
+          if (identity.slice(2) === handlesIdentity) return false;
+          const identityArr = identity.split("_")
           this.props.update({foreignKey: {
-            tableName: indentityArr[0],
-            fieldName: indentityArr[1],
+            tableName: identityArr[1],
+            fieldName: identityArr[2],
           }})
           return true;
         }}/>
@@ -103,6 +84,3 @@ export default class Field extends Component {
     )
   }
 }
-
-
-

@@ -1,1 +1,17 @@
-{"tables":{"1":{"name":"TABLENAME1","constraints":[],"fields":{"1":{"name":"FIELDNAME1-1","type":"uuid","primaryKey":true,"unique":true,"notNull":true,"defaultValue":"uuid_generate_v4()","checkCondition":"condition1-1","foreignKey":{"tableName":null,"fieldName":null}},"2":{"name":"FIELDNAME1-2","type":"text","length":"20","primaryKey":false,"unique":false,"notNull":true,"defaultValue":"uuid_generate_v4()","checkCondition":"","foreignKey":{"tableName":"TABLENAME2","fieldName":"FIELDNAME2-2"}}},"position":{"x":291,"y":54}},"2":{"name":"TABLENAME2","constraints":[],"fields":{"1":{"name":"FIELDNAME2-1","type":"uuid","primaryKey":true,"unique":true,"notNull":true,"defaultValue":"uuid_generate_v4()","checkCondition":"condition2-1","foreignKey":{"tableName":null,"fieldName":null}},"2":{"name":"FIELDNAME2-2","type":"int","primaryKey":false,"unique":false,"notNull":true,"defaultValue":"uuid_generate_v4()","checkCondition":">8","foreignKey":{"tableName":null,"fieldName":null}}},"position":{"x":381,"y":184}}}}
+CREATE TABLE table1(
+asdfasf uuid DEFAULT ,
+asdfasdf int DEFAULT ,
+CHECK (asdfasdf>8),
+asdf  DEFAULT ,
+asd uuid DEFAULT ,
+PRIMARY KEY (asdfasf),
+UNIQUE (asdfasdf)
+);
+CREATE TABLE table2(
+id uuid DEFAULT ,
+asdfasf char DEFAULT "crap",
+djdj  DEFAULT ,
+CHECK (djdj= true),
+PRIMARY KEY (id),
+UNIQUE (asdfasdf, asdfasf)
+);
