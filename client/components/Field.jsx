@@ -30,8 +30,6 @@ export default class Field extends Component {
   constructor(props){
     super(props);
 
-    const { update, ...receivedState} = props;
-    this.state = receivedState;
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -42,17 +40,16 @@ export default class Field extends Component {
     } else {
       change[event.target.id] = event.target.value;
     }
-    this.setState(change);
+    // this.setState(change);
+    console.log(change)
+    this.props.update(change)
   }
 
   render() {
     return (
-      <form className="row" onSubmit={(event) => {
-          event.preventDefault();
-          this.props.update(this.state); 
-        }}>
-        <input type="text" name="name" id="name" value={this.state.name} onChange={this.handleChange} />
-        <select value={this.state.type} name="type" id="type" onChange={this.handleChange} >
+      <form className="row">
+        <input type="text" className="inputs" name="name" id="name" value={this.props.name} onChange={this.handleChange} />
+        <select value={this.props.type} name="type" id="type" onChange={this.handleChange} >
           <option value="boolean">Boolean</option>
           <option value="date">Date</option>
           <option value="integer">Integer</option>
@@ -63,14 +60,14 @@ export default class Field extends Component {
           <option value="timestamp">Timestamp</option>
           <option value="uuid">UUID</option>
         </select>
-        <input type="text" name="length" id="length" value={this.state.length} onChange={this.handleChange}/>
-        <input type="text" name="defaultValue" id="defaultValue"value={this.state.defaultValue} onChange={this.handleChange}/>
-        <input type="text" name="checkCondition" id="checkCondition" value={this.state.checkCondition} onChange={this.handleChange}/>
-        <input type="checkbox" id="primaryKey" name="primaryKey" checked={this.state.primaryKey} onChange={this.handleChange}/>
-        <input type="checkbox" id="unique" name="unique" checked={this.state.unique} onChange={this.handleChange}/>
-        <input type="checkbox" id="notNull" name="notNull" checked={this.state.notNull} onChange={this.handleChange}/>
-        <input class="text-box" type="text" name="foreignKey" id="foreignKey" value={this.state.foreignKey} onChange={this.handleChange}/>
-        <button class="submit" type='submit'>Submit</button>
+        <input type="text" className="inputs" name="length" id="length" value={this.props.length} onChange={this.handleChange}/>
+        <input type="text" className="inputs" name="defaultValue" id="defaultValue"value={this.props.defaultValue} onChange={this.handleChange}/>
+        <input type="text" className="inputs" name="checkCondition" id="checkCondition" value={this.props.checkCondition} onChange={this.handleChange}/>
+        <input type="checkbox" id="primaryKey" name="primaryKey" checked={this.props.primaryKey} onChange={this.handleChange}/>
+        <input type="checkbox" id="unique" name="unique" checked={this.props.unique} onChange={this.handleChange}/>
+        <input type="checkbox" id="notNull" name="notNull" checked={this.props.notNull} onChange={this.handleChange}/>
+        <input class="text-box" className="inputs" type="text" name="foreignKey" id="foreignKey" value={this.props.foreignKey} onChange={this.handleChange}/>
+        {/* <button class="submit" type='submit'>Submit</button> */}
         <button className="RemoveField" onClick={this.props.removeField}>X</button>
       </form>
     )

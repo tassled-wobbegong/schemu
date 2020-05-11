@@ -1,28 +1,124 @@
-html, body, #root {
+html {
+  background: url("./Shape-White-Abstract-Wallpaper-28547.jpg") no-repeat center
+    center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+html,
+body,
+#root {
   height: 100%;
   margin: 0px;
+}
+.title{
+  display: flex;
+  justify-content: center;
+  color: whitesmoke;
+  font-size: 3em;
+  text-shadow: 2px 3px 5px black;
 }
 
 .App {
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;;
+  flex-direction: column;
+}
+
+.toolbar{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.toolbar>button{
+  color: whitesmoke;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+font-size: large;
+  background-color: rgb(61, 82, 102);
+width: 120px;
+height: 50px;
+margin: 8px 5px 10px 8px;
+border-radius: 8px;
+box-shadow: 2px 3px 10px black;
+text-shadow:2px 2px 4px black;
+cursor: pointer;
+border: 3px outset slategray;
+transition: border-width 0.2s linear;
+}
+.toolbar>button:hover{
+  border-width: 7px;
 }
 
 .tables {
   flex-grow: 1;
 }
+#tables {
+  background-color: rgb(61, 82, 102);
+  opacity: 0.9;
+  padding: 3px 0px 8px 10px;
+  border-radius: 5px;
+  box-shadow: 1px 1px 10px 8px black;
+  font-size: large;
+  color: whitesmoke;
+  text-shadow: 3px 3px 8px black;
+  border: 6px outset;
+  border-color: rgb(79, 88, 95);
+}
 
+#tables > button {
+  font-size: .84rem;
+  color: whitesmoke;
+  background-color: rgb(79, 90, 100);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-shadow: 2px 1px 3px black;
+border-radius: 5px;
+margin-left: 10px;
+box-shadow: 2px 2px 5px black;
+border-color: slategray;
+transition: outline 0.3s linear;
+}
+#tables > button:hover{
+  outline: 3px solid rgb(150,162,172);
+  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
+}
+
+#tables>input{
+  border-radius: 5px;
+}
 // TABLE AND FIELD ROWS:
 .row {
-  width:25vw;
+  width: 38vw;
   display: grid;
   grid-template-columns: 12.8% 12.8% 12.8% 12.8% 12.8% 2.5% 2.5% 2.5% 12.8% 12.8% 2.5%;
   gap: 2px;
 }
+.RemoveField{
+  width: 25px;
+  background-color: rgb(79, 90, 100);
+  border-radius: 5px;
+  color: whitesmoke;
+  border-color: slategray;
+  text-shadow: 2px 1px 4px black;
+  box-shadow: 2px 2px 4px black;
+  outline:0px solid rgb(150, 162, 172);
+  transition: outline 0.3s linear;
+}
+
+.RemoveField:hover{
+  outline: 3px solid rgb(150,162,172);
+  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
+}
 
 .column-header {
-  font-size: 0.7rem;;
+  font-size: 15px;
   overflow-wrap: break-word;
+  text-align: center;
+}
+
+.inputs{ 
+  border-radius: 5px;
+  background-color: whitesmoke;
 }
