@@ -5,7 +5,6 @@ import React from 'react';
     Given a series of accessors 'path', finds the corresponding object in 
     'target' and applies the changes specified in 'delta' to a copy of 'target'.
     Returns the copied, changed object.
-
 */
 const merge = (target, path, delta) => {
   const key = path.shift();
@@ -36,6 +35,10 @@ const merge = (target, path, delta) => {
   return result;
 };
 
+/*
+  clone([mixed] target);
+    Returns a deep clone of 'target';
+*/
 const clone = (target) => {
   if (typeof target === "object") {
     const result = Array.isArray(target) ? [] : {};
@@ -53,8 +56,8 @@ export default class Container extends React.Component {
   delegate([string] ...path, ([function] validator));
     Given a series of accessors 'path' and an optional validator callback,
     finds the corresponding object in Container.state and returns a function
-    which when invoked, behaves just like Container.prototype.setState, but relative
-    to the object denoted by 'path';
+    which when invoked, behaves just like Container.prototype.setState, but 
+    relative to the object denoted by 'path'.
   */
   delegate = (...path) => {
     let validate;
