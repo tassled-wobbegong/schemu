@@ -197,10 +197,10 @@ export default class App extends Container {
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
         <div className="toolbar">
-          <button onClick={() => this.addTable()}>new table</button>
-          <button onClick={() => this.toSql()}>export SQL</button>
-          <button onClick={() => this.setState(-1)}>undo</button>
-          <button onClick={() => this.setState(1)}>redo</button>
+          <button onClick={() => this.addTable()}>New Table</button>
+          <button onClick={() => this.toSql()}>Export SQL</button>
+          <button onClick={() => this.setState(-1)}>Undo</button>
+          <button onClick={() => this.setState(1)}>Redo</button>
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
