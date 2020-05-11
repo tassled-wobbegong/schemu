@@ -68,7 +68,47 @@ transition: border-width 0.2s linear;
   border-color: rgb(79, 88, 95);
 }
 
-#tables > button {
+#removetable{
+  background-color: rgb(131, 81, 81);
+  outline-color: rgb(131, 81, 81);
+  font-size: .84rem;
+  color: whitesmoke;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-shadow: 2px 1px 3px black;
+border-radius: 5px;
+margin-left: 30px;
+box-shadow: 2px 2px 5px black;
+border-color: slategray;
+transition: outline 0.3s linear;
+}
+#removetable:hover{
+outline: 3px solid rgb(131, 81, 81);
+  box-shadow: 0px 0px 0px 2px rgbrgb(131, 81, 81);
+}
+
+#addtable{
+  background-color: rgb(103, 168, 114);
+}
+
+.RemoveField{
+  width: 25px;
+  background-color: rgb(79, 90, 100);
+  border-radius: 5px;
+  color: whitesmoke;
+  border-color: slategray;
+  text-shadow: 2px 1px 4px black;
+  box-shadow: 2px 2px 4px black;
+  outline:0px solid rgb(150, 162, 172);
+  transition: outline 0.3s linear;
+}
+
+.RemoveField:hover{
+  outline: 3px solid rgb(150,162,172);
+  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
+}
+
+
+.fieldButtons {
   font-size: .84rem;
   color: whitesmoke;
   background-color: rgb(79, 90, 100);
@@ -103,22 +143,6 @@ transition: outline 0.3s linear;
   gap: 2px;
   margin: 2px 2px 2px;
 }
-.RemoveField{
-  width: 25px;
-  background-color: rgb(79, 90, 100);
-  border-radius: 5px;
-  color: whitesmoke;
-  border-color: slategray;
-  text-shadow: 2px 1px 4px black;
-  box-shadow: 2px 2px 4px black;
-  outline:0px solid rgb(150, 162, 172);
-  transition: outline 0.3s linear;
-}
-
-.RemoveField:hover{
-  outline: 3px solid rgb(150,162,172);
-  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
-}
 
 .column-header {
   font-size: 15px;
@@ -129,13 +153,4 @@ transition: outline 0.3s linear;
 .inputs{ 
   border-radius: 5px;
   background-color: whitesmoke;
-}
-
-.removeTable{
-  background-color: rgb(131, 81, 81);
-  outline-color: rgb(131, 81, 81);
-}
-.removetable:hover{
-outline: 3px solid rgb(150,162,172);
-  box-shadow: 0px 0px 0px 2px rgb(150, 162, 172);
 }

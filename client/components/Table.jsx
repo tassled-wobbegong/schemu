@@ -51,30 +51,30 @@ export default function Table(props) {
   }
 
   return (
-    <div id="tables">
+    <div id="tables" onMouseDown={props.move}>
       <input type="text" id="Rename" onChange={handleChange}></input>
 
       <button className="fieldButtons" onMouseDown={props.move}>
         Move
       </button>
-      <button className="fieldButtons" onClick={addField}>
+      <button className="fieldButtons" id="addtable" onClick={addField}>
         Add Field
       </button>
-      <button className="removeTable" onClick={props.remove}>
+      <button className="removeTable" id="removetable" onClick={props.remove}>
         Remove Table
       </button>
 
       <div className="fieldsList">
-        <div class="row">
-          <div class="column-header">Name</div>
-          <div class="column-header">Type</div>
-          <div class="column-header">Length</div>
-          <div class="column-header">Default</div>
-          <div class="column-header">Condition</div>
-          <div class="column-header">P</div>
-          <div class="column-header">U</div>
-          <div class="column-header">R</div>
-          <div class="column-header">F-Key</div>
+        <div className="row">
+          <div className="column-header">Name</div>
+          <div className="column-header">Type</div>
+          <div className="column-header">Length</div>
+          <div className="column-header">Default</div>
+          <div className="column-header">Condition</div>
+          <div className="column-header">P</div>
+          <div className="column-header">U</div>
+          <div className="column-header">R</div>
+          <div className="column-header">F-Key</div>
         </div>  
         {fields}
       </div>
