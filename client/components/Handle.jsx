@@ -5,41 +5,22 @@ export default class Handle extends React.Component {
   constructor() {
     super();
     
-    this.state = { source: null, target: null };
+    this.state = { 
+      source: null, 
+      target: null 
+    };
   }
 
-  linkManager = (from) => {
-    this.setState( { source: { x: from.target.offsetLeft, y: from.target.offsetTop } });
+  componentDidUpdate() {
+    this.refs.container.querySelectorAll('*').forEach(n => n.remove());
 
-    const update = (ev) => {
-      this.setState({ target: { x: ev.clientX, y: ev.clientY } });
-    };
-    window.addEventListener('mousemove', update);
-
-    const finalize = (to) => {
-      const payload = to.target.dataset.payload;
-      if (payload && this.props.callback(payload)) {
-        this.setState({ target: { x: to.target.offsetLeft, y: to.target.offsetTop } });
-      } else {
-        this.setState({ source: null, target: null });
-      }
-      window.removeEventListener('mouseup', finalize);
-      window.removeEventListener('mousemove', update);
-    };
-    window.addEventListener("mouseup", finalize);
-  };
-  
-  render() {
-    const boxSize = 10;
-    const strokeWidth = 2;
-    const boxStyle = {
-      position: 'relative',
-      width: boxSize + 'px',
-      height: boxSize + 'px',
-    };
-
-    let connector;
     let { source, target } = this.state;
+
+    if (typeof target === "string" && (target = document.getElementById(target))) {
+      target = target.getBoundingClientRect();
+      target = { x: target.left, y: target.top };
+    }
+
     if (source && target) {
       const d = {
         x: target.x - source.x,
@@ -50,23 +31,60 @@ export default class Handle extends React.Component {
         y: d.y < 0 ? d.y : 0
       };
 
-      const strokeStyle = {
-        position: 'absolute', 
-        top: o.y + boxSize / 2, 
-        left: o.x + boxSize / 2
-      };
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', Math.abs(d.x) + this.lineSize);
+      svg.setAttribute('height', Math.abs(d.y) + this.lineSize);
+      svg.style.position = 'absolute';
+      svg.style.top = o.y + this.boxSize / 2;
+      svg.style.left = o.x + this.boxSize / 2;
 
-      connector = (
-        <svg width={Math.abs(d.x) + strokeWidth} height={Math.abs(d.y) + strokeWidth} style={strokeStyle}>
-          <line x1={-o.x} y1={-o.y} x2={d.x - o.x} y2={d.y - o.y} stroke="red" strokeWidth={strokeWidth+"px"} fill="transparent"/>
-        </svg>
-      ); 
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('stroke', this.lineColor);
+      line.setAttribute('stroke-width', this.lineSize + "px");
+      line.setAttribute('fill', 'transparent');
+      line.setAttribute('x1', -o.x);
+      line.setAttribute('y1', -o.y);
+      line.setAttribute('x2', d.x - o.x);
+      line.setAttribute('y2', d.y - o.y);
+      
+      svg.appendChild(line);
+      this.refs.container.appendChild(svg);
     }
+  }
+
+  linkManager = (from) => {
+    let source = from.target.getBoundingClientRect();
+    this.setState( { source: { x: source.left, y: source.top } });
+
+    const update = (ev) => {
+      this.setState({ target: { x: ev.clientX, y: ev.clientY } });
+    };
+    window.addEventListener('mousemove', update);
+
+    const finalize = (to) => {
+      const id = to.target.id;
+      if (id && this.props.callback(id)) {
+        this.setState({ target: id });
+      } else {
+        this.setState({ source: null, target: null });
+      }
+      window.removeEventListener('mouseup', finalize);
+      window.removeEventListener('mousemove', update);
+    };
+    window.addEventListener("mouseup", finalize);
+  };
+  
+  render() {
+    this.boxSize = this.props.boxSize || 10;
+    this.lineSize = this.props.lineSize || 2;
+    this.lineColor = this.props.lineColor || 'red';
 
     return (
-      <div className='handle' style={boxStyle} onMouseDown={this.linkManager} data-payload={this.props.payload}>
-        {connector}
-      </div>
+      <div ref="container" 
+        className='handle' 
+        id={this.props.identity} 
+        onMouseDown={this.linkManager}
+        style={{position: 'relative', width: this.boxSize + 'px', height: this.boxSize + 'px'}}></div>
     );
   }
 }
