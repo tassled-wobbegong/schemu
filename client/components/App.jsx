@@ -1,44 +1,11 @@
 import React from 'react';
 import Container from './Container.jsx';
 
+import { downloadAsFile } from './util.js';
 import Table from './Table.jsx';
-import Connector from './Connector.jsx';
+import Handle from './Handle.jsx';
 
 import './App.scss';
-
-const EXAMPLE = {
-  tables: {
-    0: {
-      name: 'users',
-      constraints: [],
-      fields: {
-        3: {
-          name: 'id',
-          type: 'uuid',
-          length: undefined,
-          primaryKey: true,
-          unique: false,
-          notNull: false,
-          defaultValue: 'uuid_generate_v4()',
-          checkCondition: null,
-          foreignKey: null
-        },
-        5: {
-          name: 'username',
-          type: 'varchar',
-          length: 64,
-          primaryKey: false,
-          unique: true,
-          notNull: true,
-          defaultValue: null,
-          checkCondition: null,
-          foreignKey: null
-        }
-      },
-      position: { x: 200, y: 200 }
-    }
-  }
-};
 
 export default class App extends Container {
   static Session(app) {
@@ -73,6 +40,7 @@ export default class App extends Container {
 
     return socket;
   }
+  
   constructor() {
     super();
 
@@ -93,7 +61,6 @@ export default class App extends Container {
     
     if (args.length === 1 && typeof args[0] === 'number') {
       historic = true;
-      console.log(this.past);
       let dir = args.pop();
       if (dir < 0) {
         state = this.past.pop();
@@ -130,7 +97,6 @@ export default class App extends Container {
       });
     }
   }
-
   componentDidMount() {
     this.session = App.Session(this);
   }
@@ -141,7 +107,7 @@ export default class App extends Container {
     const newTable = { 
       name: "table"+id,
       constraints: [], 
-      fields: [], 
+      fields: {}, 
       position: { 
         x: id * 25 % window.innerWidth, 
         y: id * 25 % window.innerHeight 
@@ -212,24 +178,14 @@ export default class App extends Container {
     const options = {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "Accept": "text/plain"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ tables: this.state.tables })
     };
 
     fetch('/api/sql', options)
-      .then(res => {
-        return res.blob();
-      })
-      .then(blob => {
-        const href = window.URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.href = href;
-        a.download = 'query.txt';
-        a.click();
-        a.href = '';
-      })
+      .then(res => res.blob())
+      .then(blob => downloadAsFile(blob, 'query.txt'))
       .catch(err => console.log(err));
   };
 
@@ -244,6 +200,8 @@ export default class App extends Container {
           <button onClick={() => this.setState(1)}>redo</button>
         </div>
         <div className='tables'>
+          <Handle pos={{x:100, y:100}} payload="one" callback={(payload)=>true}/>
+          <Handle pos={{x:200, y:200}} payload="two" callback={(payload)=>false}/>
           {this.mapTables((table, id) =>
               <div ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
                 <Table
