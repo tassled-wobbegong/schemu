@@ -5,21 +5,66 @@ export default class Handle extends React.Component {
   constructor() {
     super();
     
-    this.state = { source: null, target: null };
+    this.state = { 
+      source: null, 
+      target: null 
+    };
+  }
+
+  componentDidUpdate() {
+    this.refs.container.querySelectorAll('*').forEach(n => n.remove());
+
+    let { source, target } = this.state;
+
+    if (typeof target === "string" && (target = document.getElementById(target))) {
+      target = target.getBoundingClientRect();
+      target = { x: target.left, y: target.top };
+    }
+
+    if (source && target) {
+      const d = {
+        x: target.x - source.x,
+        y: target.y - source.y
+      };
+      const o = {
+        x: d.x < 0 ? d.x : 0,
+        y: d.y < 0 ? d.y : 0
+      };
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', Math.abs(d.x) + this.lineSize);
+      svg.setAttribute('height', Math.abs(d.y) + this.lineSize);
+      svg.style.position = 'absolute';
+      svg.style.top = o.y + this.boxSize / 2;
+      svg.style.left = o.x + this.boxSize / 2;
+
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('stroke', this.lineColor);
+      line.setAttribute('stroke-width', this.lineSize + "px");
+      line.setAttribute('fill', 'transparent');
+      line.setAttribute('x1', -o.x);
+      line.setAttribute('y1', -o.y);
+      line.setAttribute('x2', d.x - o.x);
+      line.setAttribute('y2', d.y - o.y);
+      
+      svg.appendChild(line);
+      this.refs.container.appendChild(svg);
+    }
   }
 
   linkManager = (from) => {
-    this.setState( { source: { x:parseInt(from.target.style.left), y:parseInt(from.target.style.top) } });
+    let source = from.target.getBoundingClientRect();
+    this.setState( { source: { x: source.left, y: source.top } });
 
     const update = (ev) => {
-      this.setState({ target: { x:parseInt(ev.clientX), y:parseInt(ev.clientY) } });
+      this.setState({ target: { x: ev.clientX, y: ev.clientY } });
     };
     window.addEventListener('mousemove', update);
 
     const finalize = (to) => {
-      const payload = to.target.dataset.payload;
-      if (payload && this.props.callback(payload)) {
-        this.setState({ target: { x:parseInt(to.target.style.left), y:parseInt(to.target.style.top) } });
+      const id = to.target.id;
+      if (id && this.props.callback(id)) {
+        this.setState({ target: id });
       } else {
         this.setState({ source: null, target: null });
       }
@@ -30,37 +75,16 @@ export default class Handle extends React.Component {
   };
   
   render() {
-    const style = {
-      position: 'absolute',
-      width: '25px',
-      height: '25px',
-      backgroundColor: 'blue',
-      top: this.props.pos.y,
-      left: this.props.pos.x
-    };
-
-    let connector;
-    let { source, target } = this.state;
-    if (source && target) {
-      const d = {
-        x: target.x - source.x,
-        y: target.y - source.y
-      };
-      const o = {
-        x: d.x < 0 ? d.x : 0,
-        y: d.y < 0 ? d.y : 0
-      };
-      connector = (
-        <svg width={Math.abs(d.x)} height={Math.abs(d.y)} style={{position: 'absolute', top: o.y, left: o.x}}>
-          <line x1={-o.x} y1={-o.y} x2={d.x - o.x} y2={d.y - o.y} stroke="red" stroke-width="2px" fill="transparent"/>
-        </svg>
-      ); 
-    }
+    this.boxSize = this.props.boxSize || 10;
+    this.lineSize = this.props.lineSize || 2;
+    this.lineColor = this.props.lineColor || 'red';
 
     return (
-      <div style={style} onMouseDown={this.linkManager} data-payload={this.props.payload}>
-        {connector}
-      </div>
+      <div ref="container" 
+        className='handle' 
+        id={this.props.identity} 
+        onMouseDown={this.linkManager}
+        style={{position: 'relative', width: this.boxSize + 'px', height: this.boxSize + 'px'}}></div>
     );
   }
 }

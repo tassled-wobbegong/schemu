@@ -119,7 +119,7 @@ export default class App extends Container {
     });
   }
   removeTable = (id) => {
-    let newtables = [ ...this.state.tables ];
+    let newtables = { ...this.state.tables };
     delete newtables[id];
     this.setState({ tables: newtables });
   };
@@ -162,7 +162,9 @@ export default class App extends Container {
       el.style.top = curPos.y+"px";
     };
     const endMove = () => {
-      this.delegate('tables', id)({ position: curPos });
+      if (curPos) {
+        this.delegate('tables', id)({ position: curPos });
+      }
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
     };
@@ -190,27 +192,26 @@ export default class App extends Container {
   };
 
   render() {
+    console.log(this.state)
     return (
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
         <div className="toolbar">
-          <button onClick={() => this.addTable()}>new table</button>
-          <button onClick={() => this.toSql()}>export SQL</button>
-          <button onClick={() => this.setState(-1)}>undo</button>
-          <button onClick={() => this.setState(1)}>redo</button>
+          <button onClick={() => this.addTable()}>New Table</button>
+          <button onClick={() => this.toSql()}>Export SQL</button>
+          <button onClick={() => this.setState(-1)}>Undo</button>
+          <button onClick={() => this.setState(1)}>Redo</button>
         </div>
-        <div className='tables'>
-          <Handle pos={{x:100, y:100}} payload="one" callback={(payload)=>true}/>
-          <Handle pos={{x:200, y:200}} payload="two" callback={(payload)=>false}/>
+        <div className='tables'>          
           {this.mapTables((table, id) =>
-              <div ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
-                <Table
-                  key={"table"+id}
-                  move={() => this.moveManager(id)}
-                  remove={() => this.removeTable(id)}
-                  update={this.delegate('tables', id, this.validateTable)}
-                  {...table} />
-              </div>
+            <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
+              <Table
+                key={"table"+id}
+                move={() => this.moveManager(id)}
+                remove={() => this.removeTable(id)}
+                update={this.delegate('tables', id, this.validateTable)}
+                {...table} />
+            </div>
           )}
         </div>
       </div>
