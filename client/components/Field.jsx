@@ -45,6 +45,9 @@ export default class Field extends Component {
   }
 
   render() {
+    let foreignKeyValue = this.props.foreignKey.tableName ? `${this.props.foreignKey.tableName}_${this.props.foreignKey.fieldName}` : ""
+
+
     return (
       
       <form className="row">
@@ -88,7 +91,7 @@ export default class Field extends Component {
         <input type="checkbox" name="primaryKey" checked={this.props.primaryKey} onChange={this.handleChange}/>
         <input type="checkbox" name="unique" checked={this.props.unique} onChange={this.handleChange}/>
         <input type="checkbox" name="notNull" checked={this.props.notNull} onChange={this.handleChange}/>
-        <input className="text-box" className="inputs" type="text" name="foreignKey" value={`${this.props.foreignKey.tableName}_${this.props.foreignKey.fieldName}`} onChange={this.handleChange}/>
+        <input className="text-box" className="inputs" type="text" name="foreignKey" value={foreignKeyValue} onChange={this.handleChange}/>
         {/* <button class="submit" type='submit'>Submit</button> */}
         <button className="RemoveField" onClick={this.props.removeField}>X</button>
         <Handle identity={`${this.props.tableName}_${this.props.name}`} callback={(indentity) => {
