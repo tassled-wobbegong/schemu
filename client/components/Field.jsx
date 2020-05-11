@@ -55,6 +55,7 @@ export default class Field extends Component {
             tableName: indentityArr[0],
             fieldName: indentityArr[1],
           }})
+          return true;
         }}/>
         <input type="text" className="inputs" name="name" value={this.props.name} onChange={this.handleChange} />
         <select value={this.props.type} name="type" onChange={this.handleChange} >
