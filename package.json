@@ -2,7 +2,7 @@
   "name": "no-more-query",
   "version": "1.0.0",
   "description": "A SQl table creator",
-  "main": "./server/index.js",
+  "main": "./server/server.js",
   "scripts": {
     "start": "node server/server.js",
     "build": "NODE_ENV=production webpack",
