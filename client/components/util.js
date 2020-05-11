@@ -45,7 +45,9 @@ export const merge = (target, path, delta) => {
     Returns a deep clone of 'target';
 */
 export const clone = (target) => {
-  if (typeof target === "object") {
+  if (target === null) {
+    return null;
+  } if (typeof target === "object") {
     const result = Array.isArray(target) ? [] : {};
     for (let key in target) {
       result[key] = clone(target[key]);

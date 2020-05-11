@@ -63,6 +63,7 @@ export default function Table(props) {
     return true;
   }
 
+  //style={{ position: 'absolute', top: props.position.y, left: props.position.x }}
   return (
     <div id="tables" onMouseDown={props.move}>
       <input type="text" id="Rename" value={props.name} onChange={handleChange}></input>
