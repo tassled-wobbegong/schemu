@@ -2,18 +2,20 @@ import Field from "./Field.jsx";
 import React from "react";
 
 export default function Table(props) {
-  const fields = props.fields.map((el, i) => {
-    return (
+  const fields = [];
+  for (let id in props.fields) {
+    const el = props.fields[id];
+    fields.push(
       <div>
         <Field
-          key={i}
+          key={"field"+id}
           {...el}
-          update={props.update("fields", i)}
-          removeField={() => removeField(i)}
+          update={props.update("fields", id)}
+          removeField={() => removeField(id)}
         />
       </div>
     );
-  });
+  }
 
   let newName;
   function handleChange(e) {
@@ -21,10 +23,11 @@ export default function Table(props) {
     props.update({ name: newName });
   }
   function addField() {
+    const id = parseInt(Object.keys(props.fields).pop()) + 1 || 1;
     props.update({
-      fields: [
+      fields: {
         ...props.fields,
-        {
+        [id]: {
           name: "id",
           type: "uuid",
           length: undefined,
@@ -35,13 +38,15 @@ export default function Table(props) {
           checkCondition: null,
           foreignKey: null,
         },
-      ],
+      }
     });
   }
-  function removeField(i) {
-    const field2 = props.fields.filter((el, ind) => ind !== i);
+  function removeField(id) {
+    const newFields = { ...props.fields };
+    console.log(id);
+    delete newFields[id];
     props.update({
-      fields: field2,
+      fields: newFields
     });
   }
 
