@@ -9,8 +9,8 @@ import './App.scss';
 
 // app receives functionality like delegate from Container
 export default class App extends Container {
-  // creates our websocket session
-  static Session(app) {
+  static Session(app) { /* <--- crazy use of capital letter */
+
     const id = (new URLSearchParams(window.location.search)).get('id');
     const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
   

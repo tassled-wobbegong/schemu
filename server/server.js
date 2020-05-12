@@ -1,42 +1,74 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-const expressWs = require("express-ws")(app);
+/* expressWs not used in this file require('express-w') returns a function
+with app as an argument. that function edits the object and add the .ws property */
+// const expressWs = require("express-ws")(app);
+require("express-ws")(app);
 
+/* using sessions and clients object to store client information*/
 const sessions = {};
 const clients = {};
 
+/* sends static assets from build that holds the bundle */
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
 app.get('/', (req, res, next) => {
+    /* 
+      user is not loading a session based on browser query path and if there
+     if a query id it should be loaded in on our sessions 
+    */
   if (!req.query.id || !sessions[req.query.id]) {
+    /* new session */
+    /* setting unique id so other people won't have a chance to join in on your session */
+    /* egon stuff here */
     const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
-    sessions[id] = {};
-    clients[id] = [];
-    return res.redirect(`/?id=${id}`);
+    /* creating random number saving it as a string and then converting it into a base64 string */
+    sessions[id] = {}; // sessions is an object holding id as keys and with object values
+    clients[id] = []; // clients is an object holding id as keys and array values
+    /* why are the objects seperate from one another? what does sessions[id] object store? */
+    return res.redirect(`/?id=${id}`); // redirect on successfull session
   }
 
+  /* 
+    send app where the client will handle the case where their is query id and a session
+    is in play
+  */
   res.sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.ws("/api/session/:id", function (ws, req) {
+app.ws("/api/session/:id", function (ws, req) { /* accepting incoming requests, ws is the client */
+  /* so websocket can hit up a path? with queries in the path? */
   const id = req.params.id;
-  if (!sessions[id]) {
+  if (!sessions[id]) { // check if session exists if not create new session based on id
     sessions[id] = {};
     clients[id] = [];
     //return ws.close();
   }
-  clients[id].push(ws);
+  clients[id].push(ws); // pushes socket in the array
 
 
-  ws.send(JSON.stringify(sessions[id]));
+  ws.send(JSON.stringify(sessions[id])); /* reading valid sessions state which is the :id and sending it
+                                            back to the client */
 
   ws.on('message', function(msg) {
-    const data = JSON.parse(msg);
-    if (typeof data === "object") {
-      sessions[id] = { ...sessions[id], ...data };
+    const data = JSON.parse(msg); // parses object
+    if (typeof data === "object") { // make sure the data is an object
+      sessions[id] = { ...sessions[id], ...data }; /* 
+                                                      update state in sessions[id] by creating a new obj
+                                                      store 2 objects which is sessions[id], data
+                                                      data will overwrite common keys and add keys if
+                                                      it has any
+                                                    */
+      /*
+        broadcast new updated state to all the clients that are tracked on the client object
+        with the sessions key
+      */
       for (let client of clients[id]) {
-        if (client !== ws) {
+        // loops through the clients that are connected on the session, each client
+        // is a socket object
+        if (client !== ws) { /* doing a check if we are dealing with a socket */
+          // if so then stringify the state and send it to the client
           client.send(JSON.stringify(sessions[id]));
         } else {
           //client.send("Received");
@@ -45,8 +77,9 @@ app.ws("/api/session/:id", function (ws, req) {
     }
   });
   ws.on("close", function () {
-    clients[id] = clients[id].filter((client) => client !== ws);
-    if (clients[id].length === 0) {
+    clients[id] = clients[id].filter((client) => client !== ws); // removes socket from the array
+    if (clients[id].length === 0) { // if array is completely empty then no is in the session
+      // delete session from memory
       delete sessions[id];
       delete clients[id];
     }
