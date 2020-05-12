@@ -7,7 +7,9 @@ import Handle from './Handle.jsx';
 
 import './App.scss';
 
+// app receives functionality like delegate from Container
 export default class App extends Container {
+  // creates our websocket session
   static Session(app) {
     const id = (new URLSearchParams(window.location.search)).get('id');
     const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
@@ -41,6 +43,7 @@ export default class App extends Container {
     return socket;
   }
   
+  // initializes state, stores session data and data for undo/redo functionality
   constructor() {
     super();
 
@@ -55,6 +58,7 @@ export default class App extends Container {
     };
   }
 
+  // handles some undo/redo logic... more investigation needed
   setState(...args) {
     let state, callback;
     let historic = false;
@@ -106,10 +110,13 @@ export default class App extends Container {
       });
     }
   }
+
+  // opens webcoket connection on initial render
   componentDidMount() {
     this.session = App.Session(this);
   }
 
+  // functionality to be passed to child components
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
 
@@ -143,6 +150,8 @@ export default class App extends Container {
     }
     return true;
   }
+
+  // calls 'transform' callback on state.tables array and maps results to new arr
   mapTables = (transform) => {
     const tables = [];
     for (const id in this.state.tables) {
@@ -152,6 +161,7 @@ export default class App extends Container {
     return tables;
   };
 
+  // handles xy pos and latter half event handling of click + drag on table component
   moveManager = (id) => {
     let curPos, lastEv;
     const  startMove = (ev) => {
@@ -177,12 +187,14 @@ export default class App extends Container {
     window.addEventListener('mouseup', endMove);
   };
 
+  // creates new file and invokes util to format for download
   toSql = () => {
     downloadAsFile(new Blob(
       [ createSQL({ tables: this.state.tables }) ], 
       { type: 'text/plain' }), 'query.txt');
   };
 
+  // renders titles, sidebar and table child components
   render() {
     return (
       <div className='App'>

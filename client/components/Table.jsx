@@ -2,6 +2,8 @@ import Field from "./Field.jsx";
 import React from "react";
 
 export default function Table(props) {
+  
+  // create array of field components of parent table to be rendered below
   const fields = [];
   for (let id in props.fields) {
     const el = props.fields[id];
