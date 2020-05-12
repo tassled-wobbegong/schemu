@@ -8,7 +8,7 @@ import Handle from './Handle.jsx';
 import './App.scss';
 
 export default class App extends Container {
-  static Session(app) {
+  static Session(app) { /* <--- crazy use of capital letter */
     const id = (new URLSearchParams(window.location.search)).get('id');
     const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
   
