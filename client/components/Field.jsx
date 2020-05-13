@@ -8,6 +8,7 @@ export default class Field extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
+  // pulls input from field and passes to update function to update global state
   handleChange(event) {
     let change = {};
     if (event.target.type === "checkbox") {
