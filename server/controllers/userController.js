@@ -60,10 +60,6 @@ userController.verifyUser = (req, res, next) => {
       console.log('Error getting hash from db', err);
     });
 };
-// `select username, password from users_table where username = ${username} and password = ${password}`
 
-// bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
-//   // result == true
-// });
 
 module.exports = userController;
