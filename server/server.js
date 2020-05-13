@@ -18,7 +18,7 @@ app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
 // required to parse body from post requests
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res, next) => {
     /* 
