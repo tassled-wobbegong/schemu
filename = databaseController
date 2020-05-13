@@ -1,0 +1,552 @@
+[33mcommit 47bb7532d833988f0c9a3fcf53300cdbbbea7bdf[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31mupstream/master[m[33m)[m
+Merge: 998c1c1 29decd8
+Author: LolDragoon <Alex_Havas@hotmail.com>
+Date:   Wed May 13 10:26:38 2020 -0400
+
+    Merge branch 'master' of https://github.com/PandaWhale18/no-more-query
+
+[33mcommit 998c1c10e99526dec4044d6cb81c96d66d78fc1a[m
+Author: LolDragoon <Alex_Havas@hotmail.com>
+Date:   Wed May 13 10:26:28 2020 -0400
+
+    route and controller skeleton achieved
+
+[33mcommit 29decd8e5f7d289ce29c8b139f4344e9200a2c69[m
+Merge: 59a2445 56a8442
+Author: LOLDragoon <Alex_Havas@hotmail.com>
+Date:   Wed May 13 10:25:52 2020 -0400
+
+    Merge pull request #4 from HpwClifford/master
+    
+    added outgoing state console.log
+
+[33mcommit 56a8442b243ab076e924b4625b2fb87a342f5eb8[m
+Author: Harry Clifford <harryclifford@Harrys-MBP.hsd1.va.comcast.net>
+Date:   Tue May 12 20:10:15 2020 -0400
+
+    created db table
+
+[33mcommit 4967b01ed112505bf11877d47e96ffc1788e0bb5[m
+Author: Harry Clifford <harryclifford@Harrys-MBP.hsd1.va.comcast.net>
+Date:   Tue May 12 19:09:24 2020 -0400
+
+    added outgoing state console.log
+
+[33mcommit 59a244594cb6d44b9957649e4676aac42bce25b1[m[33m ([m[1;32mdbRoutes[m[33m)[m
+Merge: 1d6e39e 8e1a6ae
+Author: LOLDragoon <Alex_Havas@hotmail.com>
+Date:   Tue May 12 18:44:37 2020 -0400
+
+    Merge pull request #3 from wingedking/master
+    
+    comments on server
+
+[33mcommit 8e1a6aec37ec460e96877ad38819f241903b1b3a[m
+Merge: 0e305de 1d6e39e
+Author: LOLDragoon <Alex_Havas@hotmail.com>
+Date:   Tue May 12 18:44:28 2020 -0400
+
+    Merge branch 'master' into master
+
+[33mcommit 1d6e39edf38f69c1897f8bada05f3d049e23e6f1[m
+Merge: 8478ee2 de36e64
+Author: LOLDragoon <Alex_Havas@hotmail.com>
+Date:   Tue May 12 18:39:05 2020 -0400
+
+    Merge pull request #2 from HpwClifford/master
+    
+    few frontend comments
+
+[33mcommit 0e305dee4b8f2341a95f00985e9b74769d1c2c9d[m
+Author: Yevgeniy Skroznikov <yevskro@gmail.com>
+Date:   Tue May 12 17:31:31 2020 -0400
+
+    comments on server
+
+[33mcommit de36e64425cf0780e8e57c2b424a1069ad843040[m
+Author: Harry Clifford <harryclifford@Harrys-MBP.hsd1.va.comcast.net>
+Date:   Tue May 12 17:31:20 2020 -0400
+
+    few frontend comments
+
+[33mcommit 8478ee2309063a14ecafd1984f8f78742aa51a2e[m
+Merge: 515d5a8 05d94d5
+Author: LOLDragoon <Alex_Havas@hotmail.com>
+Date:   Tue May 12 16:29:00 2020 -0400
+
+    Merge pull request #1 from LOLDragoon/master
+    
+    added pc-specific build scripts
+
+[33mcommit 05d94d54094843e78505c37589557fab3b60d956[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: LolDragoon <Alex_Havas@hotmail.com>
+Date:   Tue May 12 15:51:24 2020 -0400
+
+    added pc-specific build scripts
+
+[33mcommit 515d5a8bbcc31953f0886ce1c3a4685380bfa69a[m
+Merge: 2185a0b 2bd9b3c
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 15:47:45 2020 -0500
+
+    Merge pull request #36 from madisonbrown/master
+    
+    moved algo to client and updated server
+
+[33mcommit 2bd9b3ce1a0b8f2cf6e0e2aafafde4a64d677d11[m
+Merge: 1c83502 2185a0b
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 16:45:48 2020 -0400
+
+    refactor
+
+[33mcommit 2185a0b45fb63b71d158e1cb45b2bea506555d66[m
+Merge: 287a7e2 5b89f52
+Author: Derek <59579807+derek-sys@users.noreply.github.com>
+Date:   Mon May 11 16:14:17 2020 -0400
+
+    Merge pull request #35 from REgonLevy/master
+    
+    sort of fixed
+
+[33mcommit 5b89f527435dda269e6f3cea222018e9eabfadf5[m
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 16:07:14 2020 -0400
+
+    sort of fixed
+
+[33mcommit 1c835028d53364188fa5206fa5f8d4c107a08ef0[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 15:50:07 2020 -0400
+
+    refactor
+
+[33mcommit 287a7e2427405318eee26fd821ca6064fc1a7077[m
+Merge: bd8e928 b1ad6df
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 15:49:34 2020 -0400
+
+    Merge pull request #34 from REgonLevy/master
+    
+    Algo barely working
+
+[33mcommit b1ad6df6b2ecac4e4abc05beaeb92faddb65f725[m
+Merge: 66840a0 bd8e928
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 15:31:19 2020 -0400
+
+    algo barely working
+
+[33mcommit 66840a079d9b74167642c7116453105f133815d5[m
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 15:24:58 2020 -0400
+
+    alskdfj
+
+[33mcommit bd8e92877425c35ccd01be883656e91f355f7fdc[m
+Merge: 3186694 01a044a
+Author: Derek <59579807+derek-sys@users.noreply.github.com>
+Date:   Mon May 11 15:13:10 2020 -0400
+
+    Merge pull request #33 from madisonbrown/master
+    
+    less granular undo functionality and live position updates
+
+[33mcommit 01a044ac7eabf57070f39c41ee569ec027ed4f41[m
+Merge: b38e7ab 4cacbb4
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 15:11:40 2020 -0400
+
+    Merge branch 'master' of https://github.com/madisonbrown/no-more-query
+
+[33mcommit 3186694b51fe90e2ffcfc96a808ce3e6d025a390[m
+Merge: 30ab022 260c822
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 15:10:05 2020 -0400
+
+    Merge pull request #31 from derek-sys/master
+    
+    padding fix
+
+[33mcommit b38e7abbfc8fcf99e0a2c2d5cf8fbb02ab386ae9[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 15:09:08 2020 -0400
+
+    less granular undo functionality and live position updates
+
+[33mcommit 30ab0222af7184d36f674a7274705b7df3dec66d[m
+Merge: 033d12d 7bb51a8
+Author: Derek <59579807+derek-sys@users.noreply.github.com>
+Date:   Mon May 11 15:05:33 2020 -0400
+
+    Merge pull request #32 from blackhaj/master
+    
+    Updated Handles to prevent self connections. Added L_ & R_ labels
+
+[33mcommit 7bb51a868259fe790e70567ce542b38324077a53[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 13:58:42 2020 -0500
+
+    Updated Handles to prevent self connections. Added L_ & R_ labels
+
+[33mcommit 033d12d3e9f8c63af9715f6ea084cc9e81b9872b[m
+Merge: 3c6188b 4cacbb4
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 13:27:54 2020 -0500
+
+    Merge pull request #30 from madisonbrown/master
+    
+    line bugs, undo bug
+
+[33mcommit 4cacbb4b69bc06b9c709faa98a2f953370b75815[m
+Merge: dd9fb02 3c6188b
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 14:27:15 2020 -0400
+
+    Merge branch 'master' into master
+
+[33mcommit dd9fb020beb2fb2e7efbe76eab14e69bed780136[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 14:26:11 2020 -0400
+
+    line bugs, undo bug
+
+[33mcommit 3c6188b54ff27fec448d0dd775b1cc9de5c64b6c[m
+Merge: b7e1340 fc852b7
+Author: Derek <59579807+derek-sys@users.noreply.github.com>
+Date:   Mon May 11 14:24:31 2020 -0400
+
+    Merge pull request #29 from blackhaj/master
+    
+    No field duplicates / remove null foreign key defaults
+
+[33mcommit fc852b7d55e97a1fa8af623fef04f8725c58ea4f[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 13:21:23 2020 -0500
+
+    Updated update method in Table to not allow duplicate field names
+
+[33mcommit f43fe413c94a01f42c6c8d6ecf2b506cf564196f[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 13:20:57 2020 -0500
+
+    Updated foreign key field to not display null
+
+[33mcommit 6f357234bd7410cbf4c2ea046dfe74175933f1d7[m
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 14:11:43 2020 -0400
+
+    ldjkf
+
+[33mcommit 90df0eed51e19fad177fd7a60f129ddbe416d2e0[m
+Merge: 39aafa5 b7e1340
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 14:11:29 2020 -0400
+
+    Merge branch 'master' of https://github.com/tassled-wobbegong/no-more-query
+
+[33mcommit 260c8224138fb75013a4cee407652cdb89ddb2fa[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Mon May 11 14:08:07 2020 -0400
+
+    padding fix
+
+[33mcommit b7e13405b287c68e768939918a984c05e3d96cad[m
+Merge: 8fc9b62 5390589
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 12:45:33 2020 -0500
+
+    Merge pull request #28 from madisonbrown/master
+    
+    fixed line rendering bug
+
+[33mcommit 5390589c9b60a21e24e0ebe1a7bf90401e5cf767[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 13:44:27 2020 -0400
+
+    fixed line rendering bug
+
+[33mcommit 8fc9b6207393403751b8d1ce4f6a4ffdbcbd1cc1[m
+Merge: f1df291 37628f6
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 12:39:22 2020 -0500
+
+    Merge pull request #27 from derek-sys/master
+    
+    improved styling & added caps
+
+[33mcommit 37628f687cc4bb824a51493cfbef0dd8a4676cde[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Mon May 11 13:14:30 2020 -0400
+
+    improved styling & added caps
+
+[33mcommit f1df29129ccaafe7b0f3204604fa353a3cfd2707[m
+Merge: 1ae671a a1386ec
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 12:35:52 2020 -0400
+
+    Merge pull request #26 from blackhaj/master
+    
+    Added more data types
+
+[33mcommit a1386ecdca1154e99ad14c716d5e8a3913475a01[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 11:33:02 2020 -0500
+
+    Added more data types
+
+[33mcommit 1ae671a0f39e4757e631328fbe88c5ad42b33f11[m
+Merge: 840a006 d34cd42
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 12:07:00 2020 -0400
+
+    Merge pull request #25 from derek-sys/master
+    
+    fixed drag&drop and improved design patterns
+
+[33mcommit d34cd42f7add0e38e9bd9c961f921f8927fe7e18[m
+Merge: 041ed24 840a006
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 12:06:38 2020 -0400
+
+    Merge branch 'master' into master
+
+[33mcommit 840a00604a9aad2e33052f78394b4a2efab5962a[m
+Merge: 87a89af 768a2e6
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 11:54:10 2020 -0400
+
+    Merge pull request #24 from blackhaj/master
+    
+    Implement Handles in Field component
+
+[33mcommit 041ed24c839ce60f04a59f901ac7e630b2e8aa26[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Mon May 11 11:53:54 2020 -0400
+
+    fixed drag&drop and improved design patterns
+
+[33mcommit 768a2e6c5fd890b5e675810d4f0463916baeb3f3[m
+Merge: dd1948a 87a89af
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 11:53:25 2020 -0400
+
+    Merge branch 'master' into master
+
+[33mcommit dd1948abb27d3bb93b7cddc5fe7ca0a4c685da00[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 10:48:42 2020 -0500
+
+    Implement Handles in Field component
+
+[33mcommit 87a89afdcff442c82bcdcc48dae628dc409b9b91[m
+Merge: 5d7d239 7dde36b
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 10:48:10 2020 -0500
+
+    Merge pull request #23 from madisonbrown/master
+    
+    bug fix
+
+[33mcommit 7dde36b1bdbcc8c5e92f7b402a2a7c79ad253bda[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 11:40:49 2020 -0400
+
+    bug fix
+
+[33mcommit 5d7d2390ac444beb6eca66dd99eeb7365a8225d5[m
+Merge: fa25f9b 13e3c1e
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Mon May 11 11:13:00 2020 -0400
+
+    Merge pull request #22 from derek-sys/master
+    
+    remove table working
+
+[33mcommit 13e3c1e4d9a0ccdfd86682bbac2a2f711fd71589[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Mon May 11 11:02:23 2020 -0400
+
+    remove table working
+
+[33mcommit fa25f9b97b75858764ef983ee56a425200e257eb[m
+Merge: 831a40f 5288fa9
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 09:55:54 2020 -0500
+
+    Merge pull request #21 from madisonbrown/master
+    
+    fixed handle class
+
+[33mcommit 5288fa9c32d4be61edccc08a56f6df3c4de64ca9[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 10:43:03 2020 -0400
+
+    fixed handle class
+
+[33mcommit 39aafa510b16fd460dd172960aae17dfd4a3b5c4[m
+Merge: 7b276d7 831a40f
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 10:05:57 2020 -0400
+
+    Merge branch 'master' of https://github.com/tassled-wobbegong/no-more-query
+
+[33mcommit 831a40febf2b3ce10f5a0bd6c6414f3e990dce1c[m
+Merge: 46724cd a351f26
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 09:02:36 2020 -0500
+
+    Merge pull request #20 from madisonbrown/master
+    
+    Fixed issues, Connector class
+
+[33mcommit 7b276d7b2dc7835d9b9479d95a0839abca0a75a6[m
+Merge: dc898bf 46724cd
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 09:57:31 2020 -0400
+
+    Merge branch 'master' of https://github.com/tassled-wobbegong/no-more-query
+
+[33mcommit dc898bf30332a781a786a06842fd555b52c184e2[m
+Author: Egon Cohen <egoncohen@Egons-MacBook-Pro.local>
+Date:   Mon May 11 09:57:26 2020 -0400
+
+    ksjlfdj
+
+[33mcommit a351f26c9003dfef4d3c2c5e0afacb4400f0881d[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 09:55:32 2020 -0400
+
+    refactor
+
+[33mcommit 3dc52c95318b6bd4489a7c1e318d2d5bed3c0375[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Mon May 11 09:54:46 2020 -0400
+
+    created component for linking fields
+
+[33mcommit 46724cddfea8ec0347b73026fff1a3140d4f47b7[m
+Merge: eb0794a 5d9825f
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Mon May 11 08:46:32 2020 -0500
+
+    Merge pull request #19 from derek-sys/master
+    
+    new hotness tweaks
+
+[33mcommit 5d9825f3578e653c8dd2e7a8f95b333512815bc1[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Mon May 11 08:52:30 2020 -0400
+
+    morning tweaks
+
+[33mcommit 6766b40593a71c2d98401b8cadd15537a9a77bd0[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Sun May 10 23:11:36 2020 -0400
+
+    new hotness tewaks
+
+[33mcommit e11dab6580adb86810adb5c8b1bca44280379c44[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Sun May 10 21:36:36 2020 -0400
+
+    refactor
+
+[33mcommit f7f7510188383a84279b460895a42c719b861d40[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Sun May 10 21:36:12 2020 -0400
+
+    fixed remove field problem
+
+[33mcommit fe7e03f08cc322c24aae321b871daee4dff5c639[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Sun May 10 21:29:37 2020 -0400
+
+    refactor
+
+[33mcommit eb0794ab1f32b7754c39bd86f7a37f0868466b7d[m
+Merge: 262dd20 ed8e5b8
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Sun May 10 21:21:41 2020 -0400
+
+    Merge pull request #18 from derek-sys/master
+    
+    improved styling. still needs adjustments
+
+[33mcommit ed8e5b83f2c900b65e24a16da2bdd82c31712d07[m
+Author: Derek Lauziere <dereklauziere@Dereks-Air.home>
+Date:   Sun May 10 20:58:57 2020 -0400
+
+    improved styling. still needs adjustments
+
+[33mcommit 262dd20239a5c3809460b1e8ae7c22c0eeef4bde[m
+Merge: 50dd73d f778b12
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Sun May 10 19:12:49 2020 -0400
+
+    Merge pull request #17 from blackhaj/master
+    
+    Table now updates correctly. Document downloads also working
+
+[33mcommit f778b12c5e19a142f686fb6e34c60b79134a618a[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Sun May 10 17:46:23 2020 -0500
+
+    Tweaked updated method in table as per Madison's comments
+
+[33mcommit e765332861b05501337f9c0ca51749e7800956dd[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Sun May 10 17:42:44 2020 -0500
+
+    Field update and download files changes
+
+[33mcommit 50dd73d457364595104a258b4e0be50c6a9556ad[m
+Merge: d5637dc a937902
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Sun May 10 18:30:50 2020 -0400
+
+    Merge pull request #15 from blackhaj/master
+    
+    Field to update top level state. SQLController to process exports
+
+[33mcommit a937902276ba4209ebdb3db6749efd5d8293c49c[m
+Merge: 40d8ac0 d5637dc
+Author: madisonbrown <mbrown3391@gmail.com>
+Date:   Sun May 10 18:29:52 2020 -0400
+
+    Merge branch 'master' into master
+
+[33mcommit d5637dc4c1aad25d2f9c3c56493a498a39474bca[m
+Merge: ff06d54 f0ffa2e
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Sun May 10 17:24:24 2020 -0500
+
+    Merge pull request #16 from madisonbrown/master
+    
+    websocket functionality
+
+[33mcommit 40d8ac0c4fdd33c504956a45dcb0acc1f663b80d[m
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Sun May 10 17:21:59 2020 -0500
+
+    Download file implemented
+
+[33mcommit f0ffa2efc792dec268870ab318f4bede7ae96821[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Sun May 10 18:11:54 2020 -0400
+
+    websocket functionality
+
+[33mcommit ea1ada00d56d002d7436513bdedc768d2e3e42cf[m
+Author: Madison Brown <mbrown3391@gmail.com>
+Date:   Sun May 10 18:11:26 2020 -0400
+
+    websocket functionality
+
+[33mcommit 825ba0a6c07306df3eb747ed1996a79f8cdc9331[m
+Merge: 1eed740 ff06d54
+Author: Henry Black <blackhaj@gmail.com>
+Date:   Sun May 10 15:52:01 2020 -0500
+
+    Merge branch 'master' of https://github.com/tassled-wobbegong/no-more-query

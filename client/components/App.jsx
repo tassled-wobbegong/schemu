@@ -44,6 +44,7 @@ export default class App extends Container {
     // send data through websocket
     socket.sync = (state) => {
       console.log('Outgoing state', state);
+      console.log('trying to stingify', JSON.stringify(state))
       return socket.send(JSON.stringify(state)); 
     }
 
@@ -94,6 +95,7 @@ export default class App extends Container {
     } else if (typeof args[0] === 'object') {
       state = args.pop();
       callback = args.pop();
+      console.log('setting state');
     }
 
     if (!historic) {
@@ -109,6 +111,7 @@ export default class App extends Container {
       }
     }
 
+    console.log('state', state);
     if (state) {
       return super.setState(state, (...args) => {
         if (!external) {
@@ -253,9 +256,9 @@ export default class App extends Container {
       // success update instances
       const instances = this.state.instances;
       instances.push(savedObj);
-      this.setState({instances})
-    })
-    .catch( () => alert('error saving instance!'));
+      console.log('wtf', this);
+      this.setState({...this.state, instances: instances});
+    }).catch( () => alert('error saving instance!'));
   }
 
   render() {
