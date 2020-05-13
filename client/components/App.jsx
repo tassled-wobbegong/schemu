@@ -37,7 +37,6 @@ export default class App extends Container {
     };
 
     socket.sync = (state) => socket.send(JSON.stringify(state)); 
-
     return socket;
   }
   
@@ -49,6 +48,7 @@ export default class App extends Container {
     this.past = [];
     this.future = [];
     this.updating = false;
+    this.refInputInstance = React.createRef();
 
     this.state = {
       tables: {}
@@ -183,15 +183,34 @@ export default class App extends Container {
       { type: 'text/plain' }), 'query.txt');
   };
 
+  save = () => {
+    const savedObj = {
+      instanceName: this.refInputInstance.current.value,
+      currentState: this.state,
+      pastState: this.past,
+      futureState: this.future
+    };
+    console.log('saved object:', savedObj);
+    fetch('/saved', {
+      method: 'post',
+      body: JSON.stringify(savedObj)
+    }).then((res) => {
+      return res.json();
+    }).then( () => alert('current instance saved successfully!'))
+    .catch( () => alert('error saving instance!'));
+  }
+
   render() {
     return (
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
         <div className="toolbar">
-          <button onClick={() => this.addTable()}>New Table</button>
+          <button onClick={() => this.addTable()  }>New Table</button>
           <button onClick={() => this.toSql()}>Export SQL</button>
           <button onClick={() => this.setState(-1)}>Undo</button>
           <button onClick={() => this.setState(1)}>Redo</button>
+          <input ref={this.refInputInstance} className="instance-name" type="text" placeholder="instance name"/>
+          <button onClick={() => this.save()}>Save</button>
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
