@@ -212,11 +212,15 @@ export default class App extends Container {
     };
     console.log('saved object:', savedObj);
     fetch('/saved', {
-      method: 'post',
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(savedObj)
     }).then((res) => {
       return res.json();
-    }).then( () => alert('current instance saved successfully!'))
+    }).then( (json) => {alert('current instance saved successfully!')
+        console.log(json)})
     .catch( () => alert('error saving instance!'));
   }
 
