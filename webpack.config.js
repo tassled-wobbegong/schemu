@@ -9,6 +9,7 @@ module.exports = {
     publicPath: "/build/",
     proxy: {
       "/api": "http://localhost:3000",
+      "/saved": "http://localhost:3000"
     },
     port: 8080,
     hot: true,

@@ -13,7 +13,7 @@ export const downloadAsFile = (blob, filename) => {
 */
 export const merge = (target, path, delta) => {
   const key = path.shift();
-
+// path[0] = index of an array
   let result;
   if (Array.isArray(target)) {
     result = [ ...target ];
