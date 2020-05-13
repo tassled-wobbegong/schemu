@@ -99,4 +99,26 @@ app.ws("/api/session/:id", function (ws, req) { /* accepting incoming requests, 
   });
 });
 
+
+
+
+// generic error handling route, very useful.
+
+app.use(function (err,req,res,next){
+  console.log(err)
+  const defaultErr = {
+    log: `MIDDLEWARE ERROR FOUND BUT SOMEONE DIDN'T WRITE A MESSAGE FOR PATHING TO HERE`,
+    status: 400,
+    message:{err: 'Sorry, something went wrong on our server'}
+  }
+  const errorObj = Object.assign({}, defaultErr,err)
+  console.log(errorObj.log)
+  res.status(errorObj.status).json(errorObj.message)
+})
+
+app.use('*',(req, res) =>
+{
+  res.status(404).send("Hey, there's nothing here, go on, get out")
+})
+
 app.listen(3000, () => console.log("listening..."));
