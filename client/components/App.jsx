@@ -74,7 +74,7 @@ export default class App extends Container {
     let state, callback;
     let historic = false;
     let external = false;
-    
+    console.log('line 77', this.state);
     if (args.length === 1 && typeof args[0] === 'number') {
       historic = true;
       let dir = args.pop();
@@ -98,8 +98,11 @@ export default class App extends Container {
       console.log('setting state');
     }
 
-    if (!historic) {
+    console.log('line 101', state);
+    if (!historic && !state.instances) {
+      console.log('line 103');
       if (!this.updating) {
+        console.log('not updating')
         const snapshot = this.snapshot();
         this.updating = onPause(500, () => {
           this.future = [];
@@ -107,7 +110,9 @@ export default class App extends Container {
           this.updating = null;
         });
       } else {
+        console.log('this.updating() 1');
         this.updating();
+        console.log('this.updating() 2');
       }
     }
 
@@ -226,22 +231,29 @@ export default class App extends Container {
     );
   }
 
-  loadStateFromInstance = () => {
-    const loadedObj = {
+  loadStateFromInstance = (e) => {
+    /*const loadedObj = {
       instanceName: 'dur',
       currentState: {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 296, y: 99}}}},
       pastState: [{tables: {}}, {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 25, y: 25}}}}],
       futureState: []
-    };
-    this.past = loadedObj.pastState;
-    this.future = loadedObj.futureState;
-    this.setState(loadedObj.currentState);
+    };*/
+    e.persist();
+    console.log(e.target.textContent);
+    //this.past = loadedObj.pastState;
+    //this.future = loadedObj.futureState;
+    //this.setState(loadedObj.currentState);
+    const instance = this.state.instances.find((el) => el.instanceName === e.target.textContent);
+    this.past = instance.pastState;
+    this.future = instance.futureState;
+    console.log(instance.currentState);
+    this.setState({...this.state, tables: instance.currentState.tables});
   }
 
   saveInstance = () => {
     const savedObj = {
       instanceName: this.refInputInstance.current.value,
-      currentState: this.state,
+      currentState: {tables: this.state.tables}, /* TODO: change currentState to currentTables let alex know */
       pastState: this.past,
       futureState: this.future
     };
@@ -257,8 +269,15 @@ export default class App extends Container {
       const instances = this.state.instances;
       instances.push(savedObj);
       console.log('wtf', this);
-      this.setState({...this.state, instances: instances});
+      this.setState({instances: instances});
     }).catch( () => alert('error saving instance!'));
+  }
+
+  instanceButtons = () => {
+    return this.state.instances.map((instance) => {
+      console.log(instance.instanceName);
+      return <button onClick={this.loadStateFromInstance}>{instance.instanceName}</button>
+    });
   }
 
   render() {
@@ -272,7 +291,8 @@ export default class App extends Container {
           <button onClick={() => this.setState(1)}>Redo</button>
           <input ref={this.refInputInstance} className="instance-name" type="text" placeholder="instance name"/>
           <button onClick={() => this.saveInstance()}>Save</button>
-          <button onClick={() => this.loadStateFromInstance()}>Load</button>
+          Saved Instances
+          {this.instanceButtons()}
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
