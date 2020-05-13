@@ -194,7 +194,6 @@ export default class App extends Container {
       { type: 'text/plain' }), 'query.txt');
   };
 
-<<<<<<< HEAD
   save = () => {
     const savedObj = {
       instanceName: this.refInputInstance.current.value,
@@ -212,9 +211,6 @@ export default class App extends Container {
     .catch( () => alert('error saving instance!'));
   }
 
-=======
-  // renders titles, sidebar and table child components
->>>>>>> 8e1a6aec37ec460e96877ad38819f241903b1b3a
   render() {
     return (
       <div className='App'>
