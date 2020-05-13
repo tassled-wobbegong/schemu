@@ -17,6 +17,8 @@ export default class App extends Container {
     socket.onopen = function(event) {
       console.log("Connection established...");
     };
+
+    // receive data from websocket
     socket.onmessage = function(event) {
       const data = JSON.parse(event.data);
       if (typeof data === 'object') {
@@ -38,7 +40,11 @@ export default class App extends Container {
       console.log(`Error: ${error.message}.`);
     };
 
-    socket.sync = (state) => socket.send(JSON.stringify(state)); 
+    // send data through websocket
+    socket.sync = (state) => {
+      console.log('Outgoing state', state);
+      return socket.send(JSON.stringify(state)); 
+    }
 
     return socket;
   }
