@@ -22,8 +22,10 @@
   },
   "homepage": "https://github.com/blackhaj/no-more-query#readme",
   "dependencies": {
+    "concurrently": "^5.2.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
+    "pg": "^8.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "url-loader": "^4.1.0"
