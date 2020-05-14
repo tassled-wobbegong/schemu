@@ -4,6 +4,7 @@ import Container from './Container.jsx';
 import { downloadAsFile, onPause, createSQL } from './util.js';
 import Table from './Table.jsx';
 import Handle from './Handle.jsx';
+import UserControlPanel from './userControlPanel.jsx'
 
 import './App.scss';
 
@@ -61,6 +62,7 @@ export default class App extends Container {
     this.future = [];
     this.updating = false;
     this.refInputInstance = React.createRef();
+    this.login = this.login.bind(this)
 
     this.state = {
       tables: {}
@@ -224,6 +226,14 @@ export default class App extends Container {
     .catch( () => alert('error saving instance!'));
   }
 
+
+  login = (event) =>{
+    console.log(event.target.form[0].value)
+    console.log(event.target.form[1].value)
+    super.setState()
+
+  }
+
   render() {
     return (
       <div className='App'>
@@ -236,6 +246,7 @@ export default class App extends Container {
           <input ref={this.refInputInstance} className="instance-name" type="text" placeholder="instance name"/>
           <button onClick={() => this.save()}>Save</button>
         </div>
+        <UserControlPanel />
         <div className='tables'>          
           {this.mapTables((table, id) =>
             <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
