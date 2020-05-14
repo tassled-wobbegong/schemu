@@ -4,7 +4,7 @@ import Container from './Container.jsx';
 import { downloadAsFile, onPause, createSQL } from './util.js';
 import Table from './Table.jsx';
 import Handle from './Handle.jsx';
-
+import UserControlPanel from './userControlPanel.jsx'
 import './App.scss';
 
 // app receives functionality like delegate from Container
@@ -299,6 +299,7 @@ export default class App extends Container {
           Saved Instances
           {this.instanceButtons()}
         </div>
+        <UserControlPanel/>
         <div className='tables'>          
           {this.mapTables((table, id) =>
             <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
