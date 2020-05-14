@@ -10,6 +10,8 @@ class userControlPanel extends Component {
     this.state ={
       isLoggedIn: false,
       isSigningUp: false,
+      username: '',
+      //might need id
     }
     this.logIn = this.logIn.bind(this)
     this.signUp = this.signUp.bind(this)
@@ -29,9 +31,21 @@ class userControlPanel extends Component {
       body: JSON.stringify(logInfo),
     })
       .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((err) => console.log(err));
-    this.setState({isLoggedIn: true})
+      .then((result) => {
+             console.log(result) // expecting the result to be a true or false based on log in.
+             if(result === true){
+              this.setState({isLoggedIn: true})
+              this.setState({username:logInfo.username})
+              console.log(this.state)
+              //need to call server to load user-specific data
+             }
+            })
+      .catch((err) => { 
+        //this is error handling for when our server does something unexpected. Otherwise it should be handled by the above .then
+          console.log("this is from the catch", err)
+          alert(err)
+      });
+
    
   }
 
@@ -56,8 +70,30 @@ class userControlPanel extends Component {
 
   }
 
-  signOut = () =>{
+  signOut = () => {
     this.setState({isLoggedIn:false})
+    fetch('/authenticate/logout')
+    .then(response => {
+      console.log(response);
+    });
+  }
+  
+
+  componentDidMount(){
+    fetch('/authenticate/verify')
+    .then(response => response.json())
+    .then(json=> {
+      if (json.result === true){
+        this.setState({isLoggedIn: true,
+                        username: json.username}
+                      )
+      }
+    })
+    .catch((err) => { 
+      //this is error handling for when our server does something unexpected. Otherwise it should be handled by the above .then
+        console.log("this is from the catch", err)
+        alert(err)
+    });
   }
 
   render(){
