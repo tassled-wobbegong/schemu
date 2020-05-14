@@ -58,7 +58,7 @@ transition: border-width 0.25s ease;
 .tables {
   flex-grow: 1;
 }
-#tables {
+#tables, .userPanel {
   background-color: rgb(61, 82, 102);
   opacity: 0.9;
   padding: 2px 0px 8px 4px;
@@ -69,6 +69,48 @@ transition: border-width 0.25s ease;
   text-shadow: 3px 3px 8px black;
   border: 6px outset;
   border-color: rgb(79, 88, 95);
+}
+
+.userPanel{
+  display: flex;
+  flex-direction: column;
+  font-size: 1em;
+  max-width: 10%;
+  max-height: auto;
+  justify-content: center;
+  align-items: center;
+
+  label{
+    display: flex;
+  
+  }
+  form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    input{
+      width: 90%;
+    }
+    button{
+      width: 50%;
+    }
+  }
+  .signIn{
+    display:flex;
+    flex-flow: column;
+
+  }
+  .signUp{
+    display:flex;
+    flex-flow: column;
+    
+  }
+  .loggedIn{
+    display:flex;
+    flex-flow: column;
+    align-content: center;
+    
+  }
 }
 
 #removetable{
