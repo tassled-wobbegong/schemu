@@ -19,9 +19,10 @@ const clients = {};
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
 // required to parse body from post requests
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
 
 app.get('/', (req, res, next) => {
     /* 

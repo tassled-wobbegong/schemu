@@ -13,8 +13,16 @@ router.post('/signup',
 router.post('/login',
   userController.verifyUser,
   sessionController.createJWT,
-  // sessionController.setCookie,
-  (req, res) => res.status(200).json(res.locals.token));
+  sessionController.setCookie,
+  (req, res) => res.status(200).json(true));
+
+router.get('/verify',
+  sessionController.authenticateToken,
+  (req, res) => res.status(200).json(res.locals.verifiedUser));
+
+router.get('/logout', 
+  sessionController.deleteToken,
+  (req, res) => res.status(200).send('cookies cleared'));
 
 
 module.exports = router;
