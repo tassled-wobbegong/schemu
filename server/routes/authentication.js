@@ -1,6 +1,7 @@
-const path = require("path");
-const express = require("express");
-const userController = require(path.resolve(__dirname, "../controllers/userController.js"));
+const express = require('express');
+
+const userController = require('../controllers/userController.js');
+const sessionController = require('../controllers/sessionController.js');
 
 const router = express.Router();
 
@@ -11,7 +12,9 @@ router.post('/signup',
 
 router.post('/login',
   userController.verifyUser,
-  (req, res) => res.status(200).json(res.locals.result));
+  sessionController.createJWT,
+  sessionController.authenticateToken,
+  (req, res) => res.status(200).json(res.locals.user));
 
 
 module.exports = router;

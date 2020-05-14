@@ -105,7 +105,7 @@ app.ws("/api/session/:id", function (ws, req) { /* accepting incoming requests, 
 // generic error handling route, very useful.
 
 app.use(function (err,req,res,next){
-  console.log(err)
+  // console.log(err)
   const defaultErr = {
     log: `MIDDLEWARE ERROR FOUND BUT SOMEONE DIDN'T WRITE A MESSAGE FOR PATHING TO HERE`,
     status: 400,
