@@ -1,5 +1,4 @@
-const path = require('path');
-require('dotenv').config(path.resolve());
+require('dotenv').config();
 
 const jwt = require('jsonwebtoken');
 const db = require('../database/db.js');
