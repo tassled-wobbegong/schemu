@@ -17,11 +17,20 @@ class userControlPanel extends Component {
 
 
   logIn = (event) => {
-    let logInfo = {
+    const logInfo = {
       username: event.target.form[0].value,
       password: event.target.form[1].value
     }
     console.log(logInfo)
+    // we will post req from here
+    fetch('/authenticate/login', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(logInfo),
+    })
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err));
     this.setState({isLoggedIn: true})
    
   }
@@ -31,11 +40,17 @@ class userControlPanel extends Component {
   }
 
   register = (event) => {
-    let logInfo = {
+    const logInfo = {
       username: event.target.form[0].value,
       password: event.target.form[1].value
     }
     console.log(logInfo)
+    fetch('/authenticate/signup', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(logInfo),
+    })
+      .catch((err) => console.log(err));
     this.setState({isLoggedIn: true,
                     isSigningUp: false})
 
@@ -124,6 +139,16 @@ class userControlPanel extends Component {
           <button type="button" onClick = {this.signOut} >Log Out</button>
         </div>
         
+        )}
+        else if(this.state.isLoggedIn){
+          return(
+          <div className = "loggedIn">
+            Welcome Username
+            <br></br>
+            <br></br>
+            <button type="button" onClick = {this.signOut} >Log Out</button>
+          </div>
+          
         )}
       })()
     }
