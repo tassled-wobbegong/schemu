@@ -9,11 +9,16 @@ import './App.scss';
 
 // app receives functionality like delegate from Container
 export default class App extends Container {
-  static Session(app) { /* <--- crazy use of capital letter */
+  static Session(app) { /* <--- crazy use of capital letter, TODO: refactor to use lower case letter */
 
-    const id = (new URLSearchParams(window.location.search)).get('id');
-    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
+    const id = (new URLSearchParams(window.location.search)).get('id'); // grab id from browsers http path
+    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`); // connect a websocket session
   
+    /* 
+     set up socket event listeners onopen, onmessage, onerror, onclose, s
+     sync is not part of the socket api, is a custom property added
+     to wrap around sockets send api 
+    */
     socket.onopen = function(event) {
       console.log("Connection established...");
     };
@@ -30,9 +35,10 @@ export default class App extends Container {
       console.log("Message received: ", data);
     };
     socket.onclose = function(event) {
-      if (event.wasClean) {
+      if (event.wasClean) { // check if it was a user created disconnect
         console.log(`Goodbye!`);
-      } else {
+      } else { // if the user did not manually disconnect then the connection was disconnected
+              // by other means, i.e. user timed out, computer froze.
         console.log('Connection died.');
       }
     };
@@ -43,6 +49,7 @@ export default class App extends Container {
 
     // send data through websocket
     socket.sync = (state) => {
+      // state is an object that is connected to App's state
       console.log('Outgoing state', state);
       console.log('trying to stingify', JSON.stringify(state))
       return socket.send(JSON.stringify(state)); 
@@ -60,12 +67,16 @@ export default class App extends Container {
 
     this.past = [];
     this.future = [];
-    this.updating = false;
+    this.updating = false;  /* <-----
+                              updating variable is changing types through out the application 
+                              runtime from a boolean, null, and function. <.< 
+                              TODO: refactor to have a consistent type 
+                            */
+                        
+    // creating a reference for the instance name element to read its value
     this.refInputInstance = React.createRef();
-    this.loadAllInstances = this.loadAllInstances.bind(this)
-    this.saveInstance = this.saveInstance.bind(this)
-    this.loadStateFromInstance = this.loadStateFromInstance.bind(this)
-    this.instanceButtons = this.instanceButtons.bind(this)
+
+    // state will be read at custom mode setState of App component to send to the websocket server
     this.state = {
       tables: {},
       instances: []
@@ -74,17 +85,20 @@ export default class App extends Container {
 
   // handles some undo/redo logic... more investigation needed
   setState(...args) {
+    // the state variable eventually will hold state that will be called by super.setState()
     let state, callback;
-    let historic = false;
-    let external = false;
-    console.log('line 77', this.state);
+    let historic = false; // flag that is set when the state should be stored in the past?
+    let external = false; // flag that is set when we what to send the state to the web socket server
+    
     if (args.length === 1 && typeof args[0] === 'number') {
+      // if only a number was passed then we are going through the history of past and future
+      // the number if positive will go forward in history, and backwards in history if negative
       historic = true;
       let dir = args.pop();
       if (dir < 0) {
         state = this.past.pop();
         if (state) {
-          this.future.push(this.snapshot());
+          this.future.push(this.snapshot()); 
         }
       } else if (dir > 0) {
         state = this.future.pop();
@@ -93,40 +107,35 @@ export default class App extends Container {
         }
       }
     } else if (typeof args[0] === 'object' && args[1] === true) {
+      // not historic and an object has been passdown and args[1] flag
+      // tells us if we want to send the state to the websocket server
       external = true;
       state = args[0];
     } else if (typeof args[0] === 'object') {
       state = args.pop();
       callback = args.pop();
-      console.log('setting state');
     }
 
-    console.log('line 101', state);
-    if (!historic && !state.instances) {
-      console.log('line 103');
+    if (!historic && !state.instances) { // if nots historic the code will try to push a snapshot on the array
       if (!this.updating) {
-        console.log('not updating')
         const snapshot = this.snapshot();
-        this.updating = onPause(500, () => {
+        this.updating = onPause(500, () => { /* updating is now holding a method, i.e. witchcraft */
           this.future = [];
           this.past.push(snapshot);
           this.updating = null;
         });
       } else {
-        console.log('this.updating() 1');
         this.updating();
-        console.log('this.updating() 2');
       }
     }
 
-    console.log('state', state);
-    if (state) {
+
+    if (state) { // make sure we have state to send to react setState
       return super.setState(state, (...args) => {
-        if (!external) {
-          console.log('sync')
+        if (!external) { // read flag if we need to send this to the websocket server aswell
           this.session.sync(this.state);
         }
-        if (callback) {
+        if (callback) { /* not sure what callbacks are about here */
           callback(...args);
         }
       });
@@ -202,6 +211,7 @@ export default class App extends Container {
       this.delegate('tables', id)({ position: curPos });
     };
     const endMove = () => {
+      /* add event listeners on the mouse so we can keep tracks of its state and send to websocket server */
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
     };
@@ -218,37 +228,29 @@ export default class App extends Container {
   };
 
   loadAllInstances = () => {
+    /* request instances from the server */
     fetch('/saved', {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
     }).then((res) => {
       return res.json();
     }).then( (objects) => {
+      /* if request valid the server sends an array of instance objects */
       const instances = objects.map((obj) => {
         const { savedstate } = obj;
         const { currentState, pastState, futureState } = savedstate;
         return { instanceName: obj.name, currentState, pastState, futureState };
       })
-      this.setState({instances});
+      this.setState({instances}); /* update the state with newly objects */
     }).catch( () => alert('error loading instances from server'))
- /*   this.setState(
-      {
-        instances: 
-        [
-          {
-            instanceName: 'dur',
-            currentState: {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 296, y: 99}}}},
-            pastState: [{tables: {}}, {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 25, y: 25}}}}],
-            futureState: []
-          }
-        ]
-      },
-      true
-    );*/
   }
 
   loadStateFromInstance = (e) => {
-    e.persist();
+    /* 
+      instance objects are stored in the state object of the component 
+      find the instance of state that the user wants to load and sync the current state
+      with the found state 
+    */
     const instance = this.state.instances.find((el) => el.instanceName === e.target.value);
     this.past = instance.pastState;
     this.future = instance.futureState;
@@ -256,29 +258,30 @@ export default class App extends Container {
   }
 
   saveInstance = () => {
-    const savedObj = {
+    /* save the current state of the application in an instance object */
+    const savedObj = { // create instance
       instanceName: this.refInputInstance.current.value,
       currentState: {tables: this.state.tables}, /* TODO: change currentState to currentTables let alex know */
       pastState: this.past,
       futureState: this.future
     };
-    console.log('saved object:', savedObj);
     fetch('/saved', {
+      // post the object to the server, where the server will save that instance
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(savedObj)
     }).then((res) => {
       return res.json();
     }).then( () => {
-      // success update instances
+      // on success update instances
       const instances = this.state.instances;
       instances.push(savedObj);
-      console.log('wtf', this);
       this.setState({instances: instances});
     }).catch( () => alert('error saving instance!'));
   }
 
   instanceButtons = () => {
+    /* creates the select drop down of options that represent loadable instances in the client */
     const options = this.state.instances.map((instance) => {
       console.log(instance.instanceName);
       return <option>{instance.instanceName}</option>
@@ -302,8 +305,7 @@ export default class App extends Container {
           Saved Instances
           {this.instanceButtons()}
         </div>
-        <UserControlPanel  loadAllInstances = {this.loadAllInstances} saveInstance = {this.saveInstance} loadStateFromInstance = {this.loadStateFromInstance}
-                          instanceButtons = {this.instanceButtons} refInputInstance = {this.refInputInstance} instances = {this.state.instances}/>
+        <UserControlPanel/>
         <div className='tables'>          
           {this.mapTables((table, id) =>
             <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>

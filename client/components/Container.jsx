@@ -17,6 +17,7 @@ export default class Container extends React.Component {
     }
 
     return (...args) => {
+      /* here be dragons */
       if (args.length && typeof args[args.length - 1] === 'object') {
         const delta = args.pop();
         if (!validate || validate(delta, args) === true) {
