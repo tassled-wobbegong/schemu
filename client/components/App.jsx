@@ -44,6 +44,7 @@ export default class App extends Container {
     // send data through websocket
     socket.sync = (state) => {
       console.log('Outgoing state', state);
+      console.log('trying to stingify', JSON.stringify(state))
       return socket.send(JSON.stringify(state)); 
     }
 
@@ -63,7 +64,8 @@ export default class App extends Container {
     this.refInputInstance = React.createRef();
 
     this.state = {
-      tables: {}
+      tables: {},
+      instances: []
     };
   }
 
@@ -72,7 +74,7 @@ export default class App extends Container {
     let state, callback;
     let historic = false;
     let external = false;
-    
+    console.log('line 77', this.state);
     if (args.length === 1 && typeof args[0] === 'number') {
       historic = true;
       let dir = args.pop();
@@ -93,10 +95,14 @@ export default class App extends Container {
     } else if (typeof args[0] === 'object') {
       state = args.pop();
       callback = args.pop();
+      console.log('setting state');
     }
 
-    if (!historic) {
+    console.log('line 101', state);
+    if (!historic && !state.instances) {
+      console.log('line 103');
       if (!this.updating) {
+        console.log('not updating')
         const snapshot = this.snapshot();
         this.updating = onPause(500, () => {
           this.future = [];
@@ -104,13 +110,17 @@ export default class App extends Container {
           this.updating = null;
         });
       } else {
+        console.log('this.updating() 1');
         this.updating();
+        console.log('this.updating() 2');
       }
     }
 
+    console.log('state', state);
     if (state) {
       return super.setState(state, (...args) => {
         if (!external) {
+          console.log('sync')
           this.session.sync(this.state);
         }
         if (callback) {
@@ -123,6 +133,7 @@ export default class App extends Container {
   // opens webcoket connection on initial render
   componentDidMount() {
     this.session = App.Session(this);
+    this.loadAllInstances();
   }
 
   // functionality to be passed to child components
@@ -203,25 +214,75 @@ export default class App extends Container {
       { type: 'text/plain' }), 'query.txt');
   };
 
-  save = () => {
+  loadAllInstances = () => {
+    fetch('/saved', {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+    }).then((res) => {
+      return res.json();
+    }).then( (objects) => {
+      const instances = objects.map((obj) => {
+        const { savedstate } = obj;
+        const { currentState, pastState, futureState } = savedstate;
+        return { instanceName: obj.name, currentState, pastState, futureState };
+      })
+      this.setState({instances});
+    }).catch( () => alert('error loading instances from server'))
+ /*   this.setState(
+      {
+        instances: 
+        [
+          {
+            instanceName: 'dur',
+            currentState: {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 296, y: 99}}}},
+            pastState: [{tables: {}}, {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 25, y: 25}}}}],
+            futureState: []
+          }
+        ]
+      },
+      true
+    );*/
+  }
+
+  loadStateFromInstance = (e) => {
+    e.persist();
+    const instance = this.state.instances.find((el) => el.instanceName === e.target.value);
+    this.past = instance.pastState;
+    this.future = instance.futureState;
+    this.setState({tables: instance.currentState.tables});
+  }
+
+  saveInstance = () => {
     const savedObj = {
       instanceName: this.refInputInstance.current.value,
-      currentState: this.state,
+      currentState: {tables: this.state.tables}, /* TODO: change currentState to currentTables let alex know */
       pastState: this.past,
       futureState: this.future
     };
     console.log('saved object:', savedObj);
     fetch('/saved', {
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/json'
-      },
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(savedObj)
     }).then((res) => {
       return res.json();
-    }).then( (json) => {alert('current instance saved successfully!')
-        console.log(json)})
-    .catch( () => alert('error saving instance!'));
+    }).then( () => {
+      // success update instances
+      const instances = this.state.instances;
+      instances.push(savedObj);
+      console.log('wtf', this);
+      this.setState({instances: instances});
+    }).catch( () => alert('error saving instance!'));
+  }
+
+  instanceButtons = () => {
+    const options = this.state.instances.map((instance) => {
+      console.log(instance.instanceName);
+      return <option>{instance.instanceName}</option>
+    });
+    return <select onChange={this.loadStateFromInstance}>
+      {options}
+    </select>
   }
 
   render() {
@@ -234,7 +295,9 @@ export default class App extends Container {
           <button onClick={() => this.setState(-1)}>Undo</button>
           <button onClick={() => this.setState(1)}>Redo</button>
           <input ref={this.refInputInstance} className="instance-name" type="text" placeholder="instance name"/>
-          <button onClick={() => this.save()}>Save</button>
+          <button onClick={() => this.saveInstance()}>Save</button>
+          Saved Instances
+          {this.instanceButtons()}
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
