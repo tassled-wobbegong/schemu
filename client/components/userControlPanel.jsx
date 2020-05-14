@@ -64,13 +64,16 @@ class userControlPanel extends Component {
       const loggedIn =  (<div className = "loggedIn">
           Welcome Username
           <br></br>
+          
           <br></br>
           <button type="button" >Log Out</button>
         </div>)
 
 
+
+
     return(
-      <div className = "userPanel">
+      <div className = "toolbar userPanel">
       { (() => { 
         if(!this.state.isLoggedIn && this.state.isSigningUp){
       return(
@@ -98,7 +101,7 @@ class userControlPanel extends Component {
             <button  type="button" onClick ={this.logIn}>Log In</button>
             </form>
           
-           <button type="button" onClick ={this.signUp}>Not a user? Sign up</button>
+           <span onClick ={this.signUp}>Not a user? Sign up</span>
           </div>
        )
        
@@ -108,6 +111,15 @@ class userControlPanel extends Component {
         <div className = "loggedIn">
           Welcome Username
           <br></br>
+          <div className = "save">
+          <input ref={this.props.refInputInstance} className="instance-name" type="text" placeholder="instance name"/>
+          <button onClick={() => this.props.saveInstance()}>Save</button>
+          </div>
+          <br></br>
+          <div className ="load"> 
+          Load:
+          {this.props.instanceButtons()}
+          </div>
           <br></br>
           <button type="button" onClick = {this.signOut} >Log Out</button>
         </div>
