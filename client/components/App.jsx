@@ -215,7 +215,20 @@ export default class App extends Container {
   };
 
   loadAllInstances = () => {
-    this.setState(
+    fetch('/saved', {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+    }).then((res) => {
+      return res.json();
+    }).then( (objects) => {
+      const instances = objects.map((obj) => {
+        const { savedstate } = obj;
+        const { currentState, pastState, futureState } = savedstate;
+        return { instanceName: obj.name, currentState, pastState, futureState };
+      })
+      this.setState({instances});
+    }).catch( () => alert('error loading instances from server'))
+ /*   this.setState(
       {
         instances: 
         [
@@ -228,26 +241,15 @@ export default class App extends Container {
         ]
       },
       true
-    );
+    );*/
   }
 
   loadStateFromInstance = (e) => {
-    /*const loadedObj = {
-      instanceName: 'dur',
-      currentState: {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 296, y: 99}}}},
-      pastState: [{tables: {}}, {tables: {1: {name: "table1", constraints: [], fields: {}, position: {x: 25, y: 25}}}}],
-      futureState: []
-    };*/
     e.persist();
-    console.log(e.target.textContent);
-    //this.past = loadedObj.pastState;
-    //this.future = loadedObj.futureState;
-    //this.setState(loadedObj.currentState);
-    const instance = this.state.instances.find((el) => el.instanceName === e.target.textContent);
+    const instance = this.state.instances.find((el) => el.instanceName === e.target.value);
     this.past = instance.pastState;
     this.future = instance.futureState;
-    console.log(instance.currentState);
-    this.setState({...this.state, tables: instance.currentState.tables});
+    this.setState({tables: instance.currentState.tables});
   }
 
   saveInstance = () => {
@@ -274,10 +276,13 @@ export default class App extends Container {
   }
 
   instanceButtons = () => {
-    return this.state.instances.map((instance) => {
+    const options = this.state.instances.map((instance) => {
       console.log(instance.instanceName);
-      return <button onClick={this.loadStateFromInstance}>{instance.instanceName}</button>
+      return <option>{instance.instanceName}</option>
     });
+    return <select onChange={this.loadStateFromInstance}>
+      {options}
+    </select>
   }
 
   render() {

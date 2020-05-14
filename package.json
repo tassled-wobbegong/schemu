@@ -9,6 +9,7 @@
     "dev": "NODE_ENV=development webpack-dev-server --open & NODE_ENV=development nodemon server/server.js",
     "startpc": "set \"NODE_ENV=production\" && nodemon server/server.js",
     "buildpc": "set \"NODE_ENV=production\" && webpack",
+    "hax": "node hax.js",
     "devpc": "set \"NODE_ENV=development\" && concurrently \"webpack-dev-server --open\" \"nodemon server/server.js\""
   },
   "repository": {
@@ -22,9 +23,11 @@
   },
   "homepage": "https://github.com/blackhaj/no-more-query#readme",
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "concurrently": "^5.2.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
+    "node-fetch": "^2.6.0",
     "pg": "^8.2.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

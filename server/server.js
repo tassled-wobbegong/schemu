@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const savedRouter = require("./routes/saved.js")
+const authRouter = require("./routes/authentication.js");
 /* expressWs not used in this file require('express-w') returns a function
 with app as an argument. that function edits the object and add the .ws property */
 // const expressWs = require("express-ws")(app);
@@ -17,8 +18,8 @@ const clients = {};
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
 // required to parse body from post requests
-app.use(express.json())
-// app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res, next) => {
     /* 
@@ -44,7 +45,10 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.resolve(__dirname, '../index.html'));
 });
 //route any saving/loading functionality
-app.use('/saved', savedRouter)
+app.use('/saved', savedRouter);
+
+// route authentication functionality
+app.use('/authenticate', authRouter);
 
 app.ws("/api/session/:id", function (ws, req) { /* accepting incoming requests, ws is the client */
   /* so websocket can hit up a path? with queries in the path? */
@@ -94,5 +98,27 @@ app.ws("/api/session/:id", function (ws, req) { /* accepting incoming requests, 
     }
   });
 });
+
+
+
+
+// generic error handling route, very useful.
+
+app.use(function (err,req,res,next){
+  console.log(err)
+  const defaultErr = {
+    log: `MIDDLEWARE ERROR FOUND BUT SOMEONE DIDN'T WRITE A MESSAGE FOR PATHING TO HERE`,
+    status: 400,
+    message:{err: 'Sorry, something went wrong on our server'}
+  }
+  const errorObj = Object.assign({}, defaultErr,err)
+  console.log(errorObj.log)
+  res.status(errorObj.status).json(errorObj.message)
+})
+
+app.use('*',(req, res) =>
+{
+  res.status(404).send("Hey, there's nothing here, go on, get out")
+})
 
 app.listen(3000, () => console.log("listening..."));
