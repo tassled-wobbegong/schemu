@@ -40,7 +40,6 @@ db.query(query,values)
 databaseController.loadFromDatabase = (req, res, next) =>{
 
   const query = `SELECT * FROM savedStates`
-  `select * FROM savedStates INNER JOIN WHERE user = req.body.username`
   db.query(query)
   .then(response => {
     console.log(("the files available are, ", response.rows))
