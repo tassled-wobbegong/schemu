@@ -5,6 +5,7 @@ const userController = {};
 const SALT_WORK_FACTOR = 10;
 
 userController.hashPassword = (req, res, next) => {
+  console.log('server hit');
   bcrypt.genSalt(SALT_WORK_FACTOR)
     .then((salt) => {
       bcrypt.hash(req.body.password, salt)

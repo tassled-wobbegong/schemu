@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config(path.resolve());
 
 const jwt = require('jsonwebtoken');
 const db = require('../database/db.js');
@@ -9,11 +10,28 @@ const sessionController = {};
  * creates access token and stores on res.locals
  */
 sessionController.createJWT = (req, res, next) => {
+  console.log('entered createJWT');
   const { username } = req.body;
   const user = { user: username };
-
+  console.log('before jwt sign', process.env.ACCESS_TOKEN_SECRET);
+  // try {
   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+  // } catch(err) {
+  //   console.log(err);
+  // }
   res.locals.token = accessToken;
+  return next();
+};
+
+sessionController.setCookie = (req, res, next) => {
+  console.log('entered setCookie');
+  res.cookie('token', res.locals.token, {
+    secure: false,
+    httpOnly: true,
+    maxAge: 360000,
+  });
+
+  console.log('set cookie');
   return next();
 };
 

@@ -4,6 +4,7 @@ const path = require("path");
 const app = express();
 const savedRouter = require("./routes/saved.js")
 const authRouter = require("./routes/authentication.js");
+const cookieParser = require('cookie-parser');
 /* expressWs not used in this file require('express-w') returns a function
 with app as an argument. that function edits the object and add the .ws property */
 // const expressWs = require("express-ws")(app);
@@ -20,6 +21,7 @@ app.use("/build", express.static(path.resolve(__dirname, "../build")));
 // required to parse body from post requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get('/', (req, res, next) => {
     /* 

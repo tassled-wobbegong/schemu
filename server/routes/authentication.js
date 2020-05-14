@@ -13,8 +13,8 @@ router.post('/signup',
 router.post('/login',
   userController.verifyUser,
   sessionController.createJWT,
-  sessionController.authenticateToken,
-  (req, res) => res.status(200).json(res.locals.user));
+  // sessionController.setCookie,
+  (req, res) => res.status(200).json(res.locals.token));
 
 
 module.exports = router;
