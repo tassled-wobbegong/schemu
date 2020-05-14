@@ -75,6 +75,10 @@ export default class App extends Container {
                         
     // creating a reference for the instance name element to read its value
     this.refInputInstance = React.createRef();
+    this.loadAllInstances = this.loadAllInstances.bind(this)
+    this.saveInstance = this.saveInstance.bind(this)
+    this.loadStateFromInstance = this.loadStateFromInstance.bind(this)
+    this.instanceButtons = this.instanceButtons.bind(this)
 
     // state will be read at custom mode setState of App component to send to the websocket server
     this.state = {
@@ -305,7 +309,8 @@ export default class App extends Container {
           Saved Instances
           {this.instanceButtons()}
         </div>
-        <UserControlPanel/>
+         <UserControlPanel  loadAllInstances = {this.loadAllInstances} saveInstance = {this.saveInstance} loadStateFromInstance = {this.loadStateFromInstance}
+                          instanceButtons = {this.instanceButtons} refInputInstance = {this.refInputInstance} instances = {this.state.instances}/>
         <div className='tables'>          
           {this.mapTables((table, id) =>
             <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
