@@ -9,11 +9,16 @@ import './App.scss';
 
 // app receives functionality like delegate from Container
 export default class App extends Container {
-  static Session(app) { /* <--- crazy use of capital letter */
+  static Session(app) { /* <--- crazy use of capital letter, TODO: refactor to use lower case letter */
 
-    const id = (new URLSearchParams(window.location.search)).get('id');
-    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
+    const id = (new URLSearchParams(window.location.search)).get('id'); // grab id from browsers http path
+    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`); // connect a websocket session
   
+    /* 
+     set up socket event listeners onopen, onmessage, onerror, onclose, s
+     sync is not part of the socket api, is a custom property added
+     to wrap around sockets send api 
+    */
     socket.onopen = function(event) {
       console.log("Connection established...");
     };
@@ -30,9 +35,10 @@ export default class App extends Container {
       console.log("Message received: ", data);
     };
     socket.onclose = function(event) {
-      if (event.wasClean) {
+      if (event.wasClean) { // check if it was a user created disconnect
         console.log(`Goodbye!`);
-      } else {
+      } else { // if the user did not manually disconnect then the connection was disconnected
+              // by other means, i.e. user timed out, computer froze.
         console.log('Connection died.');
       }
     };
@@ -43,6 +49,7 @@ export default class App extends Container {
 
     // send data through websocket
     socket.sync = (state) => {
+      // state is an object that is connected to App's state
       console.log('Outgoing state', state);
       console.log('trying to stingify', JSON.stringify(state))
       return socket.send(JSON.stringify(state)); 
@@ -60,9 +67,16 @@ export default class App extends Container {
 
     this.past = [];
     this.future = [];
-    this.updating = false;
+    this.updating = false;  /* <-----
+                              updating variable is changing types through out the application 
+                              runtime from a boolean, null, and function. <.< 
+                              TODO: refactor to have a consistent type 
+                            */
+                        
+    // creating a reference for the instance name element to read its value
     this.refInputInstance = React.createRef();
 
+    // state will be read at custom mode setState of App component to send to the websocket server
     this.state = {
       tables: {},
       instances: []

@@ -1,6 +1,6 @@
 const path = require('path');
 require('dotenv').config(path.resolve());
-
+console.log('dovenv', process.env);
 const jwt = require('jsonwebtoken');
 const db = require('../database/db.js');
 
