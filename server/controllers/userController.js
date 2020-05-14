@@ -5,7 +5,6 @@ const userController = {};
 const SALT_WORK_FACTOR = 10;
 
 userController.hashPassword = (req, res, next) => {
-  console.log('server hit');
   bcrypt.genSalt(SALT_WORK_FACTOR)
     .then((salt) => {
       bcrypt.hash(req.body.password, salt)
@@ -50,10 +49,11 @@ userController.verifyUser = (req, res, next) => {
     .then((response) => {
       const hash = response.rows[0].password;
       bcrypt.compare(password, hash)
+      //verified is boolean: true if username/pass combo are valid
         .then((verified) => {
-          console.log('verified', verified);
-          res.locals.result = verified;
-          return next();
+          // res.locals.result = verified;
+          if (verified) return next();
+          return next({ message: "Password or Username does not match" });
         })
         .catch((err) => console.log('error comparing hashes', err));
     })
