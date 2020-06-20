@@ -3,105 +3,99 @@ import React from 'react';
 import { clone, merge, debounce } from './util.js';
 
 export default class Container extends React.Component {
-  static createSession(app) {
+  past = [];
+  future = [];
+  
+  session = null;
+
+  updating = null;
+  stepping = false;
+  syncing = false;
+
+  step(arg) {
+    if (typeof arg === "object") {
+      if (!this.stepping) {
+        if (!this.updating) {
+          this.updating = debounce(500, () => {
+            this.future = [];
+            this.past.push(arg);
+            this.updating = null;
+          });
+        }
+        this.updating();
+      } else {
+        this.stepping = true;
+      }
+    } else {
+      let state;
+      if (arg < 0) {
+        state = this.past.pop();
+        if (state) {
+          this.future.push(clone(this.state));
+        }
+      } else if (arg > 0) {
+        state = this.future.pop();
+        if (state) {
+          this.past.push(clone(this.state));
+        }
+      }
+      this.stepping = true;
+      this.setState(state);
+    }
+  }
+  sync(state) {
+    if (state === true) {
+      if (!this.syncing) {
+        this.session.sync(this.state);
+      } else {
+        this.syncing = false;
+      }
+    } else {
+      this.syncing = true;
+      this.setState(state); 
+    }
+  }
+  connect() {
     const id = (new URLSearchParams(window.location.search)).get('id');
     const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
   
-    socket.onopen = function(event) {
+    socket.onopen = (event) => {
       console.log("Connection established...");
     };
-    socket.onmessage = function(event) {
+    socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       if (typeof data === 'object') {
         if (!data.tables) {
           data.tables = [];
         }
-        app.setState(data, true);
+        this.sync(data);
       }
       console.log("Message received: ", data);
     };
-    socket.onclose = function(event) {
+    socket.onclose = (event) => {
       if (event.wasClean) {
         console.log(`Goodbye!`);
       } else {
         console.log('Connection died.');
       }
     };
-    socket.onerror = function(error) {
+    socket.onerror = (error) => {
       console.log(`Error: ${error.message}.`);
     };
 
-    return {
+    this.session = {
       sync(state) {
         socket.send(JSON.stringify(state));
       }
     };
   }
-  
-  constructor() {
-    super();
-
-    this.session = null;
-
-    this.past = [];
-    this.future = [];
-    this.updating = null;
-  }
-
-  setState(...args) {
-    let state, callback;
-    let historic = false;
-    let external = false;
-    
-    if (args.length === 1 && typeof args[0] === 'number') {
-      historic = true;
-      let dir = args.pop();
-      if (dir < 0) {
-        state = this.past.pop();
-        if (state) {
-          this.future.push(this.snapshot());
-        }
-      } else if (dir > 0) {
-        state = this.future.pop();
-        if (state) {
-          this.past.push(this.snapshot());
-        }
-      }
-    } else if (typeof args[0] === 'object' && args[1] === true) {
-      external = true;
-      state = args[0];
-    } else if (typeof args[0] === 'object') {
-      state = args.pop();
-      callback = args.pop();
-    }
-
-    if (!historic) {
-      if (!this.updating) {
-        const snapshot = this.snapshot();
-        this.updating = debounce(500, () => {
-          this.future = [];
-          this.past.push(snapshot);
-          this.updating = null;
-        });
-      }
-
-      this.updating();
-    }
-
-    if (state) {
-      return super.setState(state, (...args) => {
-        if (!external) {
-          this.session.sync(this.state);
-        }
-        if (callback) {
-          callback(...args);
-        }
-      });
-    }
-  }
 
   componentDidMount() {
-    this.session = Container.createSession(this);
+    this.connect();
+  }
+  componentDidUpdate(prevProps, prevState) {
+    this.step(prevState);
+    this.sync(true);
   }
 
   /* 
@@ -128,8 +122,4 @@ export default class Container extends React.Component {
       }
     };
   };
-
-  snapshot() {
-    return clone(this.state);
-  }
 }

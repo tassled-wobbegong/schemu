@@ -1,19 +1,15 @@
 import React from 'react';
 import Container from './Container.jsx';
 
-import { downloadAsFile, createSQL } from './util.js';
+import { downloadAsFile, toSql } from './util.js';
 import Table from './Table.jsx';
 
 import './App.scss';
 
 export default class App extends Container {  
-  constructor() {
-    super();
-
-    this.state = {
-      tables: {}
-    };
-  }
+  state = {
+    tables: {}
+  };
 
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
@@ -84,7 +80,7 @@ export default class App extends Container {
 
   toSql = () => {
     const data = new Blob(
-      [ createSQL({ tables: this.state.tables }) ], 
+      [ toSql(this.state.tables) ], 
       { type: 'text/plain' }
     );
     downloadAsFile(data, 'query.txt');
@@ -97,8 +93,8 @@ export default class App extends Container {
         <div className="toolbar">
           <button onClick={() => this.addTable()}>New Table</button>
           <button onClick={() => this.toSql()}>Export SQL</button>
-          <button onClick={() => this.setState(-1)}>Undo</button>
-          <button onClick={() => this.setState(1)}>Redo</button>
+          <button onClick={() => this.step(-1)}>Undo</button>
+          <button onClick={() => this.step(1)}>Redo</button>
         </div>
         <div className='tables'>          
           {this.mapTables((table, id) =>
