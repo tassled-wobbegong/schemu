@@ -13,19 +13,9 @@ export default class App extends Container {
 
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
-
-    const newTable = { 
-      name: "table"+id,
-      constraints: [], 
-      fields: {}, 
-      position: { 
-        x: id * 25 % window.innerWidth, 
-        y: id * 25 % window.innerHeight 
-      }
-    };
-
+    const pos = id * 100 % window.innerWidth;
     this.setState({ 
-      tables: { ...this.state.tables, [id]: newTable }
+      tables: { ...this.state.tables, [id]: Table.defaults(id, pos) }
     });
   }
   removeTable = (id) => {
