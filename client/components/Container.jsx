@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { clone, merge, debounce } from './util.js';
+import { clone, merge, debounce } from '../etc/util.js';
 
 export default class Container extends React.Component {
   ws_uri = null;

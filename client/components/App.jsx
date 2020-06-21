@@ -1,8 +1,8 @@
 import React from 'react';
 import Container from './Container.jsx';
-import { downloadAsFile, toSql } from './util.js';
+import { downloadAsFile, toSql } from '../etc/util.js';
 import Table from './Table.jsx';
-import './App.scss';
+import '../styles/App.scss';
 
 export default class App extends Container {  
   state = {
