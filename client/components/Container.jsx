@@ -3,6 +3,8 @@ import React from 'react';
 import { clone, merge, debounce } from './util.js';
 
 export default class Container extends React.Component {
+  ws_uri = null;
+
   past = [];
   future = [];
   
@@ -11,6 +13,12 @@ export default class Container extends React.Component {
   updating = null;
   stepping = false;
   syncing = false;
+
+  constructor(ws_uri) {
+    super();
+    
+    this.ws_uri = ws_uri;
+  }
 
   step(arg) {
     if (typeof arg === "object") {
@@ -56,8 +64,7 @@ export default class Container extends React.Component {
     }
   }
   connect() {
-    const id = (new URLSearchParams(window.location.search)).get('id');
-    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
+    const socket = new WebSocket(this.ws_uri);
   
     socket.onopen = (event) => {
       console.log("Connection established...");

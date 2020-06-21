@@ -1,54 +1,59 @@
-const express = require("express");
 const path = require("path");
+const crypto = require("crypto");
+const express = require("express");
+const enableWs = require("express-ws");
+
 const app = express();
-const expressWs = require("express-ws")(app);
 
 const sessions = {};
-const clients = {};
 
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
-app.get('/', (req, res, next) => {
-  if (!req.query.id || !sessions[req.query.id]) {
-    const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
-    sessions[id] = {};
-    clients[id] = [];
-    return res.redirect(`/?id=${id}`);
+app.get('/', async (req, res, next) => {
+  const id = crypto.randomBytes(32).toString('base64').replace(/[=\/\+]/g, "");
+  sessions[id] = {
+    clients: [],
+    state: {}
+  };
+  return res.redirect(`/${id}`);
+});
+app.get('/:id', async (req, res, next) => {
+  if (!req.params.id || !sessions[req.params.id]) {
+    return res.redirect("/");
   }
 
   res.sendFile(path.resolve(__dirname, '../index.html'));
 });
 
+enableWs(app);
 app.ws("/api/session/:id", function (ws, req) {
   const id = req.params.id;
-  if (!sessions[id]) {
-    sessions[id] = {};
-    clients[id] = [];
-    //return ws.close();
+  const session = sessions[id];
+
+  if (!session) {
+    return ws.close();
   }
-  clients[id].push(ws);
+  
+  session.clients.push(ws);
 
-
-  ws.send(JSON.stringify(sessions[id]));
+  ws.send(JSON.stringify(session.state));
 
   ws.on('message', function(msg) {
     const data = JSON.parse(msg);
     if (typeof data === "object") {
-      sessions[id] = { ...sessions[id], ...data };
-      for (let client of clients[id]) {
+      session.state = data;
+      for (let client of session.clients) {
         if (client !== ws) {
-          client.send(JSON.stringify(sessions[id]));
-        } else {
-          //client.send("Received");
+          client.send(JSON.stringify(session.state));
         }
       }
     }
   });
+
   ws.on("close", function () {
-    clients[id] = clients[id].filter((client) => client !== ws);
-    if (clients[id].length === 0) {
+    session.clients = session.clients.filter((client) => client !== ws);
+    if (session.clients.length === 0) {
       delete sessions[id];
-      delete clients[id];
     }
   });
 });

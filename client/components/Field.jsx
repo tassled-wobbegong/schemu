@@ -36,14 +36,17 @@ export default function Field(props) {
       update={props.update("link", prefix)} 
       identity={`${prefix}_${identity}`} 
       callback={setIdentity(prefix)}/>);
+  
+  const { tableName: ftable, fieldName: ffield } = props.foreignKey;
+  const data = { ...props, foreignKey: ftable ? `${ftable}.${ffield}` : "" };
 
   const fields = {};
-  ["name", "length", "defaultValue", "checkCondition"].forEach((name) => fields[name] = 
-    <input className="inputs" type="text" name={name} value={props[name]} onChange={handleChange} />);
+  ["name", "length", "defaultValue", "checkCondition", "foreignKey"].forEach((name) => fields[name] = 
+    <input className="inputs" type="text" name={name} value={data[name]} onChange={handleChange} />);
   ["primaryKey", "unique", "notNull"].forEach((name) => fields[name] = 
-    <input type="checkbox" name={name} checked={props[name]} onChange={handleChange}/>);
+    <input type="checkbox" name={name} checked={data[name]} onChange={handleChange}/>);
   fields.type = (
-    <select value={props.type} name="type" onChange={handleChange}>
+    <select value={data.type} name="type" onChange={handleChange}>
       <option value="bool">bool</option>
       <option value="bytea">bytea</option>
       <option value="char">char</option>
@@ -71,7 +74,7 @@ export default function Field(props) {
   );
 
   const remove = 
-    <button className="RemoveField" onClick={props.removeField}>X</button>;
+    <button className="RemoveField" onClick={data.removeField}>X</button>;
 
   return (
     <form className="row">
@@ -84,6 +87,7 @@ export default function Field(props) {
       {fields.primaryKey}
       {fields.unique}
       {fields.notNull}
+      {fields.foreignKey}
       {remove}
       {handles[1]}
     </form>

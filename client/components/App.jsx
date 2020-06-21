@@ -1,15 +1,17 @@
 import React from 'react';
 import Container from './Container.jsx';
-
 import { downloadAsFile, toSql } from './util.js';
 import Table from './Table.jsx';
-
 import './App.scss';
 
 export default class App extends Container {  
   state = {
     tables: {}
   };
+
+  constructor() {
+    super(`ws://localhost:3000/api/session${window.location.pathname}`);
+  }
 
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
