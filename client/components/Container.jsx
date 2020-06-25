@@ -3,22 +3,22 @@ import React from 'react';
 import { clone, merge, debounce } from '../etc/util.js';
 
 export default class Container extends React.Component {
-  /** @property The WebSocket server URI which will manage global component state */
+  /** The WebSocket server URI which will manage global component state */
   ws_uri = null;
 
-  /** @property An array containing undo history state snapshots. */
+  /** An array containing undo history state snapshots. */
   past = [];
-  /** @property An array containing redo history state snapshots. */
+  /** An array containing redo history state snapshots. */
   future = [];
   
-  /** @property An object representing the WebSocket connection. Contains a function ```sync``` which sends updated state to the server.  */
+  /** An object representing the WebSocket connection. Contains a function ```sync``` which sends updated state to the server.  */
   session = null;
 
-  /** @property Flag that stores a debounced callback while state is being updated. */
+  /** Flag that stores a debounced callback while state is being updated. */
   updating = null;
-  /** @property Flag indicating that an undo/redo state snapshot is being restored. */
+  /** Flag indicating that an undo/redo state snapshot is being restored. */
   stepping = false;
-  /** @property Flag indicating that a state update from the server is being assimiliated. */
+  /** Flag indicating that a state update from the server is being assimiliated. */
   syncing = false;
 
   constructor(ws_uri) {

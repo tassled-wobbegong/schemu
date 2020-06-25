@@ -1,6 +1,9 @@
-import Field from "./Field.jsx";
 import React from "react";
+import Field from "./Field.jsx";
 
+/** Represents a SQL table schema. 
+ * @param {*} props See Table.defaults for the expected props structure. 
+ */
 export default function Table(props) {
   const changeName = (event) => {
     props.update({ name: event.target.value });
@@ -8,7 +11,7 @@ export default function Table(props) {
   const addField = () => {
     const id = parseInt(Object.keys(props.fields).pop()) + 1 || 1;
     props.update("fields")({
-      [id]: Field.defaults(id),
+      [id]: Field.defaults(),
     });
   }
   const removeField = (id) => {
@@ -16,6 +19,7 @@ export default function Table(props) {
     delete fields[id];
     props.update({ fields });
   }
+  // Called when a field name is changes. Asserts that the field name is not already used within the table.
   const validateField = (delta, path) => {
     if (delta.name) {
       for (const id in props.fields) {
@@ -27,6 +31,14 @@ export default function Table(props) {
     }
     return true;
   }
+
+  const fields = Object.keys(props.fields).map((id) =>
+    <Field {...props.fields[id]}
+      key={`field${id}`}
+      update={props.update("fields", id, validateField)}
+      removeField={() => removeField(id)}
+      tableName={props.name} />
+  );
 
   return (
     <div id="tables" onMouseDown={props.move}>
@@ -47,11 +59,7 @@ export default function Table(props) {
           <div className="column-header">F-Key</div>
           <div></div>
         </div>
-        {Object.keys(props.fields).map((id) =>
-          <Field {...props.fields[id]}
-            update={props.update("fields", id, validateField)}
-            removeField={() => removeField(id)}
-            tableName={props.name} />)}
+        {fields}
       </div>
     </div>
   );

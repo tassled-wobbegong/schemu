@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import Handle from './Handle.jsx';
 
+/** Represents a field in a table schema. Renders the passed-down props as an HTML form. When form values are changed, passes the changed values as key-value pairs on an object to a function ```props.update```.
+ * @param {*} props See Field.defaults for the expected props structure.
+ */
 export default function Field(props) {
+  // HTML event handler for form field changes
   const handleChange = (event) => {
     const change = {};
     const target = event.target;
@@ -13,30 +17,37 @@ export default function Field(props) {
     props.update(change)
   };
 
-  const setIdentity = (prefix) => (identity) => {
-    const [ _prefix, tableName, fieldName] = identity.split("_");
-
-    if (tableName === props.tableName && fieldName === props.name) {
-      return false;
+  // Updates the field's foreign key constraint. Called when a line is drawn between one of this field's handles, and some other field's handle. 
+  const updateHandle = (prefix) => (target, payload) => {
+    if (payload) {
+      if (payload.tableName === props.tableName && payload.fieldName === props.name) {
+        target = null;
+      } else {
+        props.update({ foreignKey: payload });
+      } 
     }
 
-    props.update({
-      foreignKey: { tableName, fieldName }
-    });
-    props.update("link", prefix)({ 
-      target: identity 
-    });
+    console.log(props);
+    if (target === null) {
+      const { foreignKey } = Field.defaults();
+      props.update({ foreignKey });
+    }
 
-    return true;
-  };
+    props.update("link", prefix)({ target });
+  }; 
 
-  const identity = `${props.tableName}_${props.name}`;
+  // each field has two handles, one on the left and one on the right. When the user clicks in one handle and drags the mouse to another handle, the identity of the second handle will be passed to the initial handlers callback function. In this case, the identity of each handle stores its table and field names and well which side of the field it exists on. The callback function defines a foreign key constraint.
+  const tableName = props.tableName;
+  const fieldName = props.name;
   const handles = ["l", "r"].map((prefix) =>
-    <Handle target={props.link[prefix].target} 
-      update={props.update("link", prefix)} 
-      identity={`${prefix}_${identity}`} 
-      callback={setIdentity(prefix)}/>);
+    <Handle id={`${prefix}_${tableName}_${fieldName}`}
+      target={props.link[prefix].target} 
+      payload={{ tableName, fieldName }}
+      onChange={updateHandle(prefix)} 
+    />
+  );
   
+  // the foreign key constraint for the field composed of two properties on the props.foreignKey object.
   const { tableName: ftable, fieldName: ffield } = props.foreignKey;
   const data = { ...props, foreignKey: ftable ? `${ftable}.${ffield}` : "" };
 
@@ -94,8 +105,8 @@ export default function Field(props) {
   );
 }
 
-Field.defaults = (id) => ({
-  id: `field${id}`,
+// default properties of a new field
+Field.defaults = () => ({
   name: "",
   type: "",
   length: "",
