@@ -53,9 +53,11 @@ export default function Field(props) {
 
   const fields = {};
   ["name", "length", "defaultValue", "checkCondition", "foreignKey"].forEach((name) => fields[name] = 
-    <input className="inputs" type="text" name={name} value={data[name]} onChange={handleChange} />);
+    <input className="inputs" type="text" name={name} value={data[name]} onChange={handleChange} />
+  );
   ["primaryKey", "unique", "notNull"].forEach((name) => fields[name] = 
-    <input type="checkbox" name={name} checked={data[name]} onChange={handleChange}/>);
+    <input type="checkbox" name={name} checked={data[name]} onChange={handleChange}/>
+  );
   fields.type = (
     <select value={data.type} name="type" onChange={handleChange}>
       <option value="bool">bool</option>
@@ -84,8 +86,9 @@ export default function Field(props) {
     </select>
   );
 
-  const remove = 
-    <button className="RemoveField" onClick={data.removeField}>X</button>;
+  const remove = (
+    <button className="RemoveField" onClick={data.removeField}>X</button>
+  );
 
   return (
     <form className="row">
