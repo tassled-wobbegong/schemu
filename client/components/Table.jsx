@@ -11,7 +11,7 @@ export default function Table(props) {
   const addField = () => {
     const id = parseInt(Object.keys(props.fields).pop()) + 1 || 1;
     props.update("fields")({
-      [id]: Field.defaults(),
+      [id]: Field.defaults(id),
     });
   }
   const removeField = (id) => {
