@@ -111,5 +111,5 @@ export default class Handle extends React.Component {
         style={{position: 'relative', width: this.boxSize + 'px', height: this.boxSize + 'px'}}>  
       </div>
     );
-  }
+  } 
 }
