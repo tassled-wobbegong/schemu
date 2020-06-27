@@ -75,7 +75,7 @@ export default class App extends Container {
     downloadAsFile(data, 'query.txt');
   };
 
-  render() {
+  render() { 
     const tables = Object.entries(this.state.tables).map(([id, table]) =>
       <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
         <Table
