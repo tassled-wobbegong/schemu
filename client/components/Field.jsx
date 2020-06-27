@@ -27,7 +27,6 @@ export default function Field(props) {
       } 
     }
 
-    console.log(props);
     if (target === null) {
       const { foreignKey } = Field.defaults();
       props.update({ foreignKey });
@@ -109,8 +108,8 @@ export default function Field(props) {
 }
 
 // default properties of a new field
-Field.defaults = () => ({
-  name: "",
+Field.defaults = (id) => ({
+  name: `field${id}`,
   type: "",
   length: "",
   primaryKey: false,
