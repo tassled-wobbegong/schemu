@@ -92,7 +92,6 @@ export default class Container extends React.Component {
         }
         this.sync(data);
       }
-      console.log("Message received: ", data);
     };
     socket.onclose = (event) => {
       if (event.wasClean) {
