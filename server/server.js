@@ -4,7 +4,7 @@ const express = require("express");
 const enableWs = require("express-ws");
 
 const app = express();
-
+const PORT = 3000;
 const sessions = {};
 
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
@@ -64,4 +64,4 @@ app.ws("/api/session/:id", function (socket, req) {
   });
 });
 
-app.listen(3000, () => console.log("listening..."));
+app.listen(PORT, () => console.log(`listening on port ${PORT}...`));
