@@ -93,95 +93,48 @@ export const debounce = (time, callback) => {
  * @param {object} tables 
  */
 export const toSql = (tables) => {
-  const fkeys = {};
 
-  let result = "";
-  for (const i in tables) {
-    const table = tables[i];
+  //Needs to be heavily expanded to not allow illegal queries!!!
 
-    fkeys[table.name] = [];
-
-    result += `CREATE TABLE ${table.name} (\n`;
-    for (const i in table.fields) {
-      const field = table.fields[i];
-
-      const { tableName, fieldName } = field.foreignKey;
-      if (tableName && fieldName) {
-        fkeys[table.name].push({ 
-          table: tableName, 
-          field: fieldName, 
-          source: field.name 
-        });
+  let primary = '';
+  let foreignTable = '';
+  let foreignField = '';
+  let unique = [];
+  let output = ''
+  for (const t in tables) {
+      let table = t.toString();
+      output += 'CREATE TABLE '
+      output += tables[table]['name'] + '(\n'
+      for (const f in tables[table]['fields']) {
+          let field = f.toString();
+          output += tables[table]['fields'][field]['name'] + ' ';
+          output += tables[table]['fields'][field]['type'];
+          if(tables[table]['fields'][field]['primaryKey']) primary = tables[table]['fields'][field]['name'];
+          if(tables[table]['fields'][field]['unique']) unique.push(tables[table]['fields'][field]['name']);
+          if(tables[table]['fields'][field]['notNUll']) output += ' NOT NULL';
+          if(tables[table]['fields'][field]['defaultValue']) {
+              output += ' DEFAULT ' + tables[table]['fields'][field]['defaultValue'];
+          }
+          output += ',\n';
+          if(tables[table]['fields'][field]['checkCondition']) output += 'CHECK (' + tables[table]['fields'][field]['name'] + tables[table]['fields'][field]['checkCondition'] +'),\n';
+          if(tables[table]['fields'][field]['foreignKey']) {
+            foreignField = tables[table]['fields'][field]['foreignKey']['fieldName'];
+            foreignTable = tables[table]['fields'][field]['foreignKey']['tableName'];
+          }
       }
-
-      const basic = `${field.name} ${field.type}`;
-      const length = field.length ? `(${field.length}) ` : " ";
-      const flags = (field.primaryKey ? "PRIMARY KEY " : "") ||
-        ((field.unique ? "UNIQUE " : "") + (field.notNull ? "NOT NULL " : ""));
-      const def = field.defaultValue ? `DEFAULT ${field.defaultValue} ` : "";
-      const check = field.check ? `CHECK ${field.check}` : "";
-      result += `\t${basic}${length}${flags}${def}${check},\n`;
-    }
-    result += `);\n\n`;
-  }
-
-  for (let table in fkeys) {
-    if (fkeys[table].length) {
-      for (let fkey of fkeys[table]) {
-        result += `ALTER TABLE ${table} ADD CONSTRAINT ${fkey.source}_ref_${table}_${fkey.field}\n`;
-        result += `\tFOREIGN KEY (${fkey.source}) REFERENCES ${fkey.table} (${fkey.field});\n`;
+      if(primary) output += 'PRIMARY KEY (' + primary + '),\n';
+      primary = '';
+      if(foreignTable) output += 'FOREIGN KEY (' + foreignField + ') REFERENCES ' + foreignTable + '(' + foreignField + '),\n';
+      if(unique.length) {
+              output += 'UNIQUE (';
+              unique.forEach(x => output += x + ', ');
+              output = output.slice(0, -2)
+              output += '),\n'
       }
-    }
-    result += "\n";
+      output = output.slice(0, -2);
+      output +='\n);\n'
+      foreignTable = '';
+      foreignField = '';
   }
-
-  return result;
+  return output;
 }
-
-// export const createSQL = (res) => {
-
-//   //Needs to be heavily expanded to not allow illegal queries!!!
-
-//   const tables = res['tables'];
-//   let primary = '';
-//   let foreignTable = '';
-//   let foreignField = '';
-//   let unique = [];
-//   let output = ''
-//   for (const t in tables) {
-//       let table = t.toString();
-//       output += 'CREATE TABLE '
-//       output += tables[table]['name'] + '(\n'
-//       for (const f in tables[table]['fields']) {
-//           let field = f.toString();
-//           output += tables[table]['fields'][field]['name'] + ' ';
-//           output += tables[table]['fields'][field]['type'];
-//           if(tables[table]['fields'][field]['primaryKey']) primary = tables[table]['fields'][field]['name'];
-//           if(tables[table]['fields'][field]['unique']) unique.push(tables[table]['fields'][field]['name']);
-//           if(tables[table]['fields'][field]['notNUll']) output += ' NOT NULL';
-//           if(tables[table]['fields'][field]['defaultValue']) {
-//               output += ' DEFAULT ' + tables[table]['fields'][field]['defaultValue'];
-//           }
-//           output += ',\n';
-//           if(tables[table]['fields'][field]['checkCondition']) output += 'CHECK (' + tables[table]['fields'][field]['name'] + tables[table]['fields'][field]['checkCondition'] +'),\n';
-//           if(tables[table]['fields'][field]['foreignKey']) {
-//             foreignField = tables[table]['fields'][field]['foreignKey']['fieldName'];
-//             foreignTable = tables[table]['fields'][field]['foreignKey']['tableName'];
-//           }
-//       }
-//       if(primary) output += 'PRIMARY KEY (' + primary + '),\n';
-//       primary = '';
-//       if(foreignTable) output += 'FOREIGN KEY (' + foreignField + ') REFERENCES ' + foreignTable + '(' + foreignField + '),\n';
-//       if(unique.length) {
-//               output += 'UNIQUE (';
-//               unique.forEach(x => output += x + ', ');
-//               output = output.slice(0, -2)
-//               output += '),\n'
-//       }
-//       output = output.slice(0, -2);
-//       output +='\n);\n'
-//       foreignTable = '';
-//       foreignField = '';
-//   }
-//   return output;
-// }
