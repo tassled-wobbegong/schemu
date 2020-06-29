@@ -1,25 +1,22 @@
 import React from "react";
+import { svgNode } from '../etc/util';
 
+/** Handles are points between which connecting lines can be drawn. Handles take the following props:
+ *  1) an 'id' string, which will be used as the DOM node's id and must be unique within the application.
+ *  2) a 'target', which contains either the identity string of another Handle component, or an object containing x-y coordinates. A line will be rendered between each handle and the position of its target. 
+ *  3) a 'payload' object, used to attach arbitrary data to the handle.
+ *  4) an 'onChange' function(target, payload = null) that will be invoked whenever the target changes with either the new target as a position, or, if the user releases the mouse within another handle, the id and payload of that handle. */
 export default class Handle extends React.Component {
-  constructor() {
-    super();
-    
-    this.state = { 
-      target: null 
-    };
-  }
-
-  componentDidUpdate() {
-    this.refs.container.querySelectorAll('*').forEach(n => n.remove());
-
-    if (!this.props.identity) {
+  // draws an SVG line between the component's position and its target position.
+  draw() {
+    if (!this.props.id) {
       return;
     }
 
     let source = this.refs.container.getBoundingClientRect();
     source = { x: source.left, y: source.top };
 
-    let target = this.state.target;
+    let target = this.props.target;
     if (typeof target === "string" && (target = document.getElementById(target))) {
       target = target.getBoundingClientRect();
       target = { x: target.left, y: target.top };
@@ -35,44 +32,65 @@ export default class Handle extends React.Component {
         y: d.y < 0 ? d.y : 0
       };
 
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('width', Math.abs(d.x) + this.lineSize);
-      svg.setAttribute('height', Math.abs(d.y) + this.lineSize);
-      svg.style.position = 'absolute';
-      svg.style.top = o.y + this.boxSize / 2;
-      svg.style.left = o.x + this.boxSize / 2;
-
-      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      line.setAttribute('stroke', this.lineColor);
-      line.setAttribute('stroke-width', this.lineSize + "px");
-      line.setAttribute('fill', 'transparent');
-      line.setAttribute('x1', -o.x);
-      line.setAttribute('y1', -o.y);
-      line.setAttribute('x2', d.x - o.x);
-      line.setAttribute('y2', d.y - o.y);
-      
+      const line = svgNode('line', {
+        stroke: this.lineColor,
+        'stroke-width': this.lineSize + "px",
+        fill: 'transparent',
+        x1: -o.x,
+        y1: -o.y,
+        x2: d.x - o.x,
+        y2: d.y - o.y
+      });
+      const svg = svgNode('svg', { 
+        width: Math.abs(d.x) + this.lineSize,
+        height: Math.abs(d.y) + this.lineSize
+      });
+      Object.assign(svg.style, {
+        position: 'absolute',
+        top: source.y + o.y + this.boxSize / 2,
+        left: source.x + o.x + this.boxSize / 2,
+        pointerEvents: 'none'
+      });
       svg.appendChild(line);
-      this.refs.container.appendChild(svg);
+      svg.classList.add(this.props.id);
+      document.body.appendChild(svg);
     }
   }
+  // removes any SVG lines created by the component.
+  erase() {
+    document.body.querySelectorAll(`.${this.props.id}`).forEach(n => n.remove());
+  }
 
+  // When ever the state of the component changes (i.e. it's target position changes), redraw its SVG connecting lines
+  componentDidUpdate() {
+    this.erase();
+    this.draw();
+  }
+  // Cleanup any remaining lines before unmounting
+  componentWillUnmount() {
+    this.erase();
+  }
+
+  // initiate a drag and drop session. updates the components target position while the user drags, and invokes the callback function when the user releases within another Handle component.
   linkManager = (from) => {
-    if (!this.props.identity) {
+    if (!this.props.id) {
       return;
     }
 
     const update = (ev) => {
-      this.setState({ target: { x: ev.clientX, y: ev.clientY } });
+      this.props.onChange({ x: ev.clientX, y: ev.clientY });
     };
     window.addEventListener('mousemove', update);
 
     const finalize = (to) => {
-      const id = to.target.id;
-      if (id && this.props.callback(id)) {
-        this.setState({ target: id });
+      const { id, dataset: { payload }} = to.target;
+
+      if (!id || !payload) {
+        this.props.onChange(null);
       } else {
-        this.setState({ target: null });
+        this.props.onChange(id, JSON.parse(payload));
       }
+      
       window.removeEventListener('mouseup', finalize);
       window.removeEventListener('mousemove', update);
     };
@@ -85,11 +103,13 @@ export default class Handle extends React.Component {
     this.lineColor = this.props.lineColor || 'red';
 
     return (
-      <div ref="container" 
+      <div id={this.props.id}
+        ref="container" 
         className='handle' 
-        id={this.props.identity} 
         onMouseDown={this.linkManager}
-        style={{position: 'relative', width: this.boxSize + 'px', height: this.boxSize + 'px'}}></div>
+        data-payload={JSON.stringify(this.props.payload || {})}
+        style={{position: 'relative', width: this.boxSize + 'px', height: this.boxSize + 'px'}}>  
+      </div>
     );
-  }
+  } 
 }

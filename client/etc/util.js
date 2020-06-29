@@ -1,3 +1,7 @@
+/** Converts data in the form of a Blob to a file and downloads it to the user's filesystem.
+ * @param {Blob} blob An instance of Blob containing the data to store in the file.
+ * @param {string} filename The name of the file.
+ */
 export const downloadAsFile = (blob, filename) => {
   let anchor = document.createElement('a');
   anchor.href = window.URL.createObjectURL(blob);
@@ -5,12 +9,24 @@ export const downloadAsFile = (blob, filename) => {
   anchor.click();
 }
 
-/*
-  merge([object] target, [array] path, [object] delta);
-    Given a series of accessors 'path', finds the corresponding object in 
-    'target' and applies the changes specified in 'delta' to a copy of 'target'.
-    Returns the copied, changed object.
-*/
+/** Creates an SVG node of type 'type' and sets the attributes defined by the 'attr' object.
+ * @param {string} type A type of SVG node (eg. 'svg', 'line')
+ * @param {object} attr 
+ */
+export const svgNode = (type, attr) => {
+  const el = document.createElementNS('http://www.w3.org/2000/svg', type);
+  for (const [key, val] of Object.entries(attr)) {
+    el.setAttribute(key, val);
+  }
+  return el;
+};
+
+/** Given a series of accessors ```path```, finds the corresponding object in ```target``` and applies the changes specified in ```delta``` to a copy of ```target```.
+ * @param {object} target An object to change.
+ * @param {Array<string>} path An array of strings representing a series of accessors on an object.
+ * @param {object} delta An object containing values which should overwrite values on ```target```.
+ * @return {object} A cloned and altered version of ```target```.
+ */
 export const merge = (target, path, delta) => {
   const key = path.shift();
 
@@ -40,10 +56,9 @@ export const merge = (target, path, delta) => {
   return result;
 };
 
-/*
-  clone([mixed] target);
-    Returns a deep clone of 'target';
-*/
+/** Returns a deep clone of 'target';
+ * @param {*} target 
+ */
 export const clone = (target) => {
   if (target === null) {
     return null;
@@ -58,29 +73,29 @@ export const clone = (target) => {
   }
 };
 
-/* 
-  onPause([int] wait, [function] callback)
-  Returns a function which, whenever invoked, delays the invocation of 'callback' 
-  until 'wait' milliseconds have elapsed with out interruption.
-*/
-export const onPause = (wait, callback) => {
-  let calls = 0;
-  return () => {
-    const _calls = ++calls;
-    setTimeout(() => {
-      if (calls === _calls) {
-        callback();
-      }
-    }, wait);
+/** Wraps a function ```callback```. Repeated invocations of the resulting function will be condensed to a single call, executed only after ```time``` miliseconds have elapsed without any other invocations.
+ * @param {number} time Period of inactivity in miliseconds required before callback will be executed.
+ * @param {Function} callback The function to be executed
+ * @return {Function} A function.
+ */
+export const debounce = (time, callback) => {
+  let interval;
+  return (...args) => {
+    clearTimeout(interval);
+    interval = setTimeout(() => {
+      interval = null;
+      callback(...args);
+    }, time);
   };
 };
 
-
-export const createSQL = (res) => {
+/** Converts an object containing schema data to a series of SQL CREATE TABLE statements. See Table.defaults and Field.defaults for the expected data structure. 
+ * @param {object} tables 
+ */
+export const toSql = (tables) => {
 
   //Needs to be heavily expanded to not allow illegal queries!!!
 
-  const tables = res['tables'];
   let primary = '';
   let foreignTable = '';
   let foreignField = '';

@@ -1,130 +1,25 @@
 import React from 'react';
 import Container from './Container.jsx';
-
-import { downloadAsFile, onPause, createSQL } from './util.js';
+import { downloadAsFile, toSql } from '../etc/util.js';
 import Table from './Table.jsx';
-import Handle from './Handle.jsx';
 
-import './App.scss';
+import '../styles/App.scss';
 
-export default class App extends Container {
-  static Session(app) {
-    const id = (new URLSearchParams(window.location.search)).get('id');
-    const socket = new WebSocket(`ws://localhost:3000/api/session/${id}`);
-  
-    socket.onopen = function(event) {
-      console.log("Connection established...");
-    };
-    socket.onmessage = function(event) {
-      const data = JSON.parse(event.data);
-      if (typeof data === 'object') {
-        if (!data.tables) {
-          data.tables = [];
-        }
-        app.setState(data, true);
-      }
-      console.log("Message received: ", data);
-    };
-    socket.onclose = function(event) {
-      if (event.wasClean) {
-        console.log(`Goodbye!`);
-      } else {
-        console.log('Connection died.');
-      }
-    };
-    socket.onerror = function(error) {
-      console.log(`Error: ${error.message}.`);
-    };
+/** Top-level component that manages all application state. Extends Container, which allows it to synce this state with a WebSocket server and access undo/redo functionality. */
+export default class App extends Container {  
+  state = {
+    tables: {}
+  };
 
-    socket.sync = (state) => socket.send(JSON.stringify(state)); 
-
-    return socket;
-  }
-  
   constructor() {
-    super();
-
-    this.session = null;
-
-    this.past = [];
-    this.future = [];
-    this.updating = false;
-
-    this.state = {
-      tables: {}
-    };
-  }
-
-  setState(...args) {
-    let state, callback;
-    let historic = false;
-    let external = false;
-    
-    if (args.length === 1 && typeof args[0] === 'number') {
-      historic = true;
-      let dir = args.pop();
-      if (dir < 0) {
-        state = this.past.pop();
-        if (state) {
-          this.future.push(this.snapshot());
-        }
-      } else if (dir > 0) {
-        state = this.future.pop();
-        if (state) {
-          this.past.push(this.snapshot());
-        }
-      }
-    } else if (typeof args[0] === 'object' && args[1] === true) {
-      external = true;
-      state = args[0];
-    } else if (typeof args[0] === 'object') {
-      state = args.pop();
-      callback = args.pop();
-    }
-
-    if (!historic) {
-      if (!this.updating) {
-        const snapshot = this.snapshot();
-        this.updating = onPause(500, () => {
-          this.future = [];
-          this.past.push(snapshot);
-          this.updating = null;
-        });
-      } else {
-        this.updating();
-      }
-    }
-
-    if (state) {
-      return super.setState(state, (...args) => {
-        if (!external) {
-          this.session.sync(this.state);
-        }
-        if (callback) {
-          callback(...args);
-        }
-      });
-    }
-  }
-  componentDidMount() {
-    this.session = App.Session(this);
+    super(`ws://localhost:3000/api/session${window.location.pathname}`);
   }
 
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
-
-    const newTable = { 
-      name: "table"+id,
-      constraints: [], 
-      fields: {}, 
-      position: { 
-        x: id * 25 % window.innerWidth, 
-        y: id * 25 % window.innerHeight 
-      }
-    };
-
+    const pos = id * 100 % window.innerWidth;
     this.setState({ 
-      tables: { ...this.state.tables, [id]: newTable }
+      tables: { ...this.state.tables, [id]: Table.defaults(id, pos) }
     });
   }
   removeTable = (id) => {
@@ -132,6 +27,7 @@ export default class App extends Container {
     delete newtables[id];
     this.setState({ tables: newtables });
   };
+  /** Called when a table name is changed. Asserts that the table name is not already in use */
   validateTable = (delta, path) => {
     if (delta.name) {
       for (const id in this.state.tables) {
@@ -143,15 +39,8 @@ export default class App extends Container {
     }
     return true;
   }
-  mapTables = (transform) => {
-    const tables = [];
-    for (const id in this.state.tables) {
-      const table = this.state.tables[id];
-      tables.push(transform ? transform(table, id) : table);
-    }
-    return tables;
-  };
 
+  /** Initiate a drag and drop session. Given a table id, updates the components position while the user drags. */
   moveManager = (id) => {
     let curPos, lastEv;
     const  startMove = (ev) => {
@@ -177,33 +66,38 @@ export default class App extends Container {
     window.addEventListener('mouseup', endMove);
   };
 
+  /** Convert the current state to a SQL schema, and download it to the users filesystem. */
   toSql = () => {
-    downloadAsFile(new Blob(
-      [ createSQL({ tables: this.state.tables }) ], 
-      { type: 'text/plain' }), 'query.txt');
+    const data = new Blob(
+      [ toSql(this.state.tables) ], 
+      { type: 'text/plain' }
+    );
+    downloadAsFile(data, 'query.txt');
   };
 
-  render() {
+  render() { 
+    const tables = Object.entries(this.state.tables).map(([id, table]) =>
+      <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
+        <Table
+          key={"table"+id}
+          move={() => this.moveManager(id)}
+          remove={() => this.removeTable(id)}
+          update={this.delegate('tables', id, this.validateTable)}
+          {...table} />
+      </div>
+    );
+
     return (
       <div className='App'>
         <div className="title">NoMoreQuery.io</div>
         <div className="toolbar">
           <button onClick={() => this.addTable()}>New Table</button>
           <button onClick={() => this.toSql()}>Export SQL</button>
-          <button onClick={() => this.setState(-1)}>Undo</button>
-          <button onClick={() => this.setState(1)}>Redo</button>
+          <button onClick={() => this.step(-1)}>Undo</button>
+          <button onClick={() => this.step(1)}>Redo</button>
         </div>
         <div className='tables'>          
-          {this.mapTables((table, id) =>
-            <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
-              <Table
-                key={"table"+id}
-                move={() => this.moveManager(id)}
-                remove={() => this.removeTable(id)}
-                update={this.delegate('tables', id, this.validateTable)}
-                {...table} />
-            </div>
-          )}
+          {tables}
         </div>
       </div>
     );

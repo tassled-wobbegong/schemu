@@ -1,56 +1,67 @@
-const express = require("express");
 const path = require("path");
-const app = express();
-const expressWs = require("express-ws")(app);
+const crypto = require("crypto");
+const express = require("express");
+const enableWs = require("express-ws");
 
+const app = express();
+const PORT = 3000;
 const sessions = {};
-const clients = {};
 
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
-app.get('/', (req, res, next) => {
-  if (!req.query.id || !sessions[req.query.id]) {
-    const id = Buffer.from(`${Math.random() * 9999999999}`).toString('base64');
-    sessions[id] = {};
-    clients[id] = [];
-    return res.redirect(`/?id=${id}`);
+// The root endpoint creates a new session associated with a random id and redirects the client to the corresponding url.
+app.get('/', async (req, res, next) => {
+  const id = crypto.randomBytes(32).toString('base64').replace(/[=\/\+]/g, "");
+  sessions[id] = {
+    clients: [],
+    state: {}
+  };
+  return res.redirect(`/${id}`);
+});
+
+// The /:id endpoint checks that the session id is valid, then serves the client application.
+app.get('/:id', async (req, res, next) => {
+  if (!req.params.id || !sessions[req.params.id]) {
+    return res.redirect("/");
   }
 
   res.sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.ws("/api/session/:id", function (ws, req) {
+// basic WebSocket relay server exposed to ws://[hostname]/api/session/:id
+enableWs(app);
+app.ws("/api/session/:id", function (socket, req) {
+  // make sure the id provided in the url params corresponds to a valid session
   const id = req.params.id;
-  if (!sessions[id]) {
-    sessions[id] = {};
-    clients[id] = [];
-    //return ws.close();
+  const session = sessions[id];
+  if (!session) {
+    return socket.close();
   }
-  clients[id].push(ws);
+  
+  session.clients.push(socket);
 
+  // send the initial session state on connect
+  socket.send(JSON.stringify(session.state));
 
-  ws.send(JSON.stringify(sessions[id]));
-
-  ws.on('message', function(msg) {
+  // whenever a message is received, replace the current session state and broadcast to all other clients
+  socket.on('message', function(msg) {
     const data = JSON.parse(msg);
     if (typeof data === "object") {
-      sessions[id] = { ...sessions[id], ...data };
-      for (let client of clients[id]) {
-        if (client !== ws) {
-          client.send(JSON.stringify(sessions[id]));
-        } else {
-          //client.send("Received");
+      session.state = data;
+      for (let client of session.clients) {
+        if (client !== socket) {
+          client.send(JSON.stringify(session.state));
         }
       }
     }
   });
-  ws.on("close", function () {
-    clients[id] = clients[id].filter((client) => client !== ws);
-    if (clients[id].length === 0) {
+
+  socket.on("close", function () {
+    session.clients = session.clients.filter((client) => client !== socket);
+    if (session.clients.length === 0) {
       delete sessions[id];
-      delete clients[id];
     }
   });
 });
 
-app.listen(3000, () => console.log("listening..."));
+app.listen(PORT, () => console.log(`listening on port ${PORT}...`));

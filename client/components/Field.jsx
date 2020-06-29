@@ -1,86 +1,128 @@
 import React, { Component } from 'react';
 import Handle from './Handle.jsx';
 
-export default class Field extends Component {
-  constructor(props){
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event) {
-    let change = {};
-    if (event.target.type === "checkbox") {
-      change[event.target.name] = event.target.checked;
+/** Represents a field in a table schema. Renders the passed-down props as an HTML form. When form values are changed, passes the changed values as key-value pairs on an object to a function ```props.update```.
+ * @param {*} props See Field.defaults for the expected props structure.
+ */
+export default function Field(props) {
+  // HTML event handler for form field changes
+  const handleChange = (event) => {
+    const change = {};
+    const target = event.target;
+    if (target.type === "checkbox") {
+      change[target.name] = target.checked;
     } else {
-      change[event.target.name] = event.target.value;
+      change[target.name] = target.value;
     }
-    this.props.update(change)
-  }
+    props.update(change)
+  };
 
-  render() {
-    let foreignKeyValue = this.props.foreignKey.tableName ? `${this.props.foreignKey.tableName}_${this.props.foreignKey.fieldName}` : ""
+  // Updates the field's foreign key constraint. Called when a line is drawn between one of this field's handles, and some other field's handle. 
+  const updateHandle = (prefix) => (target, payload) => {
+    if (payload) {
+      if (payload.tableName === props.tableName && payload.fieldName === props.name) {
+        target = null;
+      } else {
+        props.update({ foreignKey: payload });
+      } 
+    }
 
+    if (target === null) {
+      const { foreignKey } = Field.defaults();
+      props.update({ foreignKey });
+    }
 
-    return (
-      
-      <form className="row">
-        <Handle identity={`l_${this.props.tableName}_${this.props.name}`} callback={(identity) => {
-          let handlesIdentity = `${this.props.tableName}_${this.props.name}`
-          if (identity.slice(2) === handlesIdentity) return false;
-          const identityArr = identity.split("_")
-          this.props.update({foreignKey: {
-            tableName: identityArr[1],
-            fieldName: identityArr[2],
-          }})
-          return true;
-        }}/>
-        <input type="text" className="inputs" name="name" value={this.props.name} onChange={this.handleChange} />
-        <select value={this.props.type} name="type" onChange={this.handleChange} >
-          <option value="bool">bool</option>
-          <option value="bytea">bytea</option>
-          <option value="char">char</option>
-          <option value="date">date</option>
-          <option value="decimal">decimal</option>
-          <option value="float4">float4</option>
-          <option value="float8">float8</option>
-          <option value="int">int</option>
-          <option value="int2">int2</option>
-          <option value="int8">int8</option>
-          <option value="json">json</option>
-          <option value="money">money</option>
-          <option value="serial2">serial2</option>
-          <option value="serial4">serial4</option>
-          <option value="serial8">serial8</option>
-          <option value="text">text</option>
-          <option value="time">time</option>
-          <option value="timetz">timetz</option>
-          <option value="timestamptz">timestamptz</option>
-          <option value="uuid">uuid</option>
-          <option value="varbit">varbit</option>
-          <option value="varchar">varchar</option>
-          <option value="xml">xml</option>
-        </select>
-        <input type="text" className="inputs" name="length" value={this.props.length} onChange={this.handleChange}/>
-        <input type="text" className="inputs" name="defaultValue"value={this.props.defaultValue} onChange={this.handleChange}/>
-        <input type="text" className="inputs" name="checkCondition" value={this.props.checkCondition} onChange={this.handleChange}/>
-        <input type="checkbox" name="primaryKey" checked={this.props.primaryKey} onChange={this.handleChange}/>
-        <input type="checkbox" name="unique" checked={this.props.unique} onChange={this.handleChange}/>
-        <input type="checkbox" name="notNull" checked={this.props.notNull} onChange={this.handleChange}/>
-        <input className="text-box" className="inputs" type="text" name="foreignKey" value={foreignKeyValue} onChange={this.handleChange}/>
-        {/* <button class="submit" type='submit'>Submit</button> */}
-        <button className="RemoveField" onClick={this.props.removeField}>X</button>
-        <Handle identity={`r_${this.props.tableName}_${this.props.name}`} callback={(identity) => {
-          let handlesIdentity = `${this.props.tableName}_${this.props.name}`
-          if (identity.slice(2) === handlesIdentity) return false;
-          const identityArr = identity.split("_")
-          this.props.update({foreignKey: {
-            tableName: identityArr[1],
-            fieldName: identityArr[2],
-          }})
-          return true;
-        }}/>
-      </form>
-    )
-  }
+    props.update("link", prefix)({ target });
+  }; 
+
+  // each field has two handles, one on the left and one on the right. When the user clicks in one handle and drags the mouse to another handle, the identity of the second handle will be passed to the initial handlers callback function. In this case, the identity of each handle stores its table and field names and well which side of the field it exists on. The callback function defines a foreign key constraint.
+  const tableName = props.tableName;
+  const fieldName = props.name;
+  const handles = ["l", "r"].map((prefix) =>
+    <Handle id={`${prefix}_${tableName}_${fieldName}`}
+      target={props.link[prefix].target} 
+      payload={{ tableName, fieldName }}
+      onChange={updateHandle(prefix)} 
+    />
+  );
+  
+  // the foreign key constraint for the field composed of two properties on the props.foreignKey object.
+  const { tableName: ftable, fieldName: ffield } = props.foreignKey;
+  const data = { ...props, foreignKey: ftable ? `${ftable}.${ffield}` : "" };
+
+  const fields = {};
+  ["name", "length", "defaultValue", "checkCondition", "foreignKey"].forEach((name) => fields[name] = 
+    <input className="inputs" type="text" name={name} value={data[name]} onChange={handleChange} />
+  );
+  ["primaryKey", "unique", "notNull"].forEach((name) => fields[name] = 
+    <input type="checkbox" name={name} checked={data[name]} onChange={handleChange}/>
+  );
+  fields.type = (
+    <select value={data.type} name="type" onChange={handleChange}>
+      <option value="bool">bool</option>
+      <option value="bytea">bytea</option>
+      <option value="char">char</option>
+      <option value="date">date</option>
+      <option value="decimal">decimal</option>
+      <option value="float4">float4</option>
+      <option value="float8">float8</option>
+      <option value="int">int</option>
+      <option value="int2">int2</option>
+      <option value="int8">int8</option>
+      <option value="json">json</option>
+      <option value="money">money</option>
+      <option value="serial2">serial2</option>
+      <option value="serial4">serial4</option>
+      <option value="serial8">serial8</option>
+      <option value="text">text</option>
+      <option value="time">time</option>
+      <option value="timetz">timetz</option>
+      <option value="timestamptz">timestamptz</option>
+      <option value="uuid">uuid</option>
+      <option value="varbit">varbit</option>
+      <option value="varchar">varchar</option>
+      <option value="xml">xml</option>
+    </select>
+  );
+
+  const remove = (
+    <button className="RemoveField" onClick={data.removeField}>X</button>
+  );
+
+  return (
+    <form className="row">
+      {handles[0]}
+      {fields.name}
+      {fields.type}
+      {fields.length}
+      {fields.defaultValue}
+      {fields.checkCondition}
+      {fields.primaryKey}
+      {fields.unique}
+      {fields.notNull}
+      {fields.foreignKey}
+      {remove}
+      {handles[1]}
+    </form>
+  );
 }
+
+// default properties of a new field
+Field.defaults = (id) => ({
+  name: `field${id}`,
+  type: "",
+  length: "",
+  primaryKey: false,
+  unique: false,
+  notNull: false,
+  defaultValue: "",
+  checkCondition: "",
+  foreignKey: {
+    tableName: "",
+    fieldName: "",
+  },
+  link: {
+    l: {},
+    r: {}
+  }
+});
