@@ -1,6 +1,8 @@
 import React from "react";
 import { svgNode } from '../etc/util';
 
+import '../styles/Handle.scss';
+
 /** Handles are points between which connecting lines can be drawn. Handles take the following props:
  *  1) an 'id' string, which will be used as the DOM node's id and must be unique within the application.
  *  2) a 'target', which contains either the identity string of another Handle component, or an object containing x-y coordinates. A line will be rendered between each handle and the position of its target. 
@@ -47,8 +49,8 @@ export default class Handle extends React.Component {
       });
       Object.assign(svg.style, {
         position: 'absolute',
-        top: source.y + o.y + this.boxSize / 2,
-        left: source.x + o.x + this.boxSize / 2,
+        top: source.y + o.y + this.refs.container.offsetHeight / 2,
+        left: source.x + o.x + this.refs.container.offsetWidth / 2,
         pointerEvents: 'none'
       });
       svg.appendChild(line);
@@ -100,15 +102,16 @@ export default class Handle extends React.Component {
   render() {
     this.boxSize = this.props.boxSize || 10;
     this.lineSize = this.props.lineSize || 2;
-    this.lineColor = this.props.lineColor || 'red';
+    this.lineColor = this.props.lineColor || 'black';
 
     return (
       <div id={this.props.id}
         ref="container" 
-        className='handle' 
+        className='Handle' 
         onMouseDown={this.linkManager}
         data-payload={JSON.stringify(this.props.payload || {})}
-        style={{position: 'relative', width: this.boxSize + 'px', height: this.boxSize + 'px'}}>  
+        style={{position: 'relative'}}>
+          &#9675;	
       </div>
     );
   } 

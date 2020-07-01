@@ -1,0 +1,36 @@
+.Table {
+  min-width: 7em;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: #b1c0e8;
+  box-shadow: 1px 2px 2px #0000006b;
+
+  > div {
+    display: flex;
+  }
+
+  div.labels *{
+    width: 65px;
+    text-align: center;
+    font-size: .8em;
+    font-weight: 600;
+    opacity: .75;
+
+    &.small {
+      width: 25px;
+    }
+  }
+
+  input.tableName {
+    flex-grow: 1;
+  }
+
+  input, select {
+    background-color: #ffffffd0;
+    border: .5px solid #00000066;
+    border-radius: 2px;
+    font-family: 'Open Sans';
+  }
+}

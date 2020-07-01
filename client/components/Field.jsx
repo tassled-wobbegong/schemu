@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Handle from './Handle.jsx';
 
+import '../styles/Field.scss';
+
 /** Represents a field in a table schema. Renders the passed-down props as an HTML form. When form values are changed, passes the changed values as key-value pairs on an object to a function ```props.update```.
  * @param {*} props See Field.defaults for the expected props structure.
  */
@@ -51,12 +53,20 @@ export default function Field(props) {
   const data = { ...props, foreignKey: ftable ? `${ftable}.${ffield}` : "" };
 
   const fields = {};
-  ["name", "length", "defaultValue", "checkCondition", "foreignKey"].forEach((name) => fields[name] = 
-    <input className="inputs" type="text" name={name} value={data[name]} onChange={handleChange} />
-  );
-  ["primaryKey", "unique", "notNull"].forEach((name) => fields[name] = 
-    <input type="checkbox" name={name} checked={data[name]} onChange={handleChange}/>
-  );
+  ["name", "length", "defaultValue", "checkCondition", "foreignKey"].forEach((name) => fields[name] = {
+    type: "text",
+    name,
+    value: data[name],
+    onChange: handleChange,
+    autoComplete: "off"
+  });
+  ["primaryKey", "unique", "notNull"].forEach((name) => fields[name] = {
+    className: "small",
+    type: "checkbox",
+    name,
+    checked: data[name],
+    onChange: handleChange
+  });
   fields.type = (
     <select value={data.type} name="type" onChange={handleChange}>
       <option value="bool">bool</option>
@@ -86,24 +96,26 @@ export default function Field(props) {
   );
 
   const remove = (
-    <button className="RemoveField" onClick={data.removeField}>X</button>
+    <button className="small icon delete" onClick={data.removeField} title="Remove Field"></button>
   );
 
   return (
-    <form className="row">
+    <div className="Field">
       {handles[0]}
-      {fields.name}
-      {fields.type}
-      {fields.length}
-      {fields.defaultValue}
-      {fields.checkCondition}
-      {fields.primaryKey}
-      {fields.unique}
-      {fields.notNull}
-      {fields.foreignKey}
-      {remove}
+      <input {...fields.name} />
+      <input {...fields.type} />
+      {props.expanded ? <>
+        <input {...fields.length} />
+        <input {...fields.defaultValue} />
+        <input {...fields.checkCondition} />
+        <input {...fields.primaryKey} />
+        <input {...fields.unique} />
+        <input {...fields.notNull} />
+        <input {...fields.foreignKey} />
+        {remove}
+      </> : null}
       {handles[1]}
-    </form>
+    </div>
   );
 }
 

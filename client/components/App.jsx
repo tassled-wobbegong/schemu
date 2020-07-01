@@ -8,16 +8,18 @@ import '../styles/App.scss';
 /** Top-level component that manages all application state. Extends Container, which allows it to synce this state with a WebSocket server and access undo/redo functionality. */
 export default class App extends Container {  
   state = {
-    tables: {}
+    tables: {},
+    showInfo: false
   };
 
   constructor() {
-    super(`ws://localhost:3000/api/session${window.location.pathname}`);
+    const host = window.location.host !== 'localhost:8080' ? window.location.host : ''
+    super(`ws://${host}/api/session${window.location.pathname}`);
   }
 
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
-    const pos = id * 100 % window.innerWidth;
+    const pos = id * 50 % window.innerWidth;
     this.setState({ 
       tables: { ...this.state.tables, [id]: Table.defaults(id, pos) }
     });
@@ -87,15 +89,33 @@ export default class App extends Container {
       </div>
     );
 
+    const popup = (
+      <div className="popup" 
+        style={{visibility: this.state.showInfo ? 'visible' : 'hidden'}} 
+        onClick={() => this.setState({showInfo: false})}>
+        <div onClick={(ev) => ev.stopPropagation()}>
+          <h1>about</h1>
+          <p>Schemu.net is an implementation of the open-source <a href="https://github.com/tassled-wobbegong/schemu">schemu</a> project.</p>
+          <p>Built and maintained by Madison Brown, Henry Black, Derek Lauziere, and Egon Levy.</p>
+          <p>Release under the MIT license.</p>
+        </div>
+      </div>
+    );
+
     return (
       <div className='App'>
-        <div className="title">NoMoreQuery.io</div>
-        <div className="toolbar">
-          <button onClick={() => this.addTable()}>New Table</button>
-          <button onClick={() => this.toSql()}>Export SQL</button>
-          <button onClick={() => this.step(-1)}>Undo</button>
-          <button onClick={() => this.step(1)}>Redo</button>
+        <div className="title">
+          <span className='logo'></span>
+          schemu
         </div>
+        <div className='icon info' onClick={() => this.setState({showInfo: true})}></div>
+        <div className="toolbar">
+          <button className="icon add" title="New Table" onClick={() => this.addTable()}></button>
+          <button className="icon download" title="Export SQL" onClick={() => this.toSql()}></button>
+          <button className="icon undo" title="Undo" onClick={() => this.step(-1)}></button>
+          <button className="icon redo" title="Redo" onClick={() => this.step(1)}></button>
+        </div>
+        {popup}
         <div className='tables'>          
           {tables}
         </div>
