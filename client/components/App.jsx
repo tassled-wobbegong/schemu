@@ -2,6 +2,7 @@ import React from 'react';
 import Container from './Container.jsx';
 import { downloadAsFile, toSql } from '../etc/util.js';
 import Table from './Table.jsx';
+import Popup from './Popup.jsx';
 
 import '../styles/App.scss';
 
@@ -14,7 +15,7 @@ export default class App extends Container {
 
   constructor() {
     const host = window.location.host !== 'localhost:8080' ? window.location.host : ''
-    super(`ws://${host}/api/session${window.location.pathname}`);
+    super(`wss://${host}/live/session${window.location.pathname}`);
   }
 
   addTable = () => {
@@ -46,6 +47,9 @@ export default class App extends Container {
   moveManager = (id) => {
     let curPos, lastEv;
     const  startMove = (ev) => {
+      const target = ev.clientX ? ev : ev.touches[0];
+      ev = { clientX: target.clientX, clientY: target.clientY };
+
       if (!curPos) {
         curPos = this.state.tables[id].position;
         lastEv = ev;
@@ -62,10 +66,16 @@ export default class App extends Container {
     const endMove = () => {
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
+
+      window.removeEventListener('touchmove', startMove);
+      window.removeEventListener('touchend', endMove);
     };
 
     window.addEventListener('mousemove', startMove);
     window.addEventListener('mouseup', endMove);
+
+    window.addEventListener('touchmove', startMove);
+    window.addEventListener('touchend', endMove);
   };
 
   /** Convert the current state to a SQL schema, and download it to the users filesystem. */
@@ -78,6 +88,8 @@ export default class App extends Container {
   };
 
   render() { 
+    const initialized = window.location.pathname !== '/';
+
     const tables = Object.entries(this.state.tables).map(([id, table]) =>
       <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
         <Table
@@ -89,22 +101,15 @@ export default class App extends Container {
       </div>
     );
 
-    const popup = (
-      <div className="popup" 
-        style={{visibility: this.state.showInfo ? 'visible' : 'hidden'}} 
-        onClick={() => this.setState({showInfo: false})}>
-        <div onClick={(ev) => ev.stopPropagation()}>
-          <h1>about</h1>
-          <p>Schemu.net is an implementation of the open-source <a href="https://github.com/tassled-wobbegong/schemu">schemu</a> project.</p>
-          <p>Built and maintained by Madison Brown, Henry Black, Derek Lauziere, and Egon Levy.</p>
-          <p>Release under the MIT license.</p>
-        </div>
-      </div>
-    );
+    const startSession = () => {
+      fetch('/api/session', { method: 'POST' })
+        .then((res) => res.json())
+        .then((data) => window.location.href = data.session_id);
+    };
 
     return (
       <div className='App'>
-        <div className="title">
+        <div className="title">   
           <span className='logo'></span>
           schemu
         </div>
@@ -115,7 +120,14 @@ export default class App extends Container {
           <button className="icon undo" title="Undo" onClick={() => this.step(-1)}></button>
           <button className="icon redo" title="Redo" onClick={() => this.step(1)}></button>
         </div>
-        {popup}
+        <Popup title='welcome' cta='Get Started' hidden={initialized} onAccept={startSession}>
+          <p><b>Schemu</b> is an interactive tool used by teams of developers to collaboratively design PostgresQL database schemas.</p>
+          <p>You will be assigned a secure URL that you and your teammates can access in order to interact with your project in real-time.</p>
+        </Popup>
+        <Popup title='about' hidden={!this.state.showInfo} onClose={() => this.setState({showInfo: false})}>
+          <p>Schemu.net is an implementation of the open-source <a href="https://github.com/tassled-wobbegong/schemu">Schemu</a> project, built and maintained by Madison Brown, Henry Black, Derek Lauziere, and Egon Levy.</p>
+          <p>Released under the MIT license.</p>
+        </Popup>
         <div className='tables'>          
           {tables}
         </div>

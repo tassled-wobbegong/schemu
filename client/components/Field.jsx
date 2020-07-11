@@ -103,7 +103,7 @@ export default function Field(props) {
     <div className="Field">
       {handles[0]}
       <input {...fields.name} />
-      <input {...fields.type} />
+      {fields.type}
       {props.expanded ? <>
         <input {...fields.length} />
         <input {...fields.defaultValue} />

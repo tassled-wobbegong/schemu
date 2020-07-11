@@ -62,7 +62,7 @@ export default function Table(props) {
         {edit}
         <button className='icon add' title="Add Field" onClick={addField}></button>
         <button className='icon delete' title="Delete Table" onClick={props.remove}></button>
-        <button className='icon move' title="Drag Table" onMouseDown={props.move}></button>
+        <button className='icon move' title="Drag Table" onMouseDown={props.move} onTouchStart={props.move}></button>
       </div>
       <div className='labels'>
         {labels.map((label) => <span className={label.length < 2 ? "small" : null}>{label}</span>)}

@@ -34,6 +34,25 @@ export default class Handle extends React.Component {
         y: d.y < 0 ? d.y : 0
       };
 
+      
+
+      const arrowHead = svgNode('defs', {}, 
+        svgNode('marker', {
+            id: 'arrowhead',
+            viewBox: "0 0 4 4",
+            markerWidth: 4,
+            markerHeight: 4, 
+            markerUnits: 'strokeWidth',
+            refX: 4,
+            refY: 2,
+            orient: 'auto'
+          },
+          svgNode('path', { 
+            d: "M 0 0 L 4 2 L 0 4 z", 
+            fill: this.props.lineColor 
+          })
+        )
+      );
       const line = svgNode('line', {
         stroke: this.lineColor,
         'stroke-width': this.lineSize + "px",
@@ -41,18 +60,22 @@ export default class Handle extends React.Component {
         x1: -o.x,
         y1: -o.y,
         x2: d.x - o.x,
-        y2: d.y - o.y
+        y2: d.y - o.y,
+        'marker-end': 'url(#arrowhead)'
       });
       const svg = svgNode('svg', { 
         width: Math.abs(d.x) + this.lineSize,
         height: Math.abs(d.y) + this.lineSize
       });
+
       Object.assign(svg.style, {
         position: 'absolute',
-        top: source.y + o.y + this.refs.container.offsetHeight / 2,
-        left: source.x + o.x + this.refs.container.offsetWidth / 2,
+        top: `${source.y + o.y + this.refs.container.offsetHeight / 2}px`,
+        left: `${source.x + o.x + this.refs.container.offsetWidth / 2}px`,
+        overflow: 'visible',
         pointerEvents: 'none'
       });
+      svg.appendChild(arrowHead);
       svg.appendChild(line);
       svg.classList.add(this.props.id);
       document.body.appendChild(svg);
@@ -80,12 +103,23 @@ export default class Handle extends React.Component {
     }
 
     const update = (ev) => {
+      const target = ev.clientX ? ev : ev.touches[0];
+      ev = { clientX: target.clientX, clientY: target.clientY };
       this.props.onChange({ x: ev.clientX, y: ev.clientY });
     };
     window.addEventListener('mousemove', update);
+    window.addEventListener('touchmove', update);
 
     const finalize = (to) => {
-      const { id, dataset: { payload }} = to.target;
+      let target;
+      if (to.changedTouches) {
+        const { clientX, clientY } = event.changedTouches[0];
+        target = document.elementFromPoint(clientX, clientY);
+      } else {
+        target = to.target; 
+      }
+
+      const { id, dataset: { payload }} = target || {};
 
       if (!id || !payload) {
         this.props.onChange(null);
@@ -95,8 +129,12 @@ export default class Handle extends React.Component {
       
       window.removeEventListener('mouseup', finalize);
       window.removeEventListener('mousemove', update);
+
+      window.removeEventListener('touchend', finalize);
+      window.removeEventListener('touchmove', update);
     };
     window.addEventListener("mouseup", finalize);
+    window.addEventListener("touchend", finalize);
   };
   
   render() {
@@ -109,9 +147,9 @@ export default class Handle extends React.Component {
         ref="container" 
         className='Handle' 
         onMouseDown={this.linkManager}
+        onTouchStart={this.linkManager}
         data-payload={JSON.stringify(this.props.payload || {})}
-        style={{position: 'relative'}}>
-          &#9675;	
+        style={{position: 'relative'}}>	
       </div>
     );
   } 

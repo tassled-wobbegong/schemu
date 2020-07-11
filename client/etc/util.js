@@ -13,10 +13,13 @@ export const downloadAsFile = (blob, filename) => {
  * @param {string} type A type of SVG node (eg. 'svg', 'line')
  * @param {object} attr 
  */
-export const svgNode = (type, attr) => {
+export const svgNode = (type, attr, ...children) => {
   const el = document.createElementNS('http://www.w3.org/2000/svg', type);
   for (const [key, val] of Object.entries(attr)) {
     el.setAttribute(key, val);
+  }
+  for (const child of children) {
+    el.appendChild(child);
   }
   return el;
 };

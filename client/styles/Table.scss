@@ -1,14 +1,17 @@
-.Table {
+@import 'colors';
+
+.Table { 
   min-width: 7em;
   padding: 5px;
   display: flex;
   flex-direction: column;
   border-radius: 5px;
-  background-color: #b1c0e8;
-  box-shadow: 1px 2px 2px #0000006b;
+  background-color: $blue;  
+  box-shadow: 1px 2px 2px hsla(0, 0%, 0%, 0.4);
 
   > div {
     display: flex;
+    align-items: center;
   }
 
   div.labels *{
@@ -28,9 +31,13 @@
   }
 
   input, select {
-    background-color: #ffffffd0;
-    border: .5px solid #00000066;
+    height: 1.75em;
+    background-color: hsla(0, 0%, 100%, 0.8);
+    border: .5px solid hsla(0, 0%, 0%, 0.4);
     border-radius: 2px;
     font-family: 'Open Sans';
+  }
+  input.small {
+    height: unset;
   }
 }
