@@ -13,9 +13,6 @@ server {
   }
 
   location /live/ {
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header Host $host;
-
     proxy_pass http://localhost:3001;
 
     proxy_set_header Upgrade $http_upgrade;
