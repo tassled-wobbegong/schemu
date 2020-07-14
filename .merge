@@ -2,7 +2,7 @@
 DIR="`dirname "$0"`"
 HOST="schemu"
 
-docker build --tag $HOST:1.0 .
+docker build --tag $HOST:1.0 ../
 docker stop $HOST
 docker rm $HOST
 docker run --publish 3001:3000 --detach --restart=always --name $HOST $HOST:1.0
