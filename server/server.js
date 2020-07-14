@@ -27,7 +27,8 @@ app.post('/api/session', async (req, res, next) => {
   const id = crypto.randomBytes(32).toString('base64').replace(/[=\/\+]/g, "");
   sessions[id] = {
     clients: [],
-    state: {}
+    state: {},
+    timeout: null
   };
   return res.json({ session_id: id });
 });
@@ -43,6 +44,11 @@ app.ws("/live/session/:id", function (socket, req) {
   }
   
   session.clients.push(socket);
+
+  if (session.timeout) {
+    clearTimeout(session.timeout);
+    session.timeout = null;
+  }
 
   // send the initial session state on connect
   socket.send(JSON.stringify(session.state));
@@ -63,7 +69,7 @@ app.ws("/live/session/:id", function (socket, req) {
   socket.on("close", function () {
     session.clients = session.clients.filter((client) => client !== socket);
     if (session.clients.length === 0) {
-      setTimeout(() => delete sessions[id], 300000);
+      session.timeout = setTimeout(() => delete sessions[id], 300000);
     }
   });
 });

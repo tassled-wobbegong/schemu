@@ -8,7 +8,7 @@ import '../styles/App.scss';
 
 /** Top-level component that manages all application state. Extends Container, which allows it to synce this state with a WebSocket server and access undo/redo functionality. */
 export default class App extends Container {  
-  state = {
+  state = { 
     tables: {},
     showInfo: false
   };
