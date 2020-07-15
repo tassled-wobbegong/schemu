@@ -1,7 +1,10 @@
 server {
+  server_name www.schemu.net;
+  return 301 $scheme://schemu.net$request_uri;
+}
+server {
   listen 80;
   server_name schemu.net;
-
   return 301 https://$host$request_uri;
 }
 server {
