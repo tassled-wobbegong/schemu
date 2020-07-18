@@ -1,5 +1,5 @@
 # Schemu
-### A tool to collaboratively design PostgresQL table schemas.
+### A tool to collaboratively design PostgresQL table schemas
 
 To install:
 ```npm install```
