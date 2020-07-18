@@ -2,21 +2,62 @@ const path = require("path");
 const crypto = require("crypto");
 const express = require("express");
 const enableWs = require("express-ws");
+const db = require('./mongo')('schemu');
 
-const app = express();
 const PORT = 3000;
+const app = express();
+
 const sessions = {};
+const createSession = (key) => {
+  return sessions[key] = {
+    clients: [],
+    state: {},
+    timeout: null
+  };
+};
+const loadSession = async (key, create = false) => {
+  if (sessions[key]) {
+    return sessions[key];
+  }
+
+  if (create) {
+    return createSession(key);
+  }
+
+  return db(async (collection) => {
+    const result = await collection.findOne({ key });
+
+    if (!result) {
+      return;
+    }
+
+    const session = createSession(key);
+    session.state = result.state;
+    return session;
+  });
+};
+const storeSession = async (key) => {
+  const session = sessions[key];
+
+  if (!session) {
+    return;
+  }
+
+  return db(async (collection) => {
+    const result = await collection.replaceOne({ key }, { key, state: session.state }, { upsert: true });
+    delete sessions[key];
+    return !!result;
+  });
+}
 
 app.use("/build", express.static(path.resolve(__dirname, "../build")));
 
-// The root endpoint creates a new session associated with a random id and redirects the client to the corresponding url.
 app.get('/', async (req, res, next) => {
   res.sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-// The /:id endpoint checks that the session id is valid, then serves the client application.
 app.get('/:id', async (req, res, next) => {
-  if (!req.params.id || !sessions[req.params.id]) {
+  if (!req.params.id || !(await loadSession(req.params.id))) {
     return res.redirect("/");
   }
 
@@ -25,20 +66,16 @@ app.get('/:id', async (req, res, next) => {
 
 app.post('/api/session', async (req, res, next) => {
   const id = crypto.randomBytes(32).toString('base64').replace(/[=\/\+]/g, "");
-  sessions[id] = {
-    clients: [],
-    state: {},
-    timeout: null
-  };
+  loadSession(id, true);
   return res.json({ session_id: id });
 });
 
 // basic WebSocket relay server exposed to ws://[hostname]/api/session/:id
 enableWs(app);
-app.ws("/live/session/:id", function (socket, req) {
+app.ws("/live/session/:id", async (socket, req) => {
   // make sure the id provided in the url params corresponds to a valid session
   const id = req.params.id;
-  const session = sessions[id];
+  const session = await loadSession(id);
   if (!session) {
     return socket.close();
   }
@@ -69,7 +106,7 @@ app.ws("/live/session/:id", function (socket, req) {
   socket.on("close", function () {
     session.clients = session.clients.filter((client) => client !== socket);
     if (session.clients.length === 0) {
-      session.timeout = setTimeout(() => delete sessions[id], 300000);
+      session.timeout = setTimeout(() => storeSession(id), 5000);
     }
   });
 });

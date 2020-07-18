@@ -14,8 +14,8 @@ export default class App extends Container {
   };
 
   constructor() {
-    const host = window.location.host !== 'localhost:8080' ? window.location.host : ''
-    super(`wss://${host}/live/session${window.location.pathname}`);
+    const scheme = window.location.host.includes('localhost') ? 'ws' : 'wss';
+    super(`${scheme}://${window.location.host}/live/session${window.location.pathname}`);
   }
 
   addTable = () => {
