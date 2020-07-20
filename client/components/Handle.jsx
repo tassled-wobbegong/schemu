@@ -34,8 +34,6 @@ export default class Handle extends React.Component {
         y: d.y < 0 ? d.y : 0
       };
 
-      
-
       const arrowHead = svgNode('defs', {}, 
         svgNode('marker', {
             id: 'arrowhead',
@@ -84,6 +82,11 @@ export default class Handle extends React.Component {
   // removes any SVG lines created by the component.
   erase() {
     document.body.querySelectorAll(`.${this.props.id}`).forEach(n => n.remove());
+  }
+
+  // When the component is first created, draw it's connecting line, if applicable.
+  componentDidMount() {
+    this.draw();
   }
 
   // When ever the state of the component changes (i.e. it's target position changes), redraw its SVG connecting lines
