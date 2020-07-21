@@ -40,20 +40,22 @@ export default function Table(props) {
       update={props.update("fields", id, validateField)}
       removeField={() => removeField(id)}
       tableName={props.name} 
+      tableId={props.id}
       expanded={props.expanded} />
   );
 
   const labelNames = ['', 'Name', 'Type', ''];
   if (props.expanded) {
-    labelNames.splice(3, 0, 'Length', 'Default', {'Cond.': 'Condition'}, {P: 'Primary Key'}, {U: 'Unique'}, {N: 'Not Null'}, {'F. Key': 'Foreign Key'}, '');
+    labelNames.splice(3, 0, 'Length', 'Default', { 'Cond.': 'Condition' }, { P: 'Primary Key' }, 
+      { U: 'Unique' }, { N: 'Not Null' }, '');
   }
-  const labels = labelNames.map((label) => {
+  const labels = labelNames.map((label, i) => {
     let [key, val] = typeof label === 'object'
       ? Object.entries(label)[0]
       : [label, label];
 
     return (
-      <span className={key.length < 2 ? "small" : null} title={val}>{key}</span>
+      <span key={`label${i}`} className={key.length < 2 ? "small" : null} title={val}>{key}</span>
     );
   });
 

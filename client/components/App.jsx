@@ -1,10 +1,12 @@
 import React from 'react';
 import Container from './Container.jsx';
-import { downloadAsFile, toSql } from '../etc/util.js';
+import { downloadAsFile, toSql, clone } from '../etc/util.js';
 import Table from './Table.jsx';
 import Popup from './Popup.jsx';
 
 import '../styles/App.scss';
+
+const INITIALIZED = window.location.pathname !== '/';
 
 /** Top-level component that manages all application state. Extends Container, which allows it to synce this state with a WebSocket server and access undo/redo functionality. */
 export default class App extends Container {  
@@ -15,7 +17,14 @@ export default class App extends Container {
 
   constructor() {
     const scheme = window.location.host.includes('localhost') ? 'ws' : 'wss';
-    super(`${scheme}://${window.location.host}/live/session${window.location.pathname}`);
+    const host = window.location.host === 'localhost:8080' ? 'localhost:3000' : window.location.host;
+    super(`${scheme}://${host}/live/session${window.location.pathname}`);
+
+    if (INITIALIZED) {
+      this.state.tables = {
+        1: Table.defaults(1, window.innerWidth / 3, window.innerHeight / 3)
+      };
+    }
   }
 
   addTable = () => {
@@ -80,16 +89,28 @@ export default class App extends Container {
 
   /** Convert the current state to a SQL schema, and download it to the users filesystem. */
   toSql = () => {
+    const tables = clone(this.state.tables);
+    for (const table of Object.values(tables)) {
+      for (const field of Object.values(table.fields)) {
+        field.foreignKey = {};
+
+        const { target } = field.link;
+        if (target) {
+          const [p, t, f] = target.split('_');
+          field.foreignKey.tableName = tables[t].name,
+          field.foreignKey.fieldName = tables[t].fields[f].name
+        }
+      }
+    }
+
     const data = new Blob(
-      [ toSql(this.state.tables) ], 
+      [ toSql(tables) ], 
       { type: 'text/plain' }
     );
     downloadAsFile(data, 'query.txt');
   };
 
   render() { 
-    const initialized = window.location.pathname !== '/';
-
     const tables = Object.entries(this.state.tables).map(([id, table]) =>
       <div key={"wrapper"+id} ref={"wrapper"+id} style={{position: "absolute", left: table.position.x, top: table.position.y}}>
         <Table
@@ -120,7 +141,7 @@ export default class App extends Container {
           <button className="icon undo" title="Undo" onClick={() => this.step(-1)}></button>
           <button className="icon redo" title="Redo" onClick={() => this.step(1)}></button>
         </div>
-        <Popup title='welcome' cta='Get Started' hidden={initialized} onAccept={startSession}>
+        <Popup title='welcome' cta='Get Started' hidden={INITIALIZED} onAccept={startSession}>
           <p><b>Schemu</b> is an interactive tool used by teams of developers to collaboratively design PostgresQL database schemas.</p>
           <p>You will be assigned a secure URL that you and your teammates can access in order to interact with your project in real-time.</p>
         </Popup>
