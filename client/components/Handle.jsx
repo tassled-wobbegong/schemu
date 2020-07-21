@@ -84,17 +84,15 @@ export default class Handle extends React.Component {
     document.body.querySelectorAll(`.${this.props.id}`).forEach(n => n.remove());
   }
 
-  // When the component is first created, draw it's connecting line, if applicable.
   componentDidMount() {
     this.draw();
   }
-
-  // When ever the state of the component changes (i.e. it's target position changes), redraw its SVG connecting lines
-  componentDidUpdate() {
+  componentWillUpdate() {
     this.erase();
+  }
+  componentDidUpdate() {
     this.draw();
   }
-  // Cleanup any remaining lines before unmounting
   componentWillUnmount() {
     this.erase();
   }

@@ -73,6 +73,7 @@ export default function Table(props) {
 }
 
 Table.defaults = (id, x, y = x) => ({ 
+  id: id,
   name: `table${id}`,
   expanded: false,
   constraints: [], 

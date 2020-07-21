@@ -121,6 +121,7 @@ export default function Field(props) {
 
 // default properties of a new field
 Field.defaults = (id) => ({
+  id: id,
   name: `field${id}`,
   type: "",
   length: "",
