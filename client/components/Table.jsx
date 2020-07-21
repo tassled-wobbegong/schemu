@@ -43,10 +43,19 @@ export default function Table(props) {
       expanded={props.expanded} />
   );
 
-  const labels = ['', 'Name', 'Type', ''];
+  const labelNames = ['', 'Name', 'Type', ''];
   if (props.expanded) {
-    labels.splice(3, 0, 'Length', 'Default', 'Cond.', 'P', 'U', 'R', 'F. Key', '');
+    labelNames.splice(3, 0, 'Length', 'Default', {'Cond.': 'Condition'}, {P: 'Primary Key'}, {U: 'Unique'}, {N: 'Not Null'}, {'F. Key': 'Foreign Key'}, '');
   }
+  const labels = labelNames.map((label) => {
+    let [key, val] = typeof label === 'object'
+      ? Object.entries(label)[0]
+      : [label, label];
+
+    return (
+      <span className={key.length < 2 ? "small" : null} title={val}>{key}</span>
+    );
+  });
 
   const edit = (
     <button className={props.expanded ? 'icon check' : 'icon edit'} 
@@ -65,7 +74,7 @@ export default function Table(props) {
         <button className='icon move' title="Drag Table" onMouseDown={props.move} onTouchStart={props.move}></button>
       </div>
       <div className='labels'>
-        {labels.map((label) => <span className={label.length < 2 ? "small" : null}>{label}</span>)}
+        {labels}
       </div>
       {fields}
     </div>
