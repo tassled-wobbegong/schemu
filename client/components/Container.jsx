@@ -77,6 +77,10 @@ export default class Container extends React.Component {
     }
   }
 
+  onInit() {
+
+  }
+
   /** Initiates a WebSocket connection with the server. */
   connect() {
     const socket = new WebSocket(this.ws_uri);
@@ -86,8 +90,8 @@ export default class Container extends React.Component {
     };
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (typeof data === 'object' && data.tables) {
-        this.sync(data);
+      if (typeof data === 'object') {
+        data.tables ? this.sync(data) : this.onInit();
       }
     };
     socket.onclose = (event) => {

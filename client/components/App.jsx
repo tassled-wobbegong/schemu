@@ -19,12 +19,6 @@ export default class App extends Container {
     const scheme = window.location.host.includes('localhost') ? 'ws' : 'wss';
     const host = window.location.host === 'localhost:8080' ? 'localhost:3000' : window.location.host;
     super(`${scheme}://${host}/live/session${window.location.pathname}`);
-
-    if (INITIALIZED) {
-      this.state.tables = {
-        1: Table.defaults(1, window.innerWidth / 3, window.innerHeight / 3)
-      };
-    }
   }
 
   addTable = () => {
@@ -86,6 +80,12 @@ export default class App extends Container {
     window.addEventListener('touchmove', startMove);
     window.addEventListener('touchend', endMove);
   };
+
+  onInit() {
+    this.setState({ 
+      tables: { 1: Table.defaults(1, window.innerWidth / 3, window.innerHeight / 3) }
+    });
+  }
 
   /** Convert the current state to a SQL schema, and download it to the users filesystem. */
   toSql = () => {
