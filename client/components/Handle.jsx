@@ -150,7 +150,8 @@ export default class Handle extends React.Component {
         onMouseDown={this.linkManager}
         onTouchStart={this.linkManager}
         data-payload={JSON.stringify(this.props.payload || {})}
-        style={{position: 'relative'}}>	
+        style={{position: 'relative'}}
+        title={this.props.title || ""}>
       </div>
     );
   } 

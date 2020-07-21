@@ -32,6 +32,7 @@ export default function Field(props) {
     <Handle id={`${prefix}_${props.tableId}_${props.id}`}
       target={prefix === props.link.prefix ? props.link.target : null} 
       payload={{ tableId: props.tableId, fieldId: props.id }}
+      title='Create Foreign Key'
       onChange={updateHandle(prefix)} 
     />
   );
