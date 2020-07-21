@@ -86,10 +86,7 @@ export default class Container extends React.Component {
     };
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      if (typeof data === 'object') {
-        if (!data.tables) {
-          data.tables = [];
-        }
+      if (typeof data === 'object' && data.tables) {
         this.sync(data);
       }
     };
