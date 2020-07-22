@@ -59,7 +59,7 @@ export default function Field(props) {
     'time', 'timetz', 'timestamptz', 'uuid', 'varbit', 'varchar', 'xml'
   ];
   const options = types.map((val) => (
-    <option key={val} value={val}>val</option>
+    <option key={val} value={val}>{val}</option>
   ));
   fields.type = (
     <select value={props.type} name="type" onChange={handleChange}>
