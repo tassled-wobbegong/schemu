@@ -97,8 +97,10 @@ export default class App extends Container {
         const { target } = field.link;
         if (target) {
           const [p, t, f] = target.split('_');
-          field.foreignKey.tableName = tables[t].name,
-          field.foreignKey.fieldName = tables[t].fields[f].name
+          if (tables[t] && tables[t].fields[f]) {
+            field.foreignKey.tableName = tables[t].name,
+            field.foreignKey.fieldName = tables[t].fields[f].name
+          }
         }
       }
     }
