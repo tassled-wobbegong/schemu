@@ -1,7 +1,2 @@
-build
 node_modules
-server/secret.js
 .gitignore
-.merge
-.nginx
-Dockerfile
