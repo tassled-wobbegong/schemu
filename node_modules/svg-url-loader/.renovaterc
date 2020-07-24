@@ -1,0 +1,14 @@
+{
+  "extends": ["config:base"],
+  "schedule": ["before 3am every weekend"],
+  "automerge": true,
+  "major": {
+    "automerge": false
+  },
+  "packageRules": [
+    {
+      "packageNames": ["file-loader", "loader-utils"],
+      "schedule": ["at any time"]
+    }
+  ]
+}
