@@ -1,0 +1,12 @@
+.Field {
+  display: flex;
+  align-items: center;
+  > * {
+    width: 65px;
+    margin: 0px;
+
+    &.small, &.Handle {
+      width: 25px;
+    }
+  }
+}

@@ -1,6 +1,8 @@
 import React from "react";
 import Field from "./Field.jsx";
 
+import '../styles/Table.scss';
+
 /** Represents a SQL table schema. 
  * @param {*} props See Table.defaults for the expected props structure. 
  */
@@ -37,37 +39,57 @@ export default function Table(props) {
       key={`field${id}`}
       update={props.update("fields", id, validateField)}
       removeField={() => removeField(id)}
-      tableName={props.name} />
+      tableName={props.name} 
+      tableId={props.id}
+      expanded={props.expanded} />
+  );
+
+  const labelNames = ['', 'Name', 'Type', ''];
+  if (props.expanded) {
+    labelNames.splice(3, 0, 'Length', 'Default', { 'Cond.': 'Condition' }, { P: 'Primary Key' }, 
+      { U: 'Unique' }, { N: 'Not Null' }, '');
+  }
+  const labels = labelNames.map((label, i) => {
+    let [key, val] = typeof label === 'object'
+      ? Object.entries(label)[0]
+      : [label, label];
+
+    return (
+      <span key={`label${i}`} className={key.length < 2 ? "small" : null} title={val}>{key}</span>
+    );
+  });
+
+  const edit = (
+    <button className={props.expanded ? 'icon check' : 'icon edit'} 
+      title={props.expanded ? "Hide Details" : "Show Details"}
+      onClick={() => props.update({expanded: !props.expanded})}>
+    </button>
   );
 
   return (
-    <div id="tables" onMouseDown={props.move}>
-      <input type="text" id="Rename" value={props.name} onChange={changeName}></input>
-      <button className="fieldButtons" id="addtable" onClick={addField}>+</button>
-      <button className="removeTable" id="removetable" onClick={props.remove}>X</button>
-      <div className="fieldsList" onMouseDown={(ev) => ev.stopPropagation()}>
-        <div className="row">
-          <div></div>
-          <div className="column-header">Name</div>
-          <div className="column-header">Type</div>
-          <div className="column-header">Length</div>
-          <div className="column-header">Default</div>
-          <div className="column-header">Condition</div>
-          <div className="column-header">P</div>
-          <div className="column-header">U</div>
-          <div className="column-header">R</div>
-          <div className="column-header">F-Key</div>
-          <div></div>
-        </div>
-        {fields}
+    <div className="Table">
+      <div>
+        <input className="tableName" type="text" size='1' value={props.name} onChange={changeName} autoComplete="off"></input>
+        {edit}
+        <button className='icon add' title="Add Field" onClick={addField}></button>
+        <button className='icon delete' title="Delete Table" onClick={props.remove}></button>
+        <button className='icon move' title="Drag Table" onMouseDown={props.move} onTouchStart={props.move}></button>
       </div>
+      <div className='labels'>
+        {labels}
+      </div>
+      {fields}
     </div>
   );
 }
 
 Table.defaults = (id, x, y = x) => ({ 
+  id: id,
   name: `table${id}`,
+  expanded: false,
   constraints: [], 
-  fields: {}, 
+  fields: {
+    1: Field.defaults(1)
+  }, 
   position: { x, y }
 });

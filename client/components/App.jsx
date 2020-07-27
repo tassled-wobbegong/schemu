@@ -1,23 +1,29 @@
 import React from 'react';
 import Container from './Container.jsx';
-import { downloadAsFile, toSql } from '../etc/util.js';
+import { downloadAsFile, toSql, clone } from '../etc/util.js';
 import Table from './Table.jsx';
+import Popup from './Popup.jsx';
 
 import '../styles/App.scss';
 
+const INITIALIZED = window.location.pathname !== '/';
+
 /** Top-level component that manages all application state. Extends Container, which allows it to synce this state with a WebSocket server and access undo/redo functionality. */
 export default class App extends Container {  
-  state = {
-    tables: {}
+  state = { 
+    tables: {}, 
+    showInfo: false
   };
 
   constructor() {
-    super(`ws://localhost:3000/api/session${window.location.pathname}`);
+    const scheme = window.location.host.includes('localhost') ? 'ws' : 'wss';
+    const host = window.location.host === 'localhost:8080' ? 'localhost:3000' : window.location.host;
+    super(`${scheme}://${host}/live/session${window.location.pathname}`);
   }
 
   addTable = () => {
     const id = parseInt(Object.keys(this.state.tables).pop()) + 1 || 1;
-    const pos = id * 100 % window.innerWidth;
+    const pos = id * 50 % window.innerWidth;
     this.setState({ 
       tables: { ...this.state.tables, [id]: Table.defaults(id, pos) }
     });
@@ -44,6 +50,9 @@ export default class App extends Container {
   moveManager = (id) => {
     let curPos, lastEv;
     const  startMove = (ev) => {
+      const target = ev.clientX ? ev : ev.touches[0];
+      ev = { clientX: target.clientX, clientY: target.clientY };
+
       if (!curPos) {
         curPos = this.state.tables[id].position;
         lastEv = ev;
@@ -60,16 +69,44 @@ export default class App extends Container {
     const endMove = () => {
       window.removeEventListener('mousemove', startMove);
       window.removeEventListener('mouseup', endMove);
+
+      window.removeEventListener('touchmove', startMove);
+      window.removeEventListener('touchend', endMove);
     };
 
     window.addEventListener('mousemove', startMove);
     window.addEventListener('mouseup', endMove);
+
+    window.addEventListener('touchmove', startMove);
+    window.addEventListener('touchend', endMove);
   };
+
+  onInit() {
+    this.setState({ 
+      tables: { 1: Table.defaults(1, window.innerWidth / 3, window.innerHeight / 3) }
+    });
+  }
 
   /** Convert the current state to a SQL schema, and download it to the users filesystem. */
   toSql = () => {
+    const tables = clone(this.state.tables);
+    for (const table of Object.values(tables)) {
+      for (const field of Object.values(table.fields)) {
+        field.foreignKey = {};
+
+        const { target } = field.link;
+        if (target) {
+          const [p, t, f] = target.split('_');
+          if (tables[t] && tables[t].fields[f]) {
+            field.foreignKey.tableName = tables[t].name,
+            field.foreignKey.fieldName = tables[t].fields[f].name
+          }
+        }
+      }
+    }
+
     const data = new Blob(
-      [ toSql(this.state.tables) ], 
+      [ toSql(tables) ], 
       { type: 'text/plain' }
     );
     downloadAsFile(data, 'query.txt');
@@ -87,15 +124,33 @@ export default class App extends Container {
       </div>
     );
 
+    const startSession = () => {
+      fetch('/api/session', { method: 'POST' })
+        .then((res) => res.json())
+        .then((data) => window.location.href = data.session_id);
+    };
+
     return (
       <div className='App'>
-        <div className="title">NoMoreQuery.io</div>
-        <div className="toolbar">
-          <button onClick={() => this.addTable()}>New Table</button>
-          <button onClick={() => this.toSql()}>Export SQL</button>
-          <button onClick={() => this.step(-1)}>Undo</button>
-          <button onClick={() => this.step(1)}>Redo</button>
+        <div className="title">   
+          <span className='logo'></span>
+          schemu
         </div>
+        <div className='icon info' onClick={() => this.setState({showInfo: true})}></div>
+        <div className="toolbar">
+          <button className="icon add" title="New Table" onClick={() => this.addTable()}></button>
+          <button className="icon download" title="Export SQL" onClick={() => this.toSql()}></button>
+          <button className="icon undo" title="Undo" onClick={() => this.step(-1)}></button>
+          <button className="icon redo" title="Redo" onClick={() => this.step(1)}></button>
+        </div>
+        <Popup title='welcome' cta='Get Started' hidden={INITIALIZED} onAccept={startSession}>
+          <p><b>Schemu</b> is an interactive tool used by teams of developers to collaboratively design PostgresQL database schemas.</p>
+          <p>You will be assigned a secure URL that you and your teammates can access in order to interact with your project in real-time.</p>
+        </Popup>
+        <Popup title='about' hidden={!this.state.showInfo} onClose={() => this.setState({showInfo: false})}>
+          <p>Schemu.net is an implementation of the open-source <a href="https://github.com/tassled-wobbegong/schemu">Schemu</a> project, built and maintained by Madison Brown, Henry Black, Derek Lauziere, and Egon Levy.</p>
+          <p>Released under the MIT license.</p>
+        </Popup>
         <div className='tables'>          
           {tables}
         </div>

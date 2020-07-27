@@ -1,0 +1,43 @@
+@import 'colors';
+
+.Table { 
+  min-width: 7em;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background-color: $blue;  
+  box-shadow: 1px 2px 2px hsla(0, 0%, 0%, 0.4);
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  div.labels *{
+    width: 65px;
+    text-align: center;
+    font-size: .8em;
+    font-weight: 600;
+    opacity: .75;
+
+    &.small {
+      width: 25px;
+    }
+  }
+
+  input.tableName {
+    flex-grow: 1;
+  }
+
+  input, select {
+    height: 1.75em;
+    background-color: hsla(0, 0%, 100%, 0.8);
+    border: .5px solid hsla(0, 0%, 0%, 0.4);
+    border-radius: 2px;
+    font-family: 'Open Sans';
+  }
+  input.small {
+    height: unset;
+  }
+}

@@ -1,0 +1,14 @@
+.Handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &::after {
+    content: "○";
+    cursor: pointer;
+  }
+  &:hover::after {
+    content: "●";
+    cursor: pointer;
+  }
+}
