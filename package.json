@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/blackhaj/no-more-query#readme",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-ws": "^4.0.0",
     "mongodb": "^3.5.9",
     "react": "^16.13.1",
